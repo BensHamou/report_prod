@@ -1,0 +1,60 @@
+<div class="modal" id="validationsModal" tabindex="-1" aria-labelledby="validationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="background: rgba(107, 122, 147, 0.75); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); backdrop-filter: blur(2px);">
+            <div class="modal-header text-white" style="border-color: rgba(171, 175, 181, 0.4);">
+                <h5 class="modal-title" id="validationsModalLabel">Validations</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" id="buttonValidationX" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table card-header text-white" style="background: rgba(0, 0, 0, 0);">
+                    <thead style="border-color: white;">
+                        <th>Ancien état</th>
+                        <th>Nouvel état</th>
+                        <th>Date d'action</th>
+                        <th>Utilisateur</th>
+                        <th>Commentaire</th>
+                    </thead>
+                    <tbody id="item-validations">
+                        {% for validation in report.validations.all %}
+                            <tr style="border-color: transparent; color: #d9dce1;">
+                                <td>{{ validation.old_state }}</td>
+                                <td>{{ validation.new_state }}</td>
+                                <td>{{ validation.date }}</td>
+                                <td>{{ validation.actor }}</td>
+                                <td>{{ validation.refusal_reason }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td>Pas d'enregistrements.</td>
+                                <td>Pas d'enregistrements.</td>
+                                <td>Pas d'enregistrements.</td>
+                                <td>Pas d'enregistrements.</td>
+                                <td>Pas d'enregistrements.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer" style="border-color: transparent;">
+                <button type="button" class="btn btn-secondary" style="background-color: #23305d; color: white;" id="buttonValidationClose" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#validation-card').click(function () {
+            $("#validationsModal").prependTo("body");
+            $('#validationsModal').modal('show');
+
+        });
+        $('#buttonValidationX').click(function () {
+            $('#validationsModal').modal('hide')
+ id="validation-card"
+        });
+        $('#buttonValidationClose').click(function () {
+            $('#validationsModal').modal('hide')
+        });
+    });
+</script>

@@ -1,0 +1,69 @@
+{% extends "main.html" %}
+
+{% block title %}
+{% if horaire %}Modification Horaire{% else %}Création horaire{% endif %}
+{% endblock %}
+{% load static %} 
+{% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-left mb-3">
+  <a href="{% url 'horaires' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+    <i class="fas fa-caret-left me-2"></i>
+    <p class="lead m-0 p-0">retour</p>
+</a>
+</div>
+<h4 class="text-white mb-4">{% if horaire %}Modification{% else %}Creation d'un nouveau horaire{% endif %}</h4>
+
+<form method="POST">
+  {% csrf_token %}
+  <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-md-1">
+            <div class="form-outline">
+              <div class="d-flex align-items-center">
+                {{ form.hour_start }}
+                <label class="form-label labelCustom me-2" style="margin-left: 5%;" for="hour_start">H</label>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="form-outline">
+              <div class="d-flex align-items-center">
+                {{ form.minutes_start }}
+                <label class="form-label labelCustom me-2" style="margin-left: 5%;" for="minutes_start">M</label>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="form-outline">
+              <div class="d-flex align-items-center justify-content-center">
+                <label class="form-label labelCustom me-2">--</label>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="form-outline">
+              <div class="d-flex align-items-center">
+                {{ form.hour_end }}
+                <label class="form-label labelCustom me-2" style="margin-left: 5%;" for="hour_end">H</label>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="form-outline">
+              <div class="d-flex align-items-center">
+                {{ form.minutes_end }}
+                <label class="form-label labelCustom me-2" style="margin-left: 5%;" for="minutes_end">H</label>
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="float-end mt-4">
+    <input type='submit' class="btn btn-secondary customSaveButton" name='save' value="Sauvgardez"/>
+  </div>
+</form>
+
+
+{% endblock %}

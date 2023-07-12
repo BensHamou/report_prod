@@ -1,0 +1,36 @@
+{% extends "main.html" %}
+
+{% block title %}
+{% if product %}Modification de Nomenclatures{% else %}Creation de Nomenclatures{% endif %}
+{% endblock %}
+{% load static %} 
+{% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-left mb-3">
+  <a href="{% url 'numo_products' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+    <i class="fas fa-caret-left me-2"></i>
+    <p class="lead m-0 p-0">retour</p>
+</a>
+</div>
+<h4 class="text-white mb-4">{% if numoProduct %}Modification du {{ numoProduct.designation }}{% else %}Creation d'une nomenclatures{% endif %}</h4>
+
+<form method="POST">
+  {% csrf_token %}
+  <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+      <div class="row mb-4">
+        <div class="col">
+          <div class="form-outline">
+              <label class="form-label labelCustom" for="designation">Désignation</label>
+              {{ form.designation }}
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="float-end mt-4">
+    <input type='submit' class="btn btn-secondary customSaveButton" name='save' value="Sauvgardez"/>
+  </div>
+</form>
+
+
+{% endblock %}

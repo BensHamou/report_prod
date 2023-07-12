@@ -1,0 +1,65 @@
+{% extends "main.html" %}
+
+{% block title %}
+  Horaires
+{% endblock %}
+{% load static %} 
+{% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div style="margin: 20px 0px;">
+        <div class="row height d-flex justify-content-end align-items-center">
+            <div class="col-md-1">
+                <a href="{% url 'create_horaire' %}" class="btn btn-secondary" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);">Nouveau</a>
+            </div>
+        </div>
+    </div> 
+    <section class="sectionList"> 
+        <table class="table table-borderless">
+            <thead style="border-bottom: 2px solid white;">
+                <tr class="text-white">
+                <th>#</th>
+                <th>Horaire</th>
+                <th>Duration</th>
+                <th style="width: 20vh;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for horaire in page %}
+                <tr style="color: #dde3f0;">
+                    <td>{{ horaire.id }}</td>
+                    <td>{{ horaire }}</td>
+                    <td>{{ horaire.passed_time }}</td>
+                    <td style="vertical-align: middle;">
+                        <button type="button" onclick="window.location='{% url 'edit_horaire' horaire.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}'" class="btn"><i class="fas fa-edit" style="color: white;"></i></button>
+                        <button type="button" onclick="confirmHoraireDel('{{horaire.id|escapejs}}', '{{horaire|escapejs}}')" class="btn" style="color: white;"><i class="far fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if page.has_other_pages %}
+            {% include 'pagination.html' %}
+        {% endif %}    
+    </section>
+</div>
+<script>
+    const confirmHoraireDel = (horaireId, horaireDes) => {
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Etes-vous sûr que vous voulez supprimer l'horaire ${horaireDes}?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_horaire' 123456789 %}".replace(/123456789/, horaireId);
+            }});
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends "main.html" %}
+
+{% block title %}
+Locations & Équipes
+{% endblock %}
+{% load static %} 
+{% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <form method="GET" style="{% if page %}margin: 20px 0px;{% else %}margin-top: 13%;{% endif %}">
+        {% csrf_token %}
+        <div class="row height d-flex justify-content-center align-items-center">
+            <div class="col-md-5">
+                <div class="form" style="position: relative;">
+                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>
+                    {{ filtredData.form.search }}
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class="dropdown">
+                    <a class="btn btn-secondary dropdown-toggle" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);" 
+                    href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nouveau</a>
+                    <ul class="dropdown-menu" style="background: rgba(127, 139, 161, 0.9);  border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+                      <li><a href="{% url 'create_site' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" style="color: white;">Site</a></li>
+                      <li><a href="{% url 'create_line' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" style="color: white;">Ligne</a></li>
+                      <li><a href="{% url 'create_team' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" style="color: white;">Équipe</a></li>
+                      <li><a href="{% url 'create_silo' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" style="color: white;">Silo</a></li>
+                    </ul>
+                </div>            
+            </div>
+        </div>
+    </form> 
+    {% if page %}
+    <section class="sectionList">         
+        <table class="table table-borderless">
+            <thead style="border-bottom: 2px solid white;">
+                <tr class="text-white">
+                <th></th>
+                <th>Site</th>
+                <th>Ligne</th>
+                <th>Équipes</th>
+                <th>Silos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for site in page %}
+                    {% if site.lines %}
+                        {% for line in site.lines %}
+                            <tr style="color: #dde3f0;">
+                                <td></td>
+                                <td>
+                                    {{ line.site }} 
+                                    <span class="badge">
+                                        <a href="{% url 'edit_site' line.site.id %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </span>
+                                    <span class="badge">
+                                        <a onclick="confirmSiteDel('{{line.site.id|escapejs}}', '{{line.site.designation|escapejs}}')" style="color: white; cursor: pointer; text-decoration: none;">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                                <td>
+                                    {{ line.designation }} 
+                                    <span class="badge">
+                                        <a href="{% url 'edit_line' line.id %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </span>
+                                    <span class="badge">
+                                        <a onclick="confirmLineDel('{{line.id|escapejs}}', '{{line.designation|escapejs}}')" style="color: white; cursor: pointer; text-decoration: none;">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </span>
+                                </td>
+                                <td>
+                                    {% for team in line.teams.all %}
+                                        <button onclick="window.location='{% url 'edit_team' team.id %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}'"  
+                                        type="button" class="badge position-relative listBadge" style="margin: 0 0.8vw 0.5vw 0; border: none;">
+                                            <p class="lead p-0 m-0 listBadgeText">{{ team.designation }}</p>
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
+                                                <a onclick="confirmTeamDel('{{team.id|escapejs}}', '{{team.designation|escapejs}}', '{{line.designation|escapejs}}');" 
+                                                style="color: white; text-decoration: none; font-size: 10px;">x</a>  
+                                            </span>
+                                        </button>
+                                    {% empty %}
+                                        <span class="badge bg-secondary">Pas d'équipes associées.</span>
+                                    {% endfor %}
+                                    <span class="badge" style="background-color: #b5b5b5;"><a href="{% url 'create_team' %}?redirect_url=location_teams&line={{ line.id }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;"><i class="fas fa-add"></i></a></span>
+                                </td>
+                                <td>
+                                    {% for silo in line.silos.all %}
+                                        <button onclick="window.location='{% url 'edit_silo' silo.id %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}'"  
+                                        type="button" class="badge position-relative listBadge" style="margin: 0 0.8vw 0.5vw 0; border: none;">
+                                        <p class="lead p-0 m-0 listBadgeText">{{ silo.designation }}</p>
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
+                                                <a onclick="confirmSiloDel('{{silo.id|escapejs}}', '{{silo.designation|escapejs}}', '{{line.designation|escapejs}}');" 
+                                                style="color: white; text-decoration: none; font-size: 10px;">x</a>  
+                                            </span>
+                                        </button>
+                                    {% empty %}
+                                        <span class="badge bg-secondary">Pas de silo associés.</span>
+                                    {% endfor %}
+                                    <span class="badge" style="background-color: #b5b5b5;"><a href="{% url 'create_silo' %}?redirect_url=location_teams&line={{ line.id }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;"><i class="fas fa-add"></i></a></span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="text-white">
+                            <td></td>
+                            <td>
+                                {{ site.designation }} 
+                                <span class="badge">
+                                    <a href="{% url 'edit_site' site.id %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </span>
+                                <span class="badge">
+                                    <a onclick="confirmSiteDel('{{site.id|escapejs}}', '{{site.designation|escapejs}}')" style="color: white; cursor: pointer; text-decoration: none;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">Pas de lignes associées.</span>
+                                <span class="badge" style="background-color: #b5b5b5;"><a href="{% url 'create_line' %}?redirect_url=location_teams&site={{ site.id }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;"><i class="fas fa-add"></i></a></span>
+                            </td>
+                            <td>                    
+                                <span class="badge bg-secondary">Pas d'équipes associées.</span>
+                            </td>
+                            <td>                    
+                                <span class="badge bg-secondary">Pas de silos associés.</span>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if page.has_other_pages %}
+            {% include 'pagination.html' %}
+        {% endif %}
+    </section>
+    {% else %}
+        {% include 'empty_list.html' %}
+    {% endif %}
+</div>
+<script>    
+    const confirmLineDel = (lineId, lineDes) => {
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Etes-vous sûr que vous voulez supprimer ${lineDes}?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_line' 123456789 %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}".replace(/123456789/, lineId);
+            }});
+    };
+    const confirmTeamDel = (teamId, teamDes, teamLine) => {
+        event.stopPropagation();
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Etes-vous sûr que vous voulez supprimer l'équipe ${teamDes} de ${teamLine}?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_team' 123456789 %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}".replace(/123456789/, teamId);
+            }});
+    }
+    const confirmSiloDel = (siloId, siloDes, siloLine) => {
+        event.stopPropagation();
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Etes-vous sûr que vous voulez supprimer ${siloDes} de ${siloLine}?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_silo' 123456789 %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}".replace(/123456789/, siloId);
+            }});
+    }
+    const confirmSiteDel = (siteId, siteDes) => {
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Etes-vous sûr que vous voulez supprimer ${siteDes}?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_site' 123456789 %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}".replace(/123456789/, siteId);
+            }});
+    }
+</script>
+{% endblock %}

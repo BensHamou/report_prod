@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %} PUMA Production {% endblock %}</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+    {% load bootstrap5 %} 
+    {% bootstrap_css %} 
+    {% bootstrap_javascript %}
+    {% load static %} 
+    <link rel="stylesheet" href="{% static 'css/select.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="{% static 'fontawesomefree/css/all.min.css' %}">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/ico" href="{% static 'img/favicon.ico' %}">
+    <link href="https://fonts.cdnfonts.com/css/arial" rel="stylesheet">
+  </head>
+  <body style="background: url('{% static "img/background.png" %}'); background-position: center; background-repeat: no-repeat; background-size: cover; height: 100%;">
+    <div class="wrapper d-flex align-items-stretch"  style="background: {% if user.is_authenticated %}rgba(14, 42, 91, 0.7){% else %}rgba(14, 42, 91, 0.2){% endif %}; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);  
+    height: 100%; backdrop-filter: blur(3.7px); -webkit-backdrop-filter: blur(3.7px);" >
+      {% if user.is_authenticated %}
+        <div class="d-flex flex-column" style="height: 100vh; background: rgba(198, 204, 215, 1); z-index:10; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); position: sticky; top: 0; left: 0;">
+          <div class="pb-1 d-flex align-items-center flex-column" style="margin-top: 100%;">
+            {% if user.role == 'Admin' %}
+              <div class="d-flex" style="width: 100%; margin: 0px 10px;">
+                {% block activeHome %}{% endblock %}
+                <h4 class="mx-auto" ><a href="{% url 'home' %}" class="text-reset"><i class="fas fa-home menu_item"></i></a></h4>
+              </div>
+            {% endif %}
+            <div class="d-flex" style="width: 100%; margin: 5px 10px;">
+              {% block activeCreateReport %}{% endblock %}
+              <h4 class="mx-auto"><a href="{% url 'create_report' %}" class="text-reset"><i class="fas fa-file-circle-plus menu_item"></i></a></h4>
+            </div>
+            <div class="d-flex" style="width: 100%; margin: 0px 10px;">
+              {% block activeListReport %}{% endblock %}
+              <h4 class="mx-auto"><a href="{% url 'list_report' %}" class="text-reset"><i class="fas fa-rectangle-list menu_item"></i></a></h4>
+            </div>
+            <div class="d-flex" style="width: 100%; margin: 5px 10px;">
+              {% if user.role == 'Admin' %}
+              {% block activeUsers %}{% endblock %}
+                <h4 class="mx-auto">
+                  <li class="nav-item dropdown dropend list-unstyled">
+                    <a class="nav-link text-reset" style="padding: 5px 0.5px;" data-bs-toggle="dropdown" role="button"><i class="fas fa-users fa-sm menu_item"></i></a >
+                      <ul class="dropdown-menu list-unstyled">
+                        <li><a href="{% url 'users' %}" class="dropdown-item">Actifs</a></li>
+                        <li><a href="{% url 'new_users' %}" class="dropdown-item">Nouveaux</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a href="{% url 'refresh_users' %}" class="dropdown-item">Actualiser</a></li>
+                    </ul>
+                  </li>
+                </h4>
+              {% endif %}
+            </div>
+            <div class="d-flex" style="width: 100%; margin: 0px 10px;">
+              {% if user.role == 'Admin' or user.is_admin %}
+                {% block activeSettings %}{% endblock %}
+                <h4 class="mx-auto">
+                  <li class="nav-item dropdown dropend list-unstyled">
+                    <a class="nav-link text-reset" style="padding: 5px 1.5px;" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-gear menu_item"></i></a >
+                      <ul class="dropdown-menu list-unstyled">
+                      <li><a href="{% url 'location_teams' %}" class="dropdown-item">Locations & Équipes</a></li>
+                      <li><a href="{% url 'horaires' %}" class="dropdown-item">Horaires</a></li>
+                      <li><a href="{% url 'products' %}" class="dropdown-item">Produits</a></li>
+                      <li><a href="{% url 'numo_products' %}" class="dropdown-item">Nomenclatures</a></li>
+                      <li><a href="{% url 'types' %}" class="dropdown-item">Types d'arrêt</a></li>
+                      <li><a href="{% url 'reasons' %}" class="dropdown-item">Reasons d'arrêt</a></li>
+                    </ul>
+                  </li>
+                </h4>
+              {% endif %}
+            </div>
+          </div>
+          <div class="mt-auto pb-5 d-flex align-items-center flex-column">
+            <h4><a href="/logout" class="text-reset"><i class="fas fa-right-from-bracket fa-rotate-180 menu_item"></i></a></h4>
+          </div>
+        </div>
+      {% else %} 
+      <div style="height: 100vh; position: sticky;"></div>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+      <div style="flex-grow: 1; height: 100%;">
+        <div class="row" style="width:100%; position: relative; margin: 0px; {% if not user.is_authenticated %}padding-top: 3%;{% endif %}">
+          <div class="col-md-2 d-flex justify-content-center" style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%) translateX(-50%);">
+            <img src="{% static 'img/site_logo.png' %}" height="55" style="{% if not user.is_authenticated %}margin-left: 10%;{% endif %}" class="d-inline-block align-top" alt="Puma Logo">
+          </div>
+          <div class="col-md-12 d-flex justify-content-end p-0">
+            <div class="d-flex flex-column align-items-center justify-content-center centered-text float-end m-2">
+              <p class="text-white lead p-0 m-0">{{ user.fullname }}</p>
+              <p class="p-0" style="color: #b7b9bd;">{{ user.role }}</p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="container" style="max-width: 94%; margin-top: 10px;">{% block content %} {% endblock %}</div>  
+      </div>
+    </div>
+    
+    <script src="{% static 'js/select.js' %}"></script>
+    <script src="{% static 'js/sweetalert.min.js' %}"></script>
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/dist/bootstrap-switch-button.min.js"></script>
+    <script>
+      document
+      .querySelectorAll(".select")
+      .forEach((el) => new bootstrap5.Select(el));
+    </script>
+    <style>
+    *{
+      font-family: 'Arial', sans-serif;
+      font-size: 15px;
+    }
+    .menu_item{
+      color: #0e2a5b; 
+      font-size: 22px;
+    }
+      .formBadge{
+          background-color: #0e2a5b; 
+          padding: 8px; 
+          margin-right: 5px;
+      }
+      .listBadge{
+          background-color: #0e2a5b; 
+          padding: 8px; 
+          margin-right: 5px;
+      }
+      .listBadgeText{
+          font-size: 14px;
+      }
+      .formBadgeText{
+          font-size: 14px;
+      }
+      .customActive{
+        border-bottom: 3px solid white;
+      }
+      .customUnactive{
+        color: #b7b9bd;
+      }
+      .sectionList{
+        margin-top: 25px; 
+        background: rgba(255, 255, 255, 0.2); 
+        border-radius: 5px; 
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+      }
+      .labelCustom{
+        color: #fafbfc; 
+        font-size: 14px;
+      }
+      .customSaveButton{
+        background-color: #0e2a5b; 
+        border-color: transparent; 
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+      }
+      .hidden {
+        display: none;
+    }
+    </style>
+</body>
+
+</html>

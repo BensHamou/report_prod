@@ -1,0 +1,41 @@
+{% extends "main.html" %}
+
+{% block title %}
+{% if type %}Modification de type{% else %}Creation de type{% endif %}
+{% endblock %}
+{% load static %} 
+{% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-left mb-3">
+  <a href="{% url 'types' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+    <i class="fas fa-caret-left me-2"></i>
+    <p class="lead m-0 p-0">retour</p>
+</a>
+</div>
+<h4 class="text-white mb-4">{% if type %}Modification du {{ type.designation }}{% else %}Creation d'un type d'arrêt{% endif %}</h4>
+<form method="POST">
+    {% csrf_token %}
+    <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+      <div class="row mb-4">
+        <div class="col-md-7">
+          <div class="form-outline">
+              <label class="form-label labelCustom" for="designation">Désignation</label>
+              {{ form.designation }}
+          </div>
+        </div>
+          <div class="col">
+            <div class="form-outline">
+                <label class="form-label labelCustom" for="line">Ligne</label>
+                {{ form.line }}
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="float-end mt-4">
+      <input type='submit' class="btn btn-secondary customSaveButton" name='save' value="Sauvgardez"/>
+    </div>
+  </form>
+
+
+{% endblock %}

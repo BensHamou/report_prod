@@ -1,0 +1,89 @@
+{% extends "main.html" %}
+
+{% block title %}
+   Site modification
+{% endblock %}
+{% load static %} 
+{% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-left mb-3">
+  <a href="{% url 'location_teams' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+    <i class="fas fa-caret-left me-2"></i>
+    <p class="lead m-0 p-0">retour</p>
+</a>
+</div>
+<h4 class="text-white mb-4">{% if site %}Modification du {{ site.designation }}{% else %}Creation d'un site{% endif %}</h4>
+<form method="POST">
+    {% csrf_token %}
+    <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="form-outline">
+            <label class="form-label" style="color: #c6ccd7; font-size: 14px;" for="designation">Désignation</label>
+              {{ form.designation }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-outline">
+            <label class="form-label labelCustom" for="horaires">Horaires</label>
+            <div id="horaire" class="form-control select" style="background-color: #cacfd7;">
+              <input id="horaire_input" type="text" data-bs-toggle="dropdown" style="background-color: #cacfd7;" />
+              <div class="dropdown-menu"></div>
+              <select name="horaires" multiple hidden id="hidden_horaires_select">
+                {% for horaire in form.fields.horaires.queryset %}
+                  <option value="{{ horaire.id }}" {% if horaire.id in selectedHoraire %} selected {% endif %}>{{ horaire }}</option>
+                {% endfor %}                      
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="row">
+        <div class="col">
+          <div class="form-outline">
+              <label class="form-label" style="color: #c6ccd7; font-size: 14px;">Lignes: </label>
+              {% for line in site.lines.all %}
+              <button onclick="window.location='{% url 'edit_line' line.id %}?redirect_url=site_{{site.id}}'"  
+              type="button" class="badge position-relative formBadge" style="border: none;">
+              <p class="lead p-0 m-0 formBadgeText">{{ line.designation }}</p>
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
+                      <a onclick="confirmLineDel('{{line.id|escapejs}}', '{{line.designation|escapejs}}', '{{site.id|escapejs}}');" 
+                      style="color: white; text-decoration: none; font-size: 10px;">x</a>   
+                  </span>
+              </button>
+              {% empty %}
+                  <span class="badge bg-secondary">Pas de lignes associées.</span>
+              {% endfor %}
+              {% if site %}
+                <span  class="badge" style="background-color: #b5b5b5;"><a href="{% url 'create_line' %}?redirect_url=site_{{site.id}}&site={{ site.id }}" style="color: white; text-decoration: none;"><i class="fas fa-add"></i></a></span>
+              {% endif %}
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="float-end mt-4">
+    <input type='submit' class="btn btn-success" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);" name='save' value="Sauvgardez"/>
+  </div>
+</form>
+<script>
+  const confirmLineDel = (lineId, lineDes, siteId) => {
+    event.stopPropagation();
+    swal({ 
+    title: `Confirmation de la suppression.`,   
+    text: `Etes-vous sûr que vous voulez supprimer ${lineDes}?`,   
+    type: "warning",
+    showCancelButton: true,   
+    confirmButtonColor: "#DD6B55",   
+    confirmButtonText: "Oui",   
+    cancelButtonText: "Non",   
+    closeOnConfirm: true,   
+    closeOnCancel: true }, 
+    function(isConfirm){   
+        if (isConfirm){
+          window.location.href = "{% url 'delete_line' 123456789 %}?redirect_url=site_55555".replace(/123456789/, lineId).replace(55555, siteId);
+        }});
+};
+</script>
+
+{% endblock %}

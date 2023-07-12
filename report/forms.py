@@ -1,0 +1,172 @@
+from django.forms import ModelForm, inlineformset_factory
+from django import forms
+from .models import *
+from django.utils import timezone
+
+def getAttrs(type, placeholder=''):
+    ATTRIBUTES = {
+        'control': {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'placeholder': ''},
+        'search': {'class': 'form-control form-input', 'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; text-indent: 33px; border-radius: 5px;', 'type': 'search', 'placeholder': '', 'id': 'search'},
+        'select': {'class': 'form-select', 'style': 'background-color: #cacfd7;'},
+        'date': {'type': 'date', 'class': 'form-control dateinput','style': 'background-color: #cacfd7;'},
+        'textarea': {"rows": "3", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #cacfd7;'}
+    }
+
+    if type in ATTRIBUTES:
+        attributes = ATTRIBUTES[type]
+        if 'placeholder' in attributes:
+            attributes['placeholder'] = placeholder
+        return attributes
+    else:
+        return {}
+
+class ProductForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ['designation', 'line', 'numo_products']
+
+    designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
+    line = forms.ModelChoiceField(queryset=Line.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Ligne")
+
+    numo_products = forms.SelectMultiple(attrs={'class': 'form-select'})
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ProductForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['line'].queryset = user.lines.all()
+
+class NumoProductForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = ['designation']
+
+    designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
+
+class TypeStopForm(ModelForm):
+    class Meta:
+        model = TypeStop
+        fields = '__all__'
+
+    designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
+    line = forms.ModelChoiceField(queryset=Line.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Ligne")
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(TypeStopForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['line'].queryset = user.lines.all()
+
+class ReasonStopForm(ModelForm):
+    class Meta:
+        model = ReasonStop
+        fields = '__all__'
+
+    designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
+    type = forms.ModelChoiceField(queryset=TypeStop.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Type")
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ReasonStopForm, self).__init__(*args, **kwargs)
+        if user:
+            self.fields['type'].queryset = TypeStop.objects.filter(line__in=user.lines.all())
+
+
+class ReportForm(ModelForm):
+    class Meta:
+        model = Report
+        fields = ['n_lot', 'line', 'site', 'prod_day', 'shift', 'team', 'prod_product', 'qte_sac_prod', 'nbt_melange', 'qte_tn', 'poids_melange' ,'qte_sac_reb', 
+                  'qte_sac_rec', 'qte_rec', 'nbt_pallete', 'observation_rec']
+                
+
+    n_lot = forms.CharField(widget=forms.TextInput(attrs= getAttrs('control','N° Lot')))
+    line = forms.ModelChoiceField(queryset=Line.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Ligne")
+    site = forms.ModelChoiceField(queryset=Site.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Site")
+    prod_day = forms.DateField(initial=timezone.now().date(), widget=forms.widgets.DateInput(attrs= getAttrs('date'), format='%Y-%m-%d'))
+    shift = forms.ModelChoiceField(queryset=Horaire.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Horaire")
+    team = forms.ModelChoiceField(queryset=Team.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Équipe")
+    prod_product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Produit")
+    qte_sac_prod = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Sacs Produit')))
+    nbt_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Mélange')))    
+    qte_tn = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Qté Tn')))
+    qte_sac_reb = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Sacs Rebutés')))
+    poids_melange = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Poids Mélange')))
+    qte_sac_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Sacs Récyclés')))
+    qte_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Qté Recyclée')))
+    nbt_pallete = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Pallete')))
+    observation_rec = forms.CharField(widget=forms.Textarea(attrs= getAttrs('textarea','Observation')), required=False)
+
+    def __init__(self, *args, **kwargs):
+        lines = kwargs.pop('lines', None)
+        teams = kwargs.pop('teams', None)
+        team = kwargs.pop('team', None)
+        site = kwargs.pop('site', None)
+        products = kwargs.pop('products', None)
+        super(ReportForm, self).__init__(*args, **kwargs)
+        if lines is not None:
+            self.fields['line'].queryset = lines
+            self.fields['team'].queryset = teams
+            self.fields['site'].queryset = Site.objects.filter(id = site.id)
+            self.fields['line'].initial = lines.first()
+            self.fields['team'].initial = team
+            self.fields['site'].initial = site
+            self.fields['line'].widget.attrs['disabled'] = True
+            self.fields['team'].widget.attrs['disabled'] = True
+            self.fields['site'].widget.attrs['disabled'] = True
+            self.fields['prod_product'].queryset = products 
+
+class MPConsumedForm(ModelForm):
+    class Meta:
+        model = MPConsumed
+        fields = '__all__'
+
+    numo_product = forms.ModelChoiceField(queryset=NumoProduct.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Numo Product")
+    qte_consumed = forms.IntegerField(widget=forms.NumberInput(attrs=getAttrs('control','Qte Consomée')))
+    observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Observation')), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(MPConsumedForm, self).__init__(*args, **kwargs)
+        self.fields['numo_product'].widget.attrs['disabled'] = True
+
+class EtatSiloForm(ModelForm):
+    class Meta:
+        model = EtatSilo
+        fields = '__all__'
+
+    silo = forms.ModelChoiceField(queryset=Silo.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Silo")
+    etat = forms.ChoiceField(choices=EtatSilo.ETATS, widget=forms.Select(attrs=getAttrs('select')))
+    observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Observation')), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(EtatSiloForm, self).__init__(*args, **kwargs)
+        self.fields['silo'].widget.attrs['disabled'] = True
+
+
+class ArretForm(ModelForm):
+    class Meta:
+        model = Arret
+        fields = ['type_stop', 'reason_stop', 'hour', 'minutes', 'actions', 'observation']
+    
+    type_stop = forms.ModelChoiceField(queryset=TypeStop.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Type")
+    reason_stop = forms.ModelChoiceField(queryset=ReasonStop.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Raison")
+    hour = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','H')))
+    minutes = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','M')))
+    actions = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Actions')), required=False)
+    observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Observation')), required=False)
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ArretForm, self).__init__(*args, **kwargs)
+        if user: 
+            types = TypeStop.objects.filter(line__in=user.lines.all())
+            self.fields['type_stop'].queryset = types
+            self.fields['reason_stop'].queryset = ReasonStop.objects.filter(type__in=types)
+        self.fields['type_stop'].required = True
+        self.fields['reason_stop'].required = True
+
+MPConsumedsFormSet = inlineformset_factory(Report, MPConsumed, form=MPConsumedForm, fields=['numo_product', 'qte_consumed', 'observation'], extra=0)
+
+EtatSiloFormSet = inlineformset_factory(Report, EtatSilo, form=EtatSiloForm, fields=['silo', 'etat', 'observation'], extra=0)
+
+ArretsFormSet = inlineformset_factory(Report, Arret, form=ArretForm,fields=['type_stop', 'reason_stop', 'hour', 'minutes', 'actions', 'observation'], 
+    can_delete=True, can_delete_extra=True, extra=0)

@@ -1,0 +1,94 @@
+{% extends "main.html" %}
+
+{% block title %}
+   User modification
+{% endblock %}
+{% block activeUsers %} {% include 'active_bar.html' %} {% endblock %}
+{% block content %}
+<div class="d-flex justify-content-left mb-3">
+  <a href="{% url 'users' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+    <i class="fas fa-caret-left me-2"></i>
+    <p class="lead m-0 p-0">retour</p>
+</a>
+</div>
+<h4 class="text-white mb-4">Modification d'utilisateur {{ user_to_edit.username }}</h4>
+<form method="POST">
+  <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+      {% csrf_token %}
+      <div class="row mb-4">
+        <div class="col">
+          <div class="form-outline">
+            <label class="form-label labelCustom" for="firstname">Nom</label>
+              {{ form.first_name }}
+          </div>
+        </div>
+          <div class="col">
+            <div class="form-outline">
+                <label class="form-label labelCustom" for="lastname">Prénom</label>
+                {{ form.last_name }}
+              </div>
+          </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col">
+          <div class="form-outline">
+            <label class="form-label labelCustom" for="username">Username</label> {% if user_to_edit.is_admin %} <b class="labelCustom">(Admin)</b> {% endif %}
+              {{ form.username }}
+          </div>
+        </div>
+        <div class="col">
+            <div class="form-outline">
+              <label class="form-label labelCustom" for="email">Email</label>
+              {{ form.email }}
+            </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col">
+          <div class="form-outline">
+              <label class="form-label labelCustom" for="fullname">Nom complet</label>
+              {{ form.fullname }}
+          </div>
+        </div>
+          <div class="col">
+            <div class="form-outline">
+                <label class="form-label labelCustom" for="role">Rôle</label>
+                {{ form.role }}
+              </div>
+          </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col">
+          <div class="form-outline">
+            <label class="form-label labelCustom" for="lines">Lignes</label>
+            <div id="line" class="form-control select" style="background-color: #cacfd7;">
+              <input id="line_input" type="text" data-bs-toggle="dropdown" style="background-color: #cacfd7;" />
+              <div class="dropdown-menu"></div>
+              <select name="lines" multiple hidden id="hidden_lines_select">
+                {% for line in form.fields.lines.queryset %}
+                  <option value="{{ line.id }}" {% if line.id in selectedLines %} selected {% endif %}>{{ line.designation }}</option>
+                {% endfor %}                      
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-outline">
+              <label class="form-label labelCustom" for="team">Équipe</label>
+              {{ form.team }}
+            </div>
+        </div>
+        <div class="col">
+          <div class="form-outline">
+            <label class="form-label labelCustom" for="is_admin">Admin?</label>
+          </br>
+            {{ form.is_admin }}
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="float-end mt-4">
+    <input type='submit' class="btn btn-secondary customSaveButton" name='save' value="Sauvgardez"/>
+  </div>
+</form>
+{% endblock %}

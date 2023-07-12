@@ -1,0 +1,95 @@
+{% extends "main.html" %}
+
+{% block title %}
+  Users
+{% endblock %}
+
+{% load static %} 
+<link rel="stylesheet" href="{% static 'css/select.css' %}">
+<script src="alert/dist/sweetalert.min.js"></script>
+<link rel="stylesheet" href="alert/dist/sweetalert.css">
+{% block activeUsers %} {% include 'active_bar.html' %} {% endblock %}
+{% block content %}
+
+<div class="row mb-3"> 
+    <form method="GET" style="{% if page %}margin: 20px 0px;{% else %}margin-top: 13%;{% endif %}">
+        {% csrf_token %}
+        <div class="row height d-flex justify-content-center align-items-center">
+            <div class="col-md-6">
+                <div class="form" style="position: relative;">
+                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>{{ filtredData.form.search }}
+                </div>
+            </div>
+        </div>
+    </form>
+    {% if page %}
+    <div class="sectionList">
+        <table class="table table-borderless">
+            <thead style="border-bottom: 2px solid white;">
+                <tr class="text-white">
+                  <th>Nom et prénom</th>
+                  <th>Rôle</th>
+                  <th>Admin</th>
+                  <th>Lignes</th>
+                  <th>Équipe</th>
+                  <th style="width: 20vh;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usr in page %}
+                <tr style="color: #dde3f0;">
+                    <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">{{ usr.fullname }}</td>
+                    <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">{{ usr.role }}</td>
+                    <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">
+                        {% if usr.is_admin %}
+                            <i class="fas fa-check"></i>
+                        {% else %}
+                            <i class="fas fa-x"></i>
+                        {% endif %}
+                    </td>
+                    <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">
+                        {% for line in usr.lines.all %}
+                            <span class="badge listBadge">
+                                <p class="lead p-0 m-0 listBadgeText">{{ line.designation }}</p>
+                            </span>
+                        {% empty %}
+                            <span class="badge" style="color: #bcc2cf;">Pas de lignes associées.</span>
+                        {% endfor %}
+                    </td>
+                    <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">{% if usr.team %}{{ usr.team }}{% else %}/{% endif %}</td>
+                    <td style="vertical-align: middle;">
+                        <button type="button" onclick="window.location='{% url 'edit_user' usr.id %}'" class="btn"><i class="fas fa-edit" style="color: white;"></i></button>
+                        <button type="button" onclick="confirmUserDel('{{usr.id|escapejs}}', '{{usr.fullname|escapejs}}')" class="btn"><i class="far fa-trash-alt" style="color: white;"></i></button>
+                    </td>
+                </tr>
+                 {% endfor %}
+            </tbody>
+        </table>
+        {% if page.has_other_pages %}
+            {% include 'pagination.html' %}
+        {% endif %}    
+    </div>
+    {% else %}
+        {% include 'empty_list.html' %}
+    {% endif %}
+</div>
+
+<script>
+    const confirmUserDel = (userID, userFN) => {
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Etes-vous sûr que vous voulez supprimer ${userFN}?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true },
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_user' 123456789 %}?redirect_url=55555".replace(/123456789/, userID).replace(55555,window.location.pathname);
+            }});
+    };
+</script>
+{% endblock %}

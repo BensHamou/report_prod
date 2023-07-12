@@ -1,0 +1,54 @@
+<div class="modal" id="etatsilosModal" tabindex="-1" aria-labelledby="etatsilosModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="background: rgba(107, 122, 147, 0.75); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); backdrop-filter: blur(2px);">
+            <div class="modal-header text-white" style="border-color: rgba(171, 175, 181, 0.4);">
+                <h5 class="modal-title" id="etatsilosModalLabel">État Silos</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" id="buttonSiloX" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table card-header text-white" style="background: rgba(0, 0, 0, 0);">
+                    <thead style="border-color: white;">
+                        <th>Silo</th>
+                        <th>État</th>
+                        <th>Observation</th>
+                    </thead>
+                    <tbody id="item-etatsilos">
+                        {% for etatsilo in report.etatsilos.all %}
+                            <tr style="border-color: transparent; color: #d9dce1;">
+                                <td>{{ etatsilo.silo }}</td>
+                                <td>{{ etatsilo.etat }}</td>
+                                <td>{{ etatsilo.observation }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td>Pas d'enregistrements.</td>
+                                <td>Pas d'enregistrements.</td>
+                                <td>Pas d'enregistrements.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer" style="border-color: transparent;">
+                <button type="button" class="btn" style="background-color: #23305d; color: white;" id="buttonSiloClose" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#etatsilo-card').click(function () {
+            $("#etatsilosModal").prependTo("body");
+            $('#etatsilosModal').modal('show');
+
+        });
+        $('#buttonSiloX').click(function () {
+            $('#etatsilosModal').modal('hide')
+
+        });
+        $('#buttonSiloClose').click(function () {
+            $('#etatsilosModal').modal('hide')
+        });
+    });
+</script>

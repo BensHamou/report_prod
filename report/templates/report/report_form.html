@@ -1,0 +1,684 @@
+{% extends "main.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+Rapport 
+{% endblock %}
+{% load static %} 
+{% block activeCreateReport %} {% include 'active_bar.html' %} {% endblock %}
+{% block content %}
+<form class="container" method="POST" id="report_form">
+    {% csrf_token %}
+    {% if form.instance.pk %}
+        <input type="hidden" value="1" id="isUpdating"/> 
+    {% endif %}
+    <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+        <!-- PRODUCT -->
+        <div class="row mb-12">
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label labelCustom" for="prod_product">Produit</label>
+                    {{ form.prod_product|attr:"id:prod_product-select" }}
+                    {% if form.prod_product.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.prod_product.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- SITE - LIGNE - EQUIPE -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="site">Site</label>
+                    {{ form.site }}
+                    {% if form.site.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.site.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="line">Ligne</label>
+                    {{ form.line|attr:"id:line-select" }}
+                    {% if form.line.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.line.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="team">Équipe</label>
+                    {{ form.team|attr:"id:team-select" }}
+                    {% if form.team.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.team.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- NLOT - DATE - HORAIRE -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="n_lot">N° Lot</label>
+                    {{ form.n_lot }}
+                    {% if form.n_lot.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.n_lot.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="prod_day">Date de Production</label>
+                    {{ form.prod_day }}
+                    {% if form.prod_day.errors %}
+                    <div class="invalid-feedback">
+                    {% for error in form.prod_day.errors %}
+                        {{ error }}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="shift">Slot Horaire</label>
+                    {{ form.shift|attr:"id:shift-select" }}
+                    {% if form.shift.errors %}
+                    <div class="invalid-feedback">
+                      {% for error in form.shift.errors %}
+                        {{ error }}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- NMELANGE - NBSAC - POIDS - QTE_TN -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="nbt_melange">Nb Mélange</label>
+                    {{ form.nbt_melange }}
+                {% if form.nbt_melange.errors %}
+                    <div class="invalid-feedback">
+                    {% for error in form.nbt_melange.errors %}
+                        {{ error }}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="qte_sac_prod">Nb Sacs Produit</label>
+                    {{ form.qte_sac_prod }}
+                    {% if form.qte_sac_prod.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.qte_sac_prod.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="poids_melange">Poids Mélange</label>
+                    {{ form.poids_melange }}
+                    {% if form.poids_melange.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.poids_melange.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="qte_tn">Qté Tn</label>
+                    {{ form.qte_tn }}
+                {% if form.qte_tn.errors %}
+                    <div class="invalid-feedback">
+                    {% for error in form.qte_tn.errors %}
+                        {{ error }}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- NMS_REB - NMS_REC - QTE_REC - NB_T -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="qte_sac_reb">Nb Sacs Rebutés</label>
+                    {{ form.qte_sac_reb }}
+                    {% if form.qte_sac_reb.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.qte_sac_reb.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="qte_sac_rec">Nb Sacs Récyclés</label>
+                    {{ form.qte_sac_rec }}
+                    {% if form.qte_sac_rec.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.qte_sac_rec.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="qte_rec">Qté Recyclése</label>
+                    {{ form.qte_rec }}
+                {% if form.qte_rec.errors %}
+                    <div class="invalid-feedback">
+                    {% for error in form.qte_rec.errors %}
+                        {{ error }}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="nbt_pallete">Nb Pallete</label>
+                    {{ form.nbt_pallete }}
+                    {% if form.nbt_pallete.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.nbt_pallete.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- Obesrvation -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="observation_rec">Observation</label>
+                    {{ form.observation_rec }}
+                    {% if form.observation_rec.errors %}
+                        <div class="invalid-feedback">
+                        {% for error in form.observation_rec.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% with named_formsets.etatsilos as formset %}  
+        {{ formset.management_form }}
+        <script type="text/html" id="etatsilos-template">  
+            <tr id="etatsilos-__prefix__" class= hide_all> 
+                {% for fields in formset.empty_form.hidden_fields %}
+                    {{ fields }}
+                {% endfor %}
+            
+                {% for field in formset.empty_form.visible_fields %}
+                    {% if field.label != 'Supprimer' %}
+                        <td>
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <span style="color: red">{{ error }}</span>
+                            {% endfor %}
+                        </td>
+                    {% else %}
+                        <td>
+                            {{ field|add_class:'hidden' }}
+                            {% for error in field.errors %}
+                                <span style="color: red">{{ error }}</span>
+                            {% endfor %}
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </script>
+
+        <div class="table-responsive card mt-4" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+            <div class="card-header card-header-secondary">
+                <p class="card-title lead" style="font-size: 26px; color: rgb(237, 243, 253)">État Silos</p>
+            </div>
+            <table class="table card-header">
+                <tbody id="item-etatsilos">  
+                    {% for error in formset.non_form_errors %}
+                        <span style="color: red">{{ error }}</span>
+                    {% endfor %}
+                    {% for formss in formset %}
+                        {{ formss.management_form }}
+                        <tr id="etatsilos-{{ forloop.counter0 }}" class= hide_all> 
+                            {{ formss.id }}
+                            {% for field in formss.visible_fields %}
+                                {% if not field.label == 'Supprimer' %}
+                                    <td>
+                                        {{ field }}
+                                        {% for error in field.errors %}
+                                            <span style="color: red">{{ error }}</span>
+                                        {% endfor %}
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        {{ field|add_class:'hidden' }}
+                                        {% for error in field.errors %}
+                                            <span style="color: red">{{ error }}</span>
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endwith %}
+    
+    {% with named_formsets.consumed_products as formset %}  
+        {{ formset.management_form }}
+        <script type="text/html" id="consumed_products-template">  
+            <tr id="consumed_products-__prefix__" class= hide_all> 
+                {% for fields in formset.empty_form.hidden_fields %}
+                    {{ fields }}
+                {% endfor %}
+            
+                {% for field in formset.empty_form.visible_fields %}
+                    {% if field.label != 'Supprimer' %}
+                        <td>
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <span style="color: red">{{ error }}</span>
+                            {% endfor %}
+                        </td>
+                    {% else %}
+                        <td>
+                            {{ field|add_class:'hidden' }}
+                            {% for error in field.errors %}
+                                <span style="color: red">{{ error }}</span>
+                            {% endfor %}
+                        </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </script>
+
+        <div class="table-responsive card mt-4" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+            <div class="card-header card-header-secondary">
+                <p class="card-title lead" style="font-size: 26px; color: rgb(237, 243, 253)">Produits Consommés</p>
+            </div>
+            <table class="table card-header">
+                <tbody id="item-consumed_products">  
+                    {% for error in formset.non_form_errors %}
+                        <span style="color: red">{{ error }}</span>
+                    {% endfor %}
+                    {% for formss in formset %}
+                        {{ formss.management_form }}
+                        <tr id="consumed_products-{{ forloop.counter0 }}" class= hide_all> 
+                            {{ formss.id }}
+                            {% for field in formss.visible_fields %}
+                                {% if not field.label == 'Supprimer' %}
+                                    <td>
+                                        {{ field }}
+                                        {% for error in field.errors %}
+                                            <span style="color: red">{{ error }}</span>
+                                        {% endfor %}
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        {{ field|add_class:'hidden' }}
+                                        {% for error in field.errors %}
+                                            <span style="color: red">{{ error }}</span>
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endwith %}
+
+    {% with named_formsets.arrets as formset %}
+        {{ formset.management_form }}
+        <script type="text/html" id="arrets-template">
+            <tr id="arrets-__prefix__" class= hide_all>
+                {% for fields in formset.empty_form.hidden_fields %}
+                    {{ fields }}
+                {% endfor %}
+            
+                {% for field in formset.empty_form.visible_fields %}
+                <td>
+                    {% if field.label == 'Supprimer' %}
+                    <button type="button" onclick="deleteRow(this.parentNode.parentNode)" class="btn" style="color: white;">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                    {% else %}
+                        {{ field }}
+                        {% for error in field.errors %}
+                            <span style="color: red">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+        </script>
+        <div class="table-responsive card mt-4" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+            <div class="card-header card-header-secondary">
+                <p class="card-title lead" style="font-size: 26px; color: rgb(237, 243, 253)">Arrets</p>
+            </div>
+            <table class="table card-header">
+                <tbody id="item-arrets">
+                    {% for error in formset.non_form_errors %}
+                        <span style="color: red">{{ error }}</span>
+                    {% endfor %}
+                    {% for formss in formset %}
+                        {{ formss.management_form }}
+                        <tr id="arrets-{{ forloop.counter0 }}" class= hide_all>
+                            {{ formss.id }}
+                            {% for field in formss.visible_fields %}
+                                {% if not field.label == 'Supprimer' %}
+                                    <td>
+                                        {{ field }}
+                                        {% for error in field.errors %}
+                                            <span style="color: red">{{ error }}</span>
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+                            {% endfor %}
+                            {% if formss.instance.pk %}
+                            <td>
+                                <button type="button" onclick="confirmArretDel('{{formss.instance.pk|escapejs}}')" class="btn" style="color: white;">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </td>    
+                            {% else %}
+                            <td>
+                                <button type="button" onclick="deleteRow(this.parentNode.parentNode)" class="btn" style="color: white;">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </td>    
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-end align-items-center m-2">
+                <a href="#" id="add-arrets-button" class="btn btn-secondary add-arrets" style="background-color: #979ba3; border-color: #979ba3;" role="button"><i class="fas fa-plus"></i></a>
+            </div>
+        </div>    
+    {% endwith %}
+
+    <div class="d-flex justify-content-center align-items-center form-group m-4">
+        <button type="submit" class="btn btn-secondary btn-block customSaveButton">{% if form.instance.pk %}Sauvegarder les modifications{% else %}Créer{% endif %}</button>
+    </div>
+
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    const deleteRow = (row) => {
+        row.remove();
+    }
+    const confirmArretDel = (arretId) => {
+        swal({ 
+        title: `Confirmation de la suppression.`,   
+        text: `Etes-vous sûr que vous voulez supprimer cette arret?`,   
+        type: "warning",
+        showCancelButton: true,   
+        confirmButtonColor: "#DD6B55",   
+        confirmButtonText: "Oui",   
+        cancelButtonText: "Non",   
+        closeOnConfirm: true,   
+        closeOnCancel: true }, 
+        function(isConfirm){   
+            if (isConfirm){
+              window.location.href = "{% url 'delete_arret' 123456789 %}".replace(/123456789/, arretId);
+            }});
+    }
+    $(document).ready(function() {
+        $('form').submit(function () { $('[disabled]').removeAttr('disabled'); });
+        onChangeLine = $('#line-select').change(function() {
+            var lineId = $(this).val();
+            $.ajax({
+              url: '{% url 'get_data_by_line' %}',
+              type: 'GET',
+              data: {
+                'line_id': lineId,
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+              },
+              success: function(response) {
+                // CLEAR CONSUMED PRODUCTS
+                var tbodyElement = document.getElementById('item-consumed_products');
+                var rows = tbodyElement.getElementsByTagName('tr');
+                for (var i = 0; i < rows.length; i++) {
+                    var checkboxElement = rows[i].querySelector('input[type="checkbox"]');
+                    checkboxElement.checked = true;
+                    rows[i].style.display = 'none';
+                }
+
+                // CLEAR ETAT SILOS
+                var tbodySiloElement = document.getElementById('item-etatsilos');
+                var rowsSilo = tbodySiloElement.getElementsByTagName('tr');
+                for (var i = 0; i < rowsSilo.length; i++) {
+                    var checkboxElementSilo = rowsSilo[i].querySelector('input[type="checkbox"]');
+                    checkboxElementSilo.checked = true;
+                    rowsSilo[i].style.display = 'none';
+                }
+
+                // ETAT SILOS
+                
+                var countSilos = $('#item-etatsilos').children().length;
+                for (var i = 0; i < response.silos.length; i++) {
+                    var tmplSiloMarkup = $('#etatsilos-template').html();
+                    var compiledTmplSilo = tmplSiloMarkup.replace(/__prefix__/g, countSilos);
+                    $('#item-etatsilos').append(compiledTmplSilo);
+                    $('#id_etatsilos-TOTAL_FORMS').attr('value', countSilos+1);
+                    const selectSilo = document.getElementById(`id_etatsilos-${countSilos}-silo`);
+                    selectSilo.value = response.silos[i];
+                    countSilos += 1;
+                }
+
+                // TEAMS
+                // var team_options = '';
+                // team_options += '<option value> Équipe </option>';
+                // $.each(response.teams, function(index, team) {
+                //   team_options += '<option value="' + team.id + '">' + team.designation + '</option>';
+                // });
+                // $('#team-select').html(team_options);
+
+                // HORAIRES
+                var horaire_options = '';
+                horaire_options += '<option value> Horaire </option>';
+                $.each(response.horaires_list, function(index, horaire) {
+                    horaire_options += '<option value="' + horaire.id + '">' + horaire.designation + '</option>';
+                });
+                $('#shift-select').html(horaire_options);
+
+                // PRODUCTS
+                var product_options = '';
+                product_options += '<option value> Produit </option>';
+                $.each(response.products, function(index, prod_product) {
+                  product_options += '<option value="' + prod_product.id + '">' + prod_product.designation + '</option>';
+                });
+                $('#prod_product-select').html(product_options);
+
+                // TYPE STOPS
+                $("[id^='id_arrets-'][id$='-type_stop']").each(function() {
+                    var typeStopElement = $(this);
+                    var typeStopOptions = '';
+                    typeStopOptions += '<option value> Type </option>';
+                    $.each(response.type_stops, function(index, type_stop) {
+                        typeStopOptions += '<option value="' + type_stop.id + '">' + type_stop.designation + '</option>';
+                    });
+                    typeStopElement.html(typeStopOptions);                    
+                });
+
+                // REASON STOPS
+                $("[id^='id_arrets-'][id$='-reason_stop']").each(function() {
+                    var reasonStopElement = $(this);
+                    var reasonStopOptions = '';
+                    reasonStopOptions += '<option value> Raison </option>';
+                    $.each(response.reason_stops, function(index, reason_stop) {
+                        reasonStopOptions += '<option value="' + reason_stop.id + '">' + reason_stop.designation + '</option>';
+                    });
+                    reasonStopElement.html(reasonStopOptions);
+                });
+              },
+              error: function(xhr, errmsg, err) {
+                console.log(errmsg);
+              }
+            });
+        });
+        formInstance = $('#isUpdating').val();
+        if(!formInstance) {
+          onChangeLine.trigger('change');
+        }
+    });
+
+    $(document).ready(function() {
+        $('.add-arrets').click(function(ev) {
+            ev.preventDefault();
+            var count = $('#item-arrets').children().length;
+            var tmplMarkup = $('#arrets-template').html();
+            var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+            $('#item-arrets').append(compiledTmpl);
+            
+            $('#id_arrets-TOTAL_FORMS').attr('value', count+1);    
+            
+            var newElement = $('#item-arrets').children().last()[0];
+            newElement.scrollIntoView({ behavior: 'smooth' });
+
+            var lineId = $('#line-select').val();
+
+            $.ajax({
+                url: '{% url 'get_arretData_by_line' %}',
+                type: 'GET',
+                data: {
+                  'line_id': lineId,
+                  'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function(response) {
+                    $("[id^='id_arrets-" + count + "-type_stop']").each(function() {
+                        var typeStopElement = $(this);
+                        var typeStopOptions = '';
+                        typeStopOptions += '<option value> Type </option>';
+                        $.each(response.type_stops, function(index, type_stop) {
+                            typeStopOptions += '<option value="' + type_stop.id + '">' + type_stop.designation + '</option>';
+                        });
+                        typeStopElement.html(typeStopOptions);
+                        var elementId = $(this).attr('id');
+                        typeStopElement.change(function() {
+                            var typeId = typeStopElement.val();
+                            $.ajax({
+                                url: '{% url 'get_reasons_by_type' %}',
+                                type: 'GET',
+                                data: {
+                                  'type_id': typeId,
+                                  'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                                },
+                                success: function(response) {
+                                    $("[id^='id_arrets-" + elementId.split('-')[1] + "-reason_stop']").each(function() {
+                                        var reasonStopElement = $(this);
+                                        var reasonStopOptions = '';
+                                        reasonStopOptions += '<option value> Raison </option>';
+                                        $.each(response.reason_stops, function(index, reason_stop) {
+                                            reasonStopOptions += '<option value="' + reason_stop.id + '">' + reason_stop.designation + '</option>';
+                                        });
+                                        reasonStopElement.html(reasonStopOptions);
+                                    });
+                                },
+                                error: function(xhr, errmsg, err) {
+                                  console.log(errmsg);
+                                }
+                            });
+                        });
+                        
+                    });
+
+                    $("[id^='id_arrets-" + count + "-reason_stop']").each(function() {
+                        var reasonStopElement = $(this);
+                        var reasonStopOptions = '';
+                        reasonStopOptions += '<option value> Raison </option>';
+                        $.each(response.reason_stops, function(index, reason_stop) {
+                            reasonStopOptions += '<option value="' + reason_stop.id + '">' + reason_stop.designation + '</option>';
+                        });
+                        reasonStopElement.html(reasonStopOptions);
+                    });
+                },
+                error: function(xhr, errmsg, err) {
+                  console.log(errmsg);
+                }
+            });
+        });
+        
+        $('#prod_product-select').on('change', function() {
+            var selectedProduct = $(this).val();
+
+            // Make an AJAX request to fetch the types based on the selected product
+            $.ajax({
+              url: '{% url "get_numo_by_product" %}',
+              type: 'GET',
+              data: { product: selectedProduct,
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(), },
+              success: function(response) {
+                var tbodyElement = document.getElementById('item-consumed_products');
+                var rows = tbodyElement.getElementsByTagName('tr');
+                for (var i = 0; i < rows.length; i++) {
+                    var checkboxElement = rows[i].querySelector('input[type="checkbox"]');
+                    checkboxElement.checked = true;
+                    rows[i].style.display = 'none';
+                }
+                var count = $('#item-consumed_products').children().length;
+                for (var i = 0; i < response.mp_list.length; i++) {
+                    var tmplMarkup = $('#consumed_products-template').html();
+                    var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+                    $('#item-consumed_products').append(compiledTmpl);
+                    $('#id_consumed_products-TOTAL_FORMS').attr('value', count+1);
+                    const select = document.getElementById(`id_consumed_products-${count}-numo_product`);
+                    select.value = response.mp_list[i];
+                    count += 1;
+                }
+              },
+              error: function(xhr, textStatus, error) {
+                console.log(error);
+              }
+            });
+          });
+    });
+</script>
+        
+{% endblock content %}
