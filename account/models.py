@@ -68,7 +68,7 @@ class Silo(models.Model):
 class User(AbstractUser):
 
     ROLE_CHOICES = [
-        ('New', 'New'),
+        ('Nouveau', 'Nouveau'),
         ('Gestionnaire de production', 'Gestionnaire de production'),
         ('Gestionnaire de stock', 'Gestionnaire de stock'),
         ('Responsable de production', 'Responsable de production'),

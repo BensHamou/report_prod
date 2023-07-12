@@ -84,7 +84,7 @@ def refreshUsersList(request):
         new_users_list = [user for user in data['users'] if user['fullname'] in group_users and user['AD2000'] not in usernames]
 
         for user in new_users_list:
-            user = User(username= user['AD2000'], password='password', fullname=user['fullname'], role='New', is_admin=False, first_name= user['fname'], email= user['mail'], last_name = user['lname'])
+            user = User(username= user['AD2000'], password='password', fullname=user['fullname'], role='Nouveau', is_admin=False, first_name= user['fname'], email= user['mail'], last_name = user['lname'])
             user.save()
     else:
         print('Error: could not fetch data from API')
@@ -129,7 +129,7 @@ def deleteUserView(request, id):
 @admin_only_required
 def listUsersView(request):
 
-    users = User.objects.exclude(role='New').exclude(username='admin').order_by('id')
+    users = User.objects.exclude(role='Nouveau').exclude(username='admin').order_by('id')
     filteredData = UserFilter(request.GET, queryset=users)
     users = filteredData.qs
     selectedLines = request.GET.getlist('line')
@@ -150,7 +150,7 @@ def listUsersView(request):
 @admin_only_required
 def listNewUsersView(request):
 
-    users = User.objects.filter(role='New').order_by('id')
+    users = User.objects.filter(role='Nouveau').order_by('id')
     filteredData = UserFilter(request.GET, queryset=users)
     users = filteredData.qs
 
