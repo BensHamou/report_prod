@@ -5,5 +5,26 @@
 {% endblock %}
 {% block activeHome %} {% include 'active_bar.html' %} {% endblock %}
 {% block content %}
-{{ content }}
+
+  <style>
+    .container {
+      text-align: center;
+    }
+    .message {
+      font-size: 24px;
+      color: #fdfdfe;
+      margin-bottom: 40px;
+    }
+    .countdown {
+      font-size: 18px;
+      color: #cacacb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" style="margin-top: 10%;">
+    <p class="message">On travaille sur quelque chose de spécial!</p>
+    <p class="countdown">Bientôt disponible...</p>
+  </div>
+
 {% endblock %}
