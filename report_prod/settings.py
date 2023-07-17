@@ -29,7 +29,7 @@ with open(os.path.join(BASE_DIR, 'secret_key.txt')) as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 AUTH_USER_MODEL = 'account.User'
 
@@ -37,9 +37,9 @@ swappable = 'AUTH_USER_MODEL'
 
 ADMIN_URL = 'puma_prod/admin/'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['10.10.10.53']
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
 
 # Application definition
 
@@ -100,11 +100,11 @@ WSGI_APPLICATION = "report_prod.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'prod_report',
-        'USER': 'puma_u',
-        'PASSWORD': 'puma_u',
-        'HOST': '192.168.56.1',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 

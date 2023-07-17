@@ -1,13 +1,37 @@
-version: '3.'
+version: "3"
 
 services:
-  django:
-    image: puma_prod_app
-    build: .
-    ports:
-      - "8000:8000"
   db:
-    image: puma_prod_db
-    build: .
+    image: postgres
+    container_name: PUMA_DB
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=mydb-dev
+      - POSTGRES_USER=prod_report
+      - POSTGRES_PASSWORD=prod_report
+    ports:
+      - "5400:5432"
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: puma_prod:latest
+    restart: unless-stopped
+    container_name: PUMA_APP
     ports:
       - "8000:8000"
+    volumes:
+      - ./report_prod:/report_prod
+
+    command: >
+      sh -c " python manage.py makemigrations &&
+              python manage.py migrate &&
+              python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_NAME=mydb-dev
+      - DB_USER=prod_report
+      - DB_PASS=prod_report
+      - DB_PORT=5432
