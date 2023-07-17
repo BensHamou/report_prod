@@ -38,7 +38,7 @@ def check_creatorArret(view_func):
     def wrapper(request, *args, **kwargs):
         arret_id = kwargs.get('pk')
         arret = Arret.objects.get(id=arret_id)
-        if (arret.report.creator != request.user and request.user.role == "Gestionnaire de production") or request.user.role != 'Admin':
+        if not (arret.report.state in ['Brouillon','Refusé par GS', 'Refusé par RP'] and (request.user.role == "Gestionnaire de production" and request.user == arret.report.creator or request.user.role == 'Admin')):
             return render(request, '403.html', status=403)
         return view_func(request, *args, **kwargs)
     return wrapper
@@ -82,10 +82,7 @@ def createProductView(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
-            designation = form.cleaned_data['designation']
-            line = form.cleaned_data['line']
-            product = Product(designation=designation, line=line)
-            product.save()
+            form.save()
             cache_param = str(uuid.uuid4())
             url_path = reverse('products')
             redirect_url = f'{url_path}?cache={cache_param}'
@@ -334,7 +331,11 @@ class ReportInline():
             report.state = 'Brouillon'
         report.save()
 
-        self.object = report
+        new = True
+        if self.object:
+            new = False
+        else:
+            self.object = report
 
         for name, formset in named_formsets.items():
             formset_save_func = getattr(self, 'formset_{0}_valid'.format(name), None)
@@ -342,6 +343,12 @@ class ReportInline():
                 formset_save_func(formset)
             else:
                 formset.save()
+
+        if not new:
+            cache_param = str(uuid.uuid4())
+            url_path = reverse('report_detail', args=[self.object.pk])
+            redirect_url = f'{url_path}?cache={cache_param}'
+            return redirect(redirect_url)
         return redirect('list_report')
 
     def formset_arrets_valid(self, formset):

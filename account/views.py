@@ -54,8 +54,6 @@ def page_not_found(request, exception):
 @login_required(login_url='login')
 @admin_only_required
 def homeView(request):
-    
-    
 
     context = {
         'content': 'content', 

@@ -56,7 +56,7 @@ class Team(models.Model):
     line = models.ForeignKey(Line, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.designation
+        return self.designation + ' ('+self.line.designation +')'
 
 class Silo(models.Model):
     designation = models.CharField(max_length=50)
