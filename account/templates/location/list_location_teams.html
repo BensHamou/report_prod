@@ -22,10 +22,14 @@ Locations & Équipes
                     <a class="btn btn-secondary dropdown-toggle" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);" 
                     href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nouveau</a>
                     <ul class="dropdown-menu" style="background: rgba(127, 139, 161, 0.9);  border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
-                      <li><a href="{% url 'create_site' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" style="color: white;">Site</a></li>
-                      <li><a href="{% url 'create_line' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" style="color: white;">Ligne</a></li>
-                      <li><a href="{% url 'create_team' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" style="color: white;">Équipe</a></li>
-                      <li><a href="{% url 'create_silo' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" style="color: white;">Silo</a></li>
+                      <li><a href="{% url 'create_site' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" 
+                        onmouseover="this.style.backgroundColor='rgba(14, 42, 91, 0.3)';" onmouseout="this.style.backgroundColor='rgba(127, 139, 161, 0.9)';" style="color: white;">Site</a></li>
+                      <li><a href="{% url 'create_line' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" 
+                        onmouseover="this.style.backgroundColor='rgba(14, 42, 91, 0.3)';" onmouseout="this.style.backgroundColor='rgba(127, 139, 161, 0.9)';" style="color: white;">Ligne</a></li>
+                      <li><a href="{% url 'create_team' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" 
+                        onmouseover="this.style.backgroundColor='rgba(14, 42, 91, 0.3)';" onmouseout="this.style.backgroundColor='rgba(127, 139, 161, 0.9)';" style="color: white;">Équipe</a></li>
+                      <li><a href="{% url 'create_silo' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="dropdown-item" 
+                        onmouseover="this.style.backgroundColor='rgba(14, 42, 91, 0.3)';" onmouseout="this.style.backgroundColor='rgba(127, 139, 161, 0.9)';" style="color: white;">Silo</a></li>
                     </ul>
                 </div>            
             </div>

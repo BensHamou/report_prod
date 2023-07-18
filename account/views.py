@@ -219,14 +219,10 @@ def deleteSiteView(request, id):
 @admin_required
 def createSiteView(request):
     form = SiteForm()
-
     if request.method == 'POST':
         form = SiteForm(request.POST, request.FILES)
         if form.is_valid():
-            designation = form.cleaned_data['designation']
-            horaires = form.cleaned_data['horaires']
-            site = Site(designation=designation, horaires=horaires)
-            site.save()
+            form.save()
             cache_param = str(uuid.uuid4())
             url_path = reverse('location_teams')
             page = request.GET.get('page', '1')
