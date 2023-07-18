@@ -606,13 +606,16 @@ def confirmReport(request, pk):
     messages.success(request, 'Report Confirmé successfully')
 
     if old_state == 'Brouillon':
-        subject = 'Rapport de production'
-        message = '''
-        A report has been created by ''' + request.user.fullname + ''', the report containt:
+        subject = 'Rapport de production ' + '('+ report.site.designation +')'
+        message = '''   Un rapport a été créé par ''' + request.user.fullname + '''(''' + report.line.designation + ''')''' + ''' :
         N° Lot : ''' + report.n_lot + ''' 
         Produit : ''' + report.prod_product.designation + '''
-        Date de production : ''' + str(report.prod_day)
-        recipient_list = ['wafos72036@lukaat.com']
+        Date de production : ''' + str(report.prod_day) + '''
+        Équipe : ''' + report.team.designation + ''' - Horaire ''' + report.shift.__str__() + '''
+        Qte : ''' + str(report.qte_tn) + ''' TN
+        Avec un total d'heures d'arrêt : ''' + str(report.total_arrets)
+            
+        recipient_list = ['benshamou@gmail.com']
 
         send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list)
 

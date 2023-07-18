@@ -9,7 +9,7 @@ urlpatterns = [
 
     path('login_success/', views.login_success, name='login_success'),
 
-    path("", views.homeView, name="home"),
+    path("dashboard/", views.homeView, name="home"),
     path("refresh-users/", views.refreshUsersList, name="refresh_users"),
     path("users/edit-user/<int:id>", views.editUserView, name="edit_user"),
     path("users/delete-user/<int:id>", views.deleteUserView, name="delete_user"),
@@ -18,6 +18,7 @@ urlpatterns = [
     path('users/details/<int:id>', views.userDetailsView, name='details'),
     
     path('login/', CustomLoginView.as_view(), name='login'),
+    path('accounts/login/', CustomLoginView.as_view(), name='login'),
     path('logout/', views.logoutView, name='logout'),
 
     path('location-teams/', views.listLocationTeams, name='location_teams'),

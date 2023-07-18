@@ -24,6 +24,7 @@ urlpatterns = [
     path("stopping-reasons/create-reason/", views.createReasonStopView, name="create_reason"),
 
     path('reports/', ReportList.as_view(), name='list_report'),
+    path('', ReportList.as_view(), name='list_report'),
     path('report/create/', ReportCreate.as_view(), name='create_report'),
     path('report/<int:pk>/update/', ReportUpdate.as_view(), name='update_report'),
     path('report/<int:pk>/delete/', delete_report, name='delete_report'),
