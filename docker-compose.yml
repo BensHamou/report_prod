@@ -6,7 +6,7 @@ services:
     container_name: PUMA_DB
     restart: unless-stopped
     environment:
-      - POSTGRES_DB=mydb-dev
+      - POSTGRES_DB=puma_report
       - POSTGRES_USER=prod_report
       - POSTGRES_PASSWORD=prod_report
     ports:
@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
     container_name: PUMA_APP
     ports:
-      - "8000:8000"
+      - "8000:9000"
     volumes:
       - ./report_prod:/report_prod
 
@@ -31,7 +31,7 @@ services:
       - db
     environment:
       - DB_HOST=db
-      - DB_NAME=mydb-dev
+      - DB_NAME=puma_report
       - DB_USER=prod_report
       - DB_PASS=prod_report
       - DB_PORT=5432
