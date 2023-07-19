@@ -472,11 +472,21 @@ class ReportList(LoginRequiredMixin, FilterView):
         return context
     
     def get_state_totals(self):
+        user = self.request.user
+        line_condition = Q(line__in=user.lines.all())
+
+        if user.role == 'Gestionnaire de production':
+            creator_condition = Q(creator=user)
+        else:
+            creator_condition = Q()
+
         state_totals = (
-            Report.objects.values('state')
+            Report.objects.filter(creator_condition | line_condition)
+            .values('state')
             .annotate(total=Count('state'))
             .order_by('state')
         )
+
         return {state['state']: state['total'] for state in state_totals}
 
 

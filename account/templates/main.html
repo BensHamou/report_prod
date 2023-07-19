@@ -59,7 +59,7 @@
                 {% block activeSettings %}{% endblock %}
                 <h4 class="mx-auto">
                   <li class="nav-item dropdown dropend list-unstyled">
-                    <a class="nav-link text-reset" style="padding: 5px 1.5px;" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-gear menu_item"></i></a >
+                    <a class="nav-link text-reset" style="padding: 5px 1.5px;" data-bs-toggle="dropdown" role="button" aria-expanded="false"><i class="fas fa-gear menu_item"></i></a>
                       <ul class="dropdown-menu list-unstyled">
                       <li><a href="{% url 'location_teams' %}" class="dropdown-item">Emplacements & Équipes</a></li>
                       <li><a href="{% url 'horaires' %}" class="dropdown-item">Horaires</a></li>
@@ -117,46 +117,59 @@
       color: #0e2a5b; 
       font-size: 22px;
     }
-      .formBadge{
+    .formBadge{
           background-color: #0e2a5b; 
           padding: 8px; 
           margin-right: 5px;
-      }
-      .listBadge{
+    }
+    .listBadge{
           background-color: #0e2a5b; 
           padding: 8px; 
           margin-right: 5px;
-      }
-      .listBadgeText{
+    }
+    .listBadgeText{
           font-size: 14px;
-      }
-      .formBadgeText{
+    }
+    .formBadgeText{
           font-size: 14px;
-      }
-      .customActive{
+    }
+    .customActive{
         border-bottom: 3px solid white;
-      }
-      .customUnactive{
+    }
+    .customUnactive{
         color: #b7b9bd;
-      }
-      .sectionList{
+    }
+    .sectionList{
         margin-top: 25px; 
         background: rgba(255, 255, 255, 0.2); 
         border-radius: 5px; 
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
-      }
-      .labelCustom{
+    }
+    .labelCustom{
         color: #fafbfc; 
         font-size: 14px;
-      }
-      .customSaveButton{
+    }
+    .customSaveButton{
         background-color: #0e2a5b; 
         border-color: transparent; 
         box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-      }
-      .hidden {
-        display: none;
     }
+    .hidden {
+      display: none;
+    }
+    
+    /* .dropdown-menu{ 
+      background: rgba(127, 139, 161, 0.9);  
+      border-radius: 5px; 
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    }
+    .dropdown-item{
+      color: white;
+    }
+    .dropdown-item:hover{
+      background-color: rgba(14, 42, 91, 0.3);
+      color: white;
+    }*/
     </style>
 </body>
 

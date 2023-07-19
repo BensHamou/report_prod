@@ -25,8 +25,9 @@ swappable = 'AUTH_USER_MODEL'
 
 ADMIN_URL = 'puma_prod/admin/'
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'web']
+ALLOWED_HOSTS = ['*']
 
+CSRF_COOKIE_SECURE = True
 
 # Application definition
 
@@ -132,12 +133,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/static'
-
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 
 # Default primary key field type
