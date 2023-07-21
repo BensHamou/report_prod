@@ -627,7 +627,7 @@ def confirmReport(request, pk):
             
         recipient_list = ['benshamou@gmail.com']
 
-        send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list)
+        send_mail(subject, message, 'Puma Production', recipient_list)
 
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())
