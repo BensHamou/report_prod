@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 
 {% block title %}
-{% if line %}Modification de Ligne{% else %}Creation de Ligne{% endif %}
+Ligne
 {% endblock %}
 {% load static %} 
 {% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
@@ -12,7 +12,7 @@
     <p class="lead m-0 p-0">retour</p>
 </a>
 </div>
-<h4 class="text-white mb-4">{% if line %}Modification du {{ line.designation }}{% else %}Creation d'une ligne{% endif %}</h4>
+<h4 class="text-white mb-4">{% if line %}Modification du {{ line.designation }}{% else %}Création d'une ligne{% endif %}</h4>
 
 <form method="POST">
   {% csrf_token %}

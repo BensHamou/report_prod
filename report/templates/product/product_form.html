@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 
 {% block title %}
-{% if product %}Modification de produit{% else %}Creation de produit{% endif %}
+Produit
 {% endblock %}
 {% load static %} 
 {% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
@@ -13,7 +13,7 @@
     <p class="lead m-0 p-0">retour</p>
 </a>
 </div>
-<h4 class="text-white mb-4">{% if product %}Modification du {{ product.designation }}{% else %}Creation d'un produit{% endif %}</h4>
+<h4 class="text-white mb-4">{% if product %}Modification du {{ product.designation }}{% else %}Création d'un produit{% endif %}</h4>
 
 <form method="POST">
   {% csrf_token %}

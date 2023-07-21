@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 
 {% block title %}
-{% if type %}Modification de type{% else %}Creation de type{% endif %}
+Type d'arrêt
 {% endblock %}
 {% load static %} 
 {% block activeSettings %} {% include 'active_bar.html' %} {% endblock %}
@@ -13,7 +13,7 @@
     <p class="lead m-0 p-0">retour</p>
 </a>
 </div>
-<h4 class="text-white mb-4">{% if type %}Modification du {{ type.designation }}{% else %}Creation d'un type d'arrêt{% endif %}</h4>
+<h4 class="text-white mb-4">{% if type %}Modification du {{ type.designation }}{% else %}Création d'un type d'arrêt{% endif %}</h4>
 <form method="POST">
     {% csrf_token %}
     <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">

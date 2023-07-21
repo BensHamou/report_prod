@@ -91,7 +91,7 @@ DATABASES = {
         'NAME': 'prod_report',
         'USER': 'puma_u',
         'PASSWORD': 'puma_u',
-        'HOST': '192.168.56.1',
+        'HOST': '192.168.135.1',
         'PORT': '5432',
     }
 }
