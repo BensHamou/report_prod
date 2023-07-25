@@ -17,7 +17,7 @@ with open(os.path.join(BASE_DIR, 'secret_key.txt')) as f:
     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 AUTH_USER_MODEL = 'account.User'
 
@@ -86,13 +86,21 @@ WSGI_APPLICATION = "report_prod.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
+    #'default': {
+    #    'ENGINE': 'django.db.backends.postgresql',
+    #    'NAME': 'prod_report',
+    #    'USER': 'puma_u',
+    #    'PASSWORD': 'puma_u',
+    #    'HOST': '192.168.135.1',
+    #    'PORT': '5432',
+    #}
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'prod_report',
-        'USER': 'puma_u',
-        'PASSWORD': 'puma_u',
-        'HOST': '192.168.135.1',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_HOST'),
+        'USER': os.environ.get('DB_NAME'),
+        'PASSWORD': os.environ.get('DB_USER'),
+        'HOST': os.environ.get('DB_PASS'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 

@@ -37,9 +37,10 @@ class HoraireForm(ModelForm):
 class SiteForm(ModelForm):
     class Meta:
         model = Site
-        fields = ['designation', 'horaires']
+        fields = ['designation', 'horaires', 'address']
 
     designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control', 'Désignation')))
+    address = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control', 'Address')))
     horaires = forms.SelectMultiple(attrs={'class': 'form-select'})
 
 class LineForm(ModelForm):
@@ -93,7 +94,7 @@ class SiloForm(ModelForm):
 class CustomLoginForm(AuthenticationForm):
     
     username = forms.EmailField( label="Email", widget=forms.EmailInput(attrs={'autofocus': True, 'class': 'form-control', 'placeholder':'Email'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'Password'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'Mot de passe'}))
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -105,8 +106,8 @@ class CustomLoginForm(AuthenticationForm):
         return username
 
     error_messages = {
-        'invalid_login': "Wrong credentials.",
-        'inactive': "This account is inactive.",
-        'invalid_email': "Please enter a valid email address",
+        'invalid_login': "Email/Mot de passe incorrect.",
+        'inactive': "Ce compte est inactif.",
+        'invalid_email': "S'il vous plaît, mettez une adresse email valide.",
     }
     

@@ -52,9 +52,9 @@ class Report(models.Model):
         ('Brouillon', 'Brouillon'),
         ('Confirmé', 'Confirmé'),
         ('Validé par GS', 'Validé par GS'),
-        ('Validé par RP', 'Validé par RP'),
+        ('Validé par DI', 'Validé par DI'),
         ('Refusé par GS', 'RRefusé par GS'),
-        ('Refusé par RP', 'Refusé par RP'),
+        ('Refusé par DI', 'Refusé par DI'),
         ('Annulé', 'Annulé'),
     ]
 
@@ -116,7 +116,7 @@ class Arret(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.type_stop.designation + " " + self.reason_stop.designation + " " + str(self.duration)
+        return self.type_stop.designation + " - " + self.reason_stop.designation + ", a duré " + str(self.duration)
 
 class MPConsumed(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
@@ -157,9 +157,9 @@ class Validation(models.Model):
         ('Brouillon', 'Brouillon'),
         ('Confirmé', 'Confirmé'),
         ('Validé par GS', 'Validé par GS'),
-        ('Validé par RP', 'Validé par RP'),
+        ('Validé par DI', 'Validé par DI'),
         ('Refusé par GS', 'Refusé par GS'),
-        ('Refusé par RP', 'Refusé par RP'),
+        ('Refusé par DI', 'Refusé par DI'),
         ('Annulé', 'Annulé'),
     ]
 

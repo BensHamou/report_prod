@@ -31,6 +31,7 @@ class Horaire(models.Model):
 class Site(models.Model):
     designation = models.CharField(max_length=100)
     horaires = models.ManyToManyField(Horaire, blank=True)
+    address = models.CharField(max_length=50, null=True)
 
     def __str__(self):
         return self.designation
@@ -71,7 +72,7 @@ class User(AbstractUser):
         ('Nouveau', 'Nouveau'),
         ('Gestionnaire de production', 'Gestionnaire de production'),
         ('Gestionnaire de stock', 'Gestionnaire de stock'),
-        ('Responsable de production', 'Responsable de production'),
+        ('Directeur Industriel', 'Directeur Industriel'),
         ('Admin', 'Admin'),
     ]
 

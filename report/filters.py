@@ -103,10 +103,10 @@ class ReportFilter(django_filters.FilterSet):
         if user:
             if user.role == 'Gestionnaire de stock':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] in 
-                                        ['Confirmé', 'Validé par GS', 'Refusé par RP', 'Refusé par GS']]
-            elif user.role == 'Responsable de production':
+                                        ['Confirmé', 'Validé par GS', 'Refusé par DI', 'Refusé par GS']]
+            elif user.role == 'Directeur Industriel':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] in 
-                                        ['Validé par GS', 'Validé par RP',  'Refusé par RP']]
+                                        ['Validé par GS', 'Validé par DI',  'Refusé par DI']]
             elif user.role == 'Admin':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] not in 
                                         ['Brouillon']]

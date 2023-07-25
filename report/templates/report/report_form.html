@@ -20,9 +20,9 @@ Rapport
                     <label class="form-label labelCustom" for="prod_product">Produit</label>
                     {{ form.prod_product|attr:"id:prod_product-select" }}
                     {% if form.prod_product.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.prod_product.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -36,9 +36,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="site">Site</label>
                     {{ form.site }}
                     {% if form.site.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.site.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -49,9 +49,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="line">Ligne</label>
                     {{ form.line|attr:"id:line-select" }}
                     {% if form.line.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.line.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -62,9 +62,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="team">Équipe</label>
                     {{ form.team|attr:"id:team-select" }}
                     {% if form.team.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.team.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -78,9 +78,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="n_lot">N° Lot</label>
                     {{ form.n_lot }}
                     {% if form.n_lot.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.n_lot.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -91,9 +91,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="prod_day">Date de Production</label>
                     {{ form.prod_day }}
                     {% if form.prod_day.errors %}
-                    <div class="invalid-feedback">
+                    <div style="color: red;">
                     {% for error in form.prod_day.errors %}
-                        {{ error }}
+                        *{{ error }}
                     {% endfor %}
                     </div>
                 {% endif %}
@@ -104,9 +104,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="shift">Slot Horaire</label>
                     {{ form.shift|attr:"id:shift-select" }}
                     {% if form.shift.errors %}
-                    <div class="invalid-feedback">
+                    <div style="color: red;">
                       {% for error in form.shift.errors %}
-                        {{ error }}
+                        *{{ error }}
                       {% endfor %}
                     </div>
                   {% endif %}
@@ -120,9 +120,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="nbt_melange">Nb Mélange</label>
                     {{ form.nbt_melange }}
                 {% if form.nbt_melange.errors %}
-                    <div class="invalid-feedback">
+                    <div style="color: red;">
                     {% for error in form.nbt_melange.errors %}
-                        {{ error }}
+                        *{{ error }}
                     {% endfor %}
                     </div>
                 {% endif %}
@@ -133,9 +133,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="qte_sac_prod">Nb Sacs Produit</label>
                     {{ form.qte_sac_prod }}
                     {% if form.qte_sac_prod.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.qte_sac_prod.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -146,9 +146,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="poids_melange">Poids Mélange</label>
                     {{ form.poids_melange }}
                     {% if form.poids_melange.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.poids_melange.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -159,9 +159,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="qte_tn">Qté Tn</label>
                     {{ form.qte_tn }}
                 {% if form.qte_tn.errors %}
-                    <div class="invalid-feedback">
+                    <div style="color: red;">
                     {% for error in form.qte_tn.errors %}
-                        {{ error }}
+                        *{{ error }}
                     {% endfor %}
                     </div>
                 {% endif %}
@@ -175,9 +175,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="qte_sac_reb">Nb Sacs Rebutés</label>
                     {{ form.qte_sac_reb }}
                     {% if form.qte_sac_reb.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.qte_sac_reb.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -188,9 +188,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="qte_sac_rec">Nb Sacs Récyclés</label>
                     {{ form.qte_sac_rec }}
                     {% if form.qte_sac_rec.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.qte_sac_rec.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -201,9 +201,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="qte_rec">Qté Recyclése</label>
                     {{ form.qte_rec }}
                 {% if form.qte_rec.errors %}
-                    <div class="invalid-feedback">
+                    <div style="color: red;">
                     {% for error in form.qte_rec.errors %}
-                        {{ error }}
+                        *{{ error }}
                     {% endfor %}
                     </div>
                 {% endif %}
@@ -214,9 +214,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="nbt_pallete">Nb Pallete</label>
                     {{ form.nbt_pallete }}
                     {% if form.nbt_pallete.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.nbt_pallete.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -230,9 +230,9 @@ Rapport
                     <label class="form-label mt-2 labelCustom" for="observation_rec">Observation</label>
                     {{ form.observation_rec }}
                     {% if form.observation_rec.errors %}
-                        <div class="invalid-feedback">
+                        <div style="color: red;">
                         {% for error in form.observation_rec.errors %}
-                            {{ error }}
+                            *{{ error }}
                         {% endfor %}
                         </div>
                     {% endif %}
@@ -254,14 +254,14 @@ Rapport
                         <td>
                             {{ field }}
                             {% for error in field.errors %}
-                                <span style="color: red">{{ error }}</span>
+                                <span style="color: red">*{{ error }}</span>
                             {% endfor %}
                         </td>
                     {% else %}
                         <td>
                             {{ field|add_class:'hidden' }}
                             {% for error in field.errors %}
-                                <span style="color: red">{{ error }}</span>
+                                <span style="color: red">*{{ error }}</span>
                             {% endfor %}
                         </td>
                     {% endif %}
@@ -276,7 +276,7 @@ Rapport
             <table class="table card-header">
                 <tbody id="item-etatsilos">  
                     {% for error in formset.non_form_errors %}
-                        <span style="color: red">{{ error }}</span>
+                        <span style="color: red">*{{ error }}</span>
                     {% endfor %}
                     {% for formss in formset %}
                         {{ formss.management_form }}
@@ -287,14 +287,14 @@ Rapport
                                     <td>
                                         {{ field }}
                                         {% for error in field.errors %}
-                                            <span style="color: red">{{ error }}</span>
+                                            <span style="color: red">*{{ error }}</span>
                                         {% endfor %}
                                     </td>
                                 {% else %}
                                     <td>
                                         {{ field|add_class:'hidden' }}
                                         {% for error in field.errors %}
-                                            <span style="color: red">{{ error }}</span>
+                                            <span style="color: red">*{{ error }}</span>
                                         {% endfor %}
                                     </td>
                                 {% endif %}
@@ -319,14 +319,14 @@ Rapport
                         <td>
                             {{ field }}
                             {% for error in field.errors %}
-                                <span style="color: red">{{ error }}</span>
+                                <span style="color: red">*{{ error }}</span>
                             {% endfor %}
                         </td>
                     {% else %}
                         <td>
                             {{ field|add_class:'hidden' }}
                             {% for error in field.errors %}
-                                <span style="color: red">{{ error }}</span>
+                                <span style="color: red">*{{ error }}</span>
                             {% endfor %}
                         </td>
                     {% endif %}
@@ -341,7 +341,7 @@ Rapport
             <table class="table card-header">
                 <tbody id="item-consumed_products">  
                     {% for error in formset.non_form_errors %}
-                        <span style="color: red">{{ error }}</span>
+                        <span style="color: red">*{{ error }}</span>
                     {% endfor %}
                     {% for formss in formset %}
                         {{ formss.management_form }}
@@ -352,14 +352,14 @@ Rapport
                                     <td>
                                         {{ field }}
                                         {% for error in field.errors %}
-                                            <span style="color: red">{{ error }}</span>
+                                            <span style="color: red">*{{ error }}</span>
                                         {% endfor %}
                                     </td>
                                 {% else %}
                                     <td>
                                         {{ field|add_class:'hidden' }}
                                         {% for error in field.errors %}
-                                            <span style="color: red">{{ error }}</span>
+                                            <span style="color: red">*{{ error }}</span>
                                         {% endfor %}
                                     </td>
                                 {% endif %}
@@ -388,7 +388,7 @@ Rapport
                     {% else %}
                         {{ field }}
                         {% for error in field.errors %}
-                            <span style="color: red">{{ error }}</span>
+                            <span style="color: red">*{{ error }}</span>
                         {% endfor %}
                     {% endif %}
                 </td>
@@ -402,7 +402,7 @@ Rapport
             <table class="table card-header">
                 <tbody id="item-arrets">
                     {% for error in formset.non_form_errors %}
-                        <span style="color: red">{{ error }}</span>
+                        <span style="color: red">*{{ error }}</span>
                     {% endfor %}
                     {% for formss in formset %}
                         {{ formss.management_form }}
@@ -413,7 +413,7 @@ Rapport
                                     <td>
                                         {{ field }}
                                         {% for error in field.errors %}
-                                            <span style="color: red">{{ error }}</span>
+                                            <span style="color: red">*{{ error }}</span>
                                         {% endfor %}
                                     </td>
                                 {% endif %}

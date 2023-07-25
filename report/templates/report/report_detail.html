@@ -22,7 +22,11 @@ Rapport
             </div>
             <div class="col-md-3 d-flex justify-content-end">
                 <button id="validation-card" class="btn btn-secondary btn-block customSaveButton">Cycle de Validation</button>
-                {% if report.state in 'Brouillon,Refusé par GS,Refusé par RP' and user.role in 'Admin,Gestionnaire de production' %}
+                {% if report.state in 'Brouillon,Refusé par GS,Refusé par DI' and user.role in 'Admin,Gestionnaire de production' and user == report.creator %}
+                <button onclick="window.location='{% url 'update_report' report.id %}'" class="btn btn-secondary btn-block customSaveButton" style="margin-left: 2%;">
+                    <i class="fas fa-edit"></i>
+                </button>
+                {% elif user.role == 'Admin' %}
                 <button onclick="window.location='{% url 'update_report' report.id %}'" class="btn btn-secondary btn-block customSaveButton" style="margin-left: 2%;">
                     <i class="fas fa-edit"></i>
                 </button>
@@ -34,136 +38,144 @@ Rapport
         <div class="card" style="background: rgba(107, 122, 147, 0.4); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); color: #b7b9bd;">
             <div class="card-body p-3">
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Produit</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Produit</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.prod_product }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">N° Lot</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Gestionaire de production</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
+                            {{ report.creator }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">N° Lot</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.n_lot }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Date de production</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Date de production</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.prod_day }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Horaire de production:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Horaire de production</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.shift }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Temps Passé:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Temps Passé</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.shift.passed_time }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Site</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Site</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.site }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Ligne</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Ligne</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.line }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Équipe</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Équipe</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.team }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Nb mélange:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Nb mélange</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.nbt_melange }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Nb Sacs Produits:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Nb Sacs Produits</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.qte_sac_prod }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Poids Mélange:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Poids Mélange</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.poids_melange }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Qté Tn:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Qté Tn</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.qte_tn }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Nb S Rebuté:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Nb S Rebuté</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.qte_sac_reb }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Nb S Recyclés:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Nb S Recyclés</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.qte_sac_rec }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Qté Recyclée:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Qté Recyclée</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.qte_rec }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Nb Pallete:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Nb Pallete</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.nbt_pallete }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-2 col-form-label" style="color: #f2f3f2;">Observation:</label>
-                    <div class="col-sm-10">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Observation</label>
+                    <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.observation_rec }}
                         </div>
@@ -176,15 +188,17 @@ Rapport
     <div class="col-md-4 justify-content-center">
         <div class="row">
             <div class="d-flex justify-content-center" style="margin-bottom: 38px;">
-                {% if report.state == 'Brouillon' or report.state == 'Refusé par GS' or report.state == 'Refusé par RP' %}
+                {% if report.state == 'Brouillon' or report.state == 'Refusé par GS' or report.state == 'Refusé par DI' %}
                     {% if user.role == 'Admin' or user.role == 'Gestionnaire de production' %}
-                        <a href="{% url 'confirm_report' report.id %}" class="btn btn-success text-white p-0" 
-                        style="width: 25%; margin-right: 2%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
-                            <p class="lead m-0 p-0" style="font-size: 18px;">Confirmer</p>
-                        </a>
-                        <a href="{% url 'cancel_report' report.id %}" class="btn btn-danger text-white p-0" style="width: 25%; margin-right: 2%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
-                            <p class="lead m-0 p-0" style="font-size: 18px;">Annuler</p>
-                        </a>
+                        {% if user == report.creator %}
+                            <a href="{% url 'confirm_report' report.id %}" class="btn btn-success text-white p-0" 
+                            style="width: 25%; margin-right: 2%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                <p class="lead m-0 p-0" style="font-size: 18px;">Confirmer</p>
+                            </a>
+                            <a href="{% url 'cancel_report' report.id %}" class="btn btn-danger text-white p-0" style="width: 25%; margin-right: 2%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                <p class="lead m-0 p-0" style="font-size: 18px;">Annuler</p>
+                            </a>
+                        {% endif %}
                     {% else %}
                         <h4 class="lead text-white"><strong></br></strong></h4>
                     {% endif %}
@@ -201,7 +215,7 @@ Rapport
                     {% endif %}
                     
                     {% elif report.state == 'Validé par GS' %}
-                        {% if user.role == 'Admin' or user.role == 'Responsable de production' %}                            
+                        {% if user.role == 'Admin' or user.role == 'Directeur Industriel' %}                            
                             <a href="{% url 'validate_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
                                 <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
                             </a>
@@ -232,7 +246,7 @@ Rapport
                         <img src="{% static 'img/consomation.png' %}" class="card-img-top img-fluid" alt="Image Title">
                     </div>
                     <div class="card-body p-0 mx-auto">
-                        <p class="card-title lead m-3">Produits Consomés</p>
+                        <p class="card-title lead m-3">Produits Consommés</p>
                     </div>
                  </div>
             </div>

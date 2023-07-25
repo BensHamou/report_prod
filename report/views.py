@@ -3,7 +3,7 @@ from account.models import *
 from .models import *
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from account.views import admin_required, RP_GS_required
+from account.views import admin_required, DI_GS_required
 import uuid
 from .forms import *
 from .filters import *
@@ -38,7 +38,7 @@ def check_creatorArret(view_func):
     def wrapper(request, *args, **kwargs):
         arret_id = kwargs.get('pk')
         arret = Arret.objects.get(id=arret_id)
-        if not (arret.report.state in ['Brouillon','Refusé par GS', 'Refusé par RP'] and (request.user.role == "Gestionnaire de production" and request.user == arret.report.creator or request.user.role == 'Admin')):
+        if not (arret.report.state in ['Brouillon','Refusé par GS', 'Refusé par DI'] and (request.user.role == "Gestionnaire de production" and request.user == arret.report.creator or request.user.role == 'Admin')):
             return render(request, '403.html', status=403)
         return view_func(request, *args, **kwargs)
     return wrapper
@@ -325,10 +325,13 @@ class ReportInline():
         if not all((x.is_valid() for x in named_formsets.values())):
             return self.render_to_response(self.get_context_data(form=form))
         
-        report = form.save(commit=False)
-        report.creator = self.request.user 
+        report = form.save(commit=False) 
         if not report.state or report.state == 'Brouillon':
             report.state = 'Brouillon'
+        
+        if not report.id:
+            report.creator = self.request.user
+        
         report.save()
 
         new = True
@@ -429,10 +432,10 @@ class ReportList(LoginRequiredMixin, FilterView):
     filterset_class = ReportFilter
     ordering = ['-date_modified']
         
-    all_GP = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par RP', 'Refusé par GS', 'Refusé par RP', 'Annulé']
-    all_A = ['Confirmé', 'Validé par GS', 'Validé par RP', 'Refusé par GS', 'Refusé par RP', 'Annulé']
-    all_GS = ['Confirmé', 'Validé par GS', 'Refusé par GS', 'Refusé par RP']
-    all_RP = ['Validé par GS', 'Validé par RP', 'Refusé par RP']
+    all_GP = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
+    all_A = ['Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
+    all_GS = ['Confirmé', 'Validé par GS', 'Refusé par GS', 'Refusé par DI']
+    all_DI = ['Validé par GS', 'Validé par DI', 'Refusé par DI']
 
     def get_filterset_kwargs(self, filterset_class):
         kwargs = super().get_filterset_kwargs(filterset_class)
@@ -445,13 +448,13 @@ class ReportList(LoginRequiredMixin, FilterView):
         lines = self.request.user.lines.all()
 
         if role == 'Gestionnaire de production':
-            queryset = queryset.filter(Q(creator=self.request.user) & Q(state__in=self.all_GP))
+            queryset = queryset.filter(Q(line__in=lines) & Q(state__in=self.all_GP))
 
         elif role == 'Gestionnaire de stock':
             queryset = queryset.filter(Q(line__in=lines) & Q(state__in=self.all_GS))
                 
-        elif role == 'Responsable de production':
-            queryset = queryset.filter(Q(line__in=lines) & Q(state__in=self.all_RP))
+        elif role == 'Directeur Industriel':
+            queryset = queryset.filter(Q(line__in=lines) & Q(state__in=self.all_DI))
 
         elif role == 'Admin':
             queryset = queryset.filter(Q(line__in=lines) & Q(state__in=self.all_A))
@@ -467,7 +470,7 @@ class ReportList(LoginRequiredMixin, FilterView):
         context['page'] = page_obj
         context['state_totals'] = self.get_state_totals()
         context['all_total'] = len(context['reports'])
-        role_state = {'Gestionnaire de production': self.all_GP, 'Gestionnaire de stock': self.all_GS, 'Responsable de production': self.all_RP, 'Admin': self.all_A}
+        role_state = {'Gestionnaire de production': self.all_GP, 'Gestionnaire de stock': self.all_GS, 'Directeur Industriel': self.all_DI, 'Admin': self.all_A}
         context['role_state'] = role_state
         return context
     
@@ -613,21 +616,54 @@ def confirmReport(request, pk):
     validation.save()
 
     report.save()
+
+
+    recipient_list = []
+
+    if report.site.address:
+        recipient_list.append(report.site.address)
+    else:
+        recipient_list.append('benshamou@gmail.com')
+
+    #address = '127.0.0.1:8000/report/'
+    address = 'http://myreporting.grupopuma-dz.com/report/'
+
     messages.success(request, 'Report Confirmé successfully')
+    subject = 'Rapport de production ' + '('+ report.site.designation +')'
+    message = ''''''
 
     if old_state == 'Brouillon':
-        subject = 'Rapport de production ' + '('+ report.site.designation +')'
-        message = '''   Un rapport a été créé par ''' + request.user.fullname + '''(''' + report.line.designation + ''')''' + ''' :
+        message += '''   Un rapport a été créé par ''' + request.user.fullname + '''(''' + report.line.designation + ''')''' + ''' :
         N° Lot : ''' + report.n_lot + ''' 
         Produit : ''' + report.prod_product.designation + '''
         Date de production : ''' + str(report.prod_day) + '''
-        Équipe : ''' + report.team.designation + ''' - Horaire ''' + report.shift.__str__() + '''
-        Qte : ''' + str(report.qte_tn) + ''' TN
-        Avec un total d'heures d'arrêt : ''' + str(report.total_arrets)
-            
-        recipient_list = ['benshamou@gmail.com']
+        Équipe : ''' + report.team.designation + '''
+        Horaire : ''' + report.shift.__str__() + '''
+        Qte : ''' + str(report.qte_tn) + ''' tonnes.'''
+        if report.total_arrets > 0:
+            message += '''\n        Avec un total d'heures d'arrêt : ''' + str(report.total_arrets)
 
-        send_mail(subject, message, 'Puma Production', recipient_list)
+        if report.total_arrets > 0:
+            arrets = report.arrets() 
+            message += '''\n\n        L'équipe de production a eu ''' + str(len(arrets)) + ''' arrêts: '''
+            for i,arret in enumerate(arrets):
+                message += '''          \n''' + str(i+1) + '''-    ''' + arret.__str__()
+        
+        message += '''\n\n        Produits consommés: '''
+        for i,mp in enumerate(report.mpconsumeds()):
+            message += '''          \n''' + str(i+1) + '''-    ''' + mp.__str__()
+        
+        message += '''\n\n        États de silos: '''
+        for i,silo in enumerate(report.etatsilos()):
+            message += '''          \n''' + str(i+1) + '''-    ''' + silo.__str__()
+
+        message += '''\n\n    Pour plus de détails - ''' + address + str(report.id) + '''/'''
+            
+    else:
+        message += request.user.fullname + '''(''' + report.line.designation + ''') a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/'''
+    
+    send_mail(subject, message, 'Puma Production', recipient_list)
+
 
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())
@@ -665,7 +701,7 @@ def cancelReport(request, pk):
     return redirect(redirect_url)
 
 @login_required(login_url='login')
-@RP_GS_required
+@DI_GS_required
 def validateReport(request, pk):
     try:
         report = Report.objects.get(id=pk)
@@ -682,15 +718,32 @@ def validateReport(request, pk):
     
     if request.user.role in ['Gestionnaire de stock', 'Admin'] and report.state == 'Confirmé':
         report.state = 'Validé par GS'
-    elif request.user.role in ['Responsable de production', 'Admin'] and report.state == 'Validé par GS':
-        report.state = 'Validé par RP'
+    elif request.user.role in ['Directeur Industriel', 'Admin'] and report.state == 'Validé par GS':
+        report.state = 'Validé par DI'
 
     new_state = report.state
     actor = request.user
 
     validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason='/', report=report)
     report.save()
-    validation.save()
+    validation.save()    
+    
+    recipient_list = []
+
+    if report.site.address:
+        recipient_list.append(report.site.address)
+    else:
+        recipient_list.append('benshamou@gmail.com')    
+     
+    #address = '127.0.0.1:8000/report/'
+    address = 'http://myreporting.grupopuma-dz.com/report/'
+
+    subject = 'Rapport de production ' + '('+ report.site.designation +')'
+    message = '''Le rapport ''' + report.n_lot + ''' a été validé par ''' + request.user.fullname + '''(''' + report.line.designation + ''')
+    
+    Pour plus de détails - ''' + address + str(report.id) + '''/'''
+
+    send_mail(subject, message, 'Puma Production', recipient_list)
         
     messages.success(request, 'Report validated successfully' )
     url_path = reverse('report_detail', args=[report.id])
@@ -699,7 +752,7 @@ def validateReport(request, pk):
     return redirect(redirect_url)
 
 @login_required(login_url='login')
-@RP_GS_required
+@DI_GS_required
 def refuseReport(request, pk):
     try:
         report = Report.objects.get(id=pk)
@@ -716,8 +769,8 @@ def refuseReport(request, pk):
     
     if request.user.role in ['Gestionnaire de stock', 'Admin'] and report.state == 'Confirmé':
         report.state = 'Refusé par GS'
-    elif request.user.role in ['Responsable de production', 'Admin'] and report.state == 'Validé par GS':
-        report.state = 'Refusé par RP'
+    elif request.user.role in ['Directeur Industriel', 'Admin'] and report.state == 'Validé par GS':
+        report.state = 'Refusé par DI'
     
     new_state = report.state
     actor = request.user
@@ -726,6 +779,25 @@ def refuseReport(request, pk):
     validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason=refusal_reason, report=report)
     report.save()
     validation.save()
+    messages.success(request, 'Report Confirmé successfully')
+
+    recipient_list = []
+
+    if report.site.address:
+        recipient_list.append(report.site.address)
+    else:
+        recipient_list.append('benshamou@gmail.com')    
+     
+    #address = '127.0.0.1:8000/report/'
+    address = 'http://myreporting.grupopuma-dz.com/report/'
+
+    subject = 'Rapport de production ' + '('+ report.site.designation +')'
+    message = '''Le rapport ''' + report.n_lot + ''' a été refusé par ''' + request.user.fullname + '''(''' + report.line.designation + ''')
+    Motif: ''' + refusal_reason + '''
+    
+    Pour plus de détails - ''' + address + str(report.id) + '''/'''
+
+    send_mail(subject, message, 'Puma Production', recipient_list)
         
     messages.success(request, 'Report refused successfully' )
     url_path = reverse('report_detail', args=[report.id])

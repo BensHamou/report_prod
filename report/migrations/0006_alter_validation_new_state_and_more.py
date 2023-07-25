@@ -22,16 +22,16 @@ class Migration(migrations.Migration):
                         "Validated by Gestionaire de Stock",
                     ),
                     (
-                        "Validé par RP",
-                        "Validé par RP",
+                        "Validé par DI",
+                        "Validé par DI",
                     ),
                     (
                         "Refused by Gestionaire de Stock",
                         "Refused by Gestionaire de Stock",
                     ),
                     (
-                        "Refused by Responsable de Production",
-                        "Refused by Responsable de Production",
+                        "Refused by Directeur Industriel",
+                        "Refused by Directeur Industriel",
                     ),
                     ("Canceled", "Canceled"),
                 ],
@@ -50,16 +50,16 @@ class Migration(migrations.Migration):
                         "Validated by Gestionaire de Stock",
                     ),
                     (
-                        "Validé par RP",
-                        "Validé par RP",
+                        "Validé par DI",
+                        "Validé par DI",
                     ),
                     (
                         "Refused by Gestionaire de Stock",
                         "Refused by Gestionaire de Stock",
                     ),
                     (
-                        "Refused by Responsable de Production",
-                        "Refused by Responsable de Production",
+                        "Refused by Directeur Industriel",
+                        "Refused by Directeur Industriel",
                     ),
                     ("Canceled", "Canceled"),
                 ],

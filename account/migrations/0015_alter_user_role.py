@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                     ("Nouveau", "Nouveau"),
                     ("Gestionnaire de production", "Gestionnaire de production"),
                     ("Gestionnaire de stock", "Gestionnaire de stock"),
-                    ("Responsable de production", "Responsable de production"),
+                    ("Directeur Industriel", "Directeur Industriel"),
                     ("Admin", "Admin"),
                 ],
                 max_length=30,

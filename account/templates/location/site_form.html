@@ -20,7 +20,7 @@
       <div class="row mb-4">
         <div class="col-md-6">
           <div class="form-outline">
-            <label class="form-label" style="color: #c6ccd7; font-size: 14px;" for="designation">Désignation</label>
+            <label class="form-label labelCustom" for="designation">Désignation</label>
               {{ form.designation }}
           </div>
         </div>
@@ -40,9 +40,15 @@
         </div>
       </div>
     <div class="row">
-        <div class="col">
+        <div class="col-md-6">
           <div class="form-outline">
-              <label class="form-label" style="color: #c6ccd7; font-size: 14px;">Lignes: </label>
+            <label class="form-label labelCustom" for="designation">Address mail</label>
+              {{ form.address }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-outline">
+              <label class="form-label labelCustom">Lignes: </label> </br>
               {% for line in site.lines.all %}
               <button onclick="window.location='{% url 'edit_line' line.id %}?redirect_url=site_{{site.id}}'"  
               type="button" class="badge position-relative formBadge" style="border: none;">

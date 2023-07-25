@@ -86,7 +86,7 @@ List des rapports
         {% endif %}    
     </section>
     {% else %}
-    <form method="GET" style="margin-top: 13%;">
+    <form method="GET" style="margin: 20px 0px;">
         {% csrf_token %}
         <div class="row height d-flex justify-content-center align-items-center">
             <div class="col-md-6">
@@ -95,6 +95,24 @@ List des rapports
                 </div>
             </div>
         </div>
+        <ul class="nav nav-tabs mt-3" style="border-bottom: 1px solid #b7b9bd;">
+            <li class="nav-item {% if not request.GET.state %}customActive{% endif %}">
+                <button class="nav-link text-decoration-none customUnactive {% if not request.GET.state %}text-white{% endif %}" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
+                onMouseOut="this.style.color='#b7b9bd'" style="font-size: 1.15rem;" onclick="location.href='{% url 'list_report' %}'{% if request.GET.search %}?search={{ request.GET.search }}{% endif %};">
+                    All {% if not request.GET.state %}({{ all_total }}){% endif %}
+                </button>
+            </li>
+            {% with allowed_states=role_state|get_item:user.role %}
+                {% for state in allowed_states %}            
+                    <li class="nav-item {% if request.GET.state == state %}customActive{% endif %}">
+                        <button class="nav-link text-decoration-none customUnactive {% if request.GET.state == state %}text-white{% endif %}" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
+                        onMouseOut="this.style.color='#b7b9bd'" style="font-size: 1.15rem;" type="submit" name="state" value="{{ state }}">
+                            {{ state }} ({{ state_totals|get_item:state }})
+                        </button>
+                    </li>
+                {% endfor %}
+            {% endwith %}
+        </ul>
     </form>
         {% include 'empty_list.html' %}
     {% endif %}

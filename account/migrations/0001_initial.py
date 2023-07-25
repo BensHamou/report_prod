@@ -126,7 +126,7 @@ class Migration(migrations.Migration):
                         choices=[
                             ("GP", "Gestionnaire de production"),
                             ("GS", "Gestionnaire de stock"),
-                            ("RP", "Responsable de production"),
+                            ("DI", "Directeur Industriel"),
                         ],
                         max_length=2,
                     ),
