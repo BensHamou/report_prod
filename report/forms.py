@@ -5,7 +5,7 @@ from django.utils import timezone
 
 def getAttrs(type, placeholder=''):
     ATTRIBUTES = {
-        'control': {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'placeholder': ''},
+        'control': {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'placeholder': '', "data-tooltip":"text info", "data-tooltip-location":"top"},
         'search': {'class': 'form-control form-input', 'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; text-indent: 33px; border-radius: 5px;', 'type': 'search', 'placeholder': '', 'id': 'search'},
         'select': {'class': 'form-select', 'style': 'background-color: #cacfd7;'},
         'date': {'type': 'date', 'class': 'form-control dateinput','style': 'background-color: #cacfd7;'},
@@ -76,7 +76,7 @@ class ReportForm(ModelForm):
     class Meta:
         model = Report
         fields = ['n_lot', 'line', 'site', 'prod_day', 'shift', 'team', 'prod_product', 'qte_sac_prod', 'nbt_melange', 'qte_tn', 'poids_melange' ,'qte_sac_reb', 
-                  'qte_sac_rec', 'qte_rec', 'nbt_pallete', 'observation_rec']
+                  'qte_sac_rec', 'qte_rec', 'nbt_pallete', 'observation_rec','gpl_1', 'gpl_2']
                 
 
     n_lot = forms.CharField(widget=forms.TextInput(attrs= getAttrs('control','N° Lot')))
@@ -88,12 +88,14 @@ class ReportForm(ModelForm):
     prod_product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Produit")
     qte_sac_prod = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Sacs Produit')))
     nbt_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Mélange')))    
-    qte_tn = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Qté Tn')))
+    qte_tn = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Tn')))
     qte_sac_reb = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Sacs Rebutés')))
     poids_melange = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Poids Mélange')))
     qte_sac_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Sacs Récyclés')))
-    qte_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Qté Recyclée')))
+    qte_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Recyclée')))
     nbt_pallete = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Pallete')))
+    gpl_1 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','% Citerne GPL 1')))
+    gpl_2 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','% Citerne GPL 2')))
     observation_rec = forms.CharField(widget=forms.Textarea(attrs= getAttrs('textarea','Observation')), required=False)
 
     def __init__(self, *args, **kwargs):

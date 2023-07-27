@@ -614,22 +614,22 @@ def confirmReport(request, pk):
     validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason=refusal_reason, report=report)
     report.save()
     validation.save()
-
     report.save()
-
 
     recipient_list = []
 
     if report.site.address:
         recipient_list.append(report.site.address)
     else:
-        recipient_list.append('benshamou@gmail.com')
-
-    #address = '127.0.0.1:8000/report/'
+        recipient_list.append('benshamou@gmail.com')    
     address = 'http://myreporting.grupopuma-dz.com/report/'
+     
+    #address = '127.0.0.1:8000/report/'
+    #recipient_list = ['benshamou@gmail.com']
+    #recipient_list = ['senoucisan@gmail.com']
 
     messages.success(request, 'Report Confirmé successfully')
-    subject = 'Rapport de production ' + '('+ report.site.designation +')'
+    subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
     message = ''''''
 
     if old_state == 'Brouillon':
@@ -639,7 +639,11 @@ def confirmReport(request, pk):
         Date de production : ''' + str(report.prod_day) + '''
         Équipe : ''' + report.team.designation + '''
         Horaire : ''' + report.shift.__str__() + '''
-        Qte : ''' + str(report.qte_tn) + ''' tonnes.'''
+        Quantité : ''' + str(report.qte_tn) + ''' tonnes.
+        Nombre de sacs rébutés : ''' + str(report.qte_sac_reb) + '''
+        Nombre de sacs recyclés : ''' + str(report.qte_sac_rec) + '''
+        % Citerne GPL 1 : ''' + str(report.gpl_1) + '''
+        % Citerne GPL 2 : ''' + str(report.gpl_2)
         if report.total_arrets > 0:
             message += '''\n        Avec un total d'heures d'arrêt : ''' + str(report.total_arrets)
 
@@ -734,11 +738,13 @@ def validateReport(request, pk):
         recipient_list.append(report.site.address)
     else:
         recipient_list.append('benshamou@gmail.com')    
+    address = 'http://myreporting.grupopuma-dz.com/report/'
      
     #address = '127.0.0.1:8000/report/'
-    address = 'http://myreporting.grupopuma-dz.com/report/'
+    #recipient_list = ['benshamou@gmail.com']
+    #recipient_list = ['senoucisan@gmail.com']
 
-    subject = 'Rapport de production ' + '('+ report.site.designation +')'
+    subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
     message = '''Le rapport ''' + report.n_lot + ''' a été validé par ''' + request.user.fullname + '''(''' + report.line.designation + ''')
     
     Pour plus de détails - ''' + address + str(report.id) + '''/'''
@@ -787,11 +793,13 @@ def refuseReport(request, pk):
         recipient_list.append(report.site.address)
     else:
         recipient_list.append('benshamou@gmail.com')    
+    address = 'http://myreporting.grupopuma-dz.com/report/'
      
     #address = '127.0.0.1:8000/report/'
-    address = 'http://myreporting.grupopuma-dz.com/report/'
+    #recipient_list = ['benshamou@gmail.com']
+    #recipient_list = ['senoucisan@gmail.com']
 
-    subject = 'Rapport de production ' + '('+ report.site.designation +')'
+    subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
     message = '''Le rapport ''' + report.n_lot + ''' a été refusé par ''' + request.user.fullname + '''(''' + report.line.designation + ''')
     Motif: ''' + refusal_reason + '''
     

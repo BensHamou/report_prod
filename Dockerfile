@@ -21,3 +21,5 @@ COPY requirements.txt .
 RUN pip install  -r requirements.txt
 # Remove dependencies
 RUN apk del .tmp-build-deps
+
+COPY . .

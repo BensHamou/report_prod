@@ -156,7 +156,7 @@ Rapport
             </div>
             <div class="col">
                 <div class="form-outline">
-                    <label class="form-label mt-2 labelCustom" for="qte_tn">Qté Tn</label>
+                    <label class="form-label mt-2 labelCustom" for="qte_tn">Quantité Tn</label>
                     {{ form.qte_tn }}
                 {% if form.qte_tn.errors %}
                     <div style="color: red;">
@@ -198,7 +198,7 @@ Rapport
             </div>
             <div class="col">
                 <div class="form-outline">
-                    <label class="form-label mt-2 labelCustom" for="qte_rec">Qté Recyclése</label>
+                    <label class="form-label mt-2 labelCustom" for="qte_rec">Quantité Recyclée</label>
                     {{ form.qte_rec }}
                 {% if form.qte_rec.errors %}
                     <div style="color: red;">
@@ -216,6 +216,35 @@ Rapport
                     {% if form.nbt_pallete.errors %}
                         <div style="color: red;">
                         {% for error in form.nbt_pallete.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- GPL1 - GPL2 -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="gpl_1">% Citerne GPL 1</label>
+                    {{ form.gpl_1 }}
+                    {% if form.gpl_1.errors %}
+                        <div style="color: red;">
+                        {% for error in form.gpl_1.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="gpl_2">% Citerne GPL 1</label>
+                    {{ form.gpl_2 }}
+                    {% if form.gpl_2.errors %}
+                        <div style="color: red;">
+                        {% for error in form.gpl_2.errors %}
                             *{{ error }}
                         {% endfor %}
                         </div>

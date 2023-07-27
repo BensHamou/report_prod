@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models import Q
 from account.models import *
 
@@ -75,8 +75,10 @@ class Report(models.Model):
     qte_tn = models.FloatField(default=0, validators=[MinValueValidator(0)])
     qte_sac_reb = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     qte_sac_rec = models.IntegerField(default=0, validators=[MinValueValidator(0)])
-    qte_rec = models.FloatField(default=0, validators=[MinValueValidator(0)]) ###########################################
-    nbt_pallete = models.IntegerField(default=0, validators=[MinValueValidator(0)]) ###########################################
+    qte_rec = models.FloatField(default=0, validators=[MinValueValidator(0)])
+    nbt_pallete = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    gpl_1 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    gpl_2 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     observation_rec = models.TextField()
 
     def mpconsumeds(self):

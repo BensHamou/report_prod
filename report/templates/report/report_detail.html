@@ -134,7 +134,7 @@ Rapport
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Qté Tn</label>
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Quantité Tn</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.qte_tn }}
@@ -158,7 +158,7 @@ Rapport
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Qté Recyclée</label>
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Quantité Recyclée</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
                             {{ report.qte_rec }}
@@ -174,10 +174,26 @@ Rapport
                     </div>
                 </div>
                 <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">% Citerne GPL 1</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
+                            {{ report.gpl_1 }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">% Citerne GPL 2</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
+                            {{ report.gpl_2 }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
                     <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Observation</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.observation_rec }}
+                            {% if report.observation_rec  %}{{ report.observation_rec }}{% else %}/{% endif %}
                         </div>
                     </div>
                 </div>
