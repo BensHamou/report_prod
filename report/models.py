@@ -135,7 +135,7 @@ class EtatSilo(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
     
     silo = models.ForeignKey(Silo, null=True, on_delete=models.CASCADE)
-    etat = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(300)])
+    etat = models.FloatField(default=0, validators=[MinValueValidator(0)])
     observation = models.TextField()
 
 
