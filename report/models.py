@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db.models import Q
 from account.models import *
 
 
@@ -70,7 +69,7 @@ class Report(models.Model):
     team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL) ##
     shift = models.ForeignKey(Horaire, null=True, on_delete=models.SET_NULL) 
     nbt_melange = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    qte_sac_prod = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    qte_sac_prod = models.IntegerField(default=1, validators=[MinValueValidator(0)])
     poids_melange = models.FloatField(default=0, validators=[MinValueValidator(0)])
     qte_tn = models.FloatField(default=0, validators=[MinValueValidator(0)])
     qte_sac_reb = models.IntegerField(default=0, validators=[MinValueValidator(0)])
@@ -118,7 +117,7 @@ class Arret(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.type_stop.designation + " - " + self.reason_stop.designation + ", a duré " + str(self.duration)
+        return self.type_stop.designation + " - " + self.reason_stop.designation + ", a duré " + str(self.duration) + "."
 
 class MPConsumed(models.Model):
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
@@ -133,25 +132,15 @@ class MPConsumed(models.Model):
     
 class EtatSilo(models.Model):
 
-    ETATS = [
-        ('Plein', 'Plein'),
-        ('Vide', 'Vide'),
-        ('1/4', '1/4'),
-        ('1/2', '1/2'),
-        ('1/3', '1/3'),
-        ('2/3', '2/3'),
-        ('3/4', '3/4'),
-    ]
-
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
     
     silo = models.ForeignKey(Silo, null=True, on_delete=models.CASCADE)
-    etat = models.CharField(choices=ETATS, max_length=5)
+    etat = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(300)])
     observation = models.TextField()
 
 
     def __str__(self):
-        return self.silo.designation + " (" + str(self.etat) +")"
+        return self.silo.designation + " (" + str(self.etat) +"%)"
     
 class Validation(models.Model):
 

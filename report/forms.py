@@ -71,7 +71,6 @@ class ReasonStopForm(ModelForm):
         if user:
             self.fields['type'].queryset = TypeStop.objects.filter(line__in=user.lines.all())
 
-
 class ReportForm(ModelForm):
     class Meta:
         model = Report
@@ -86,14 +85,14 @@ class ReportForm(ModelForm):
     shift = forms.ModelChoiceField(queryset=Horaire.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Horaire")
     team = forms.ModelChoiceField(queryset=Team.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Équipe")
     prod_product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Produit")
-    qte_sac_prod = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Sacs Produit')))
-    nbt_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Mélange')))    
+    qte_sac_prod = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Produit')))
+    nbt_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Mélange')))    
     qte_tn = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Tn')))
-    qte_sac_reb = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Sacs Rebutés')))
+    qte_sac_reb = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Rebutés')))
     poids_melange = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Poids Mélange')))
-    qte_sac_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Sacs Récyclés')))
+    qte_sac_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Récyclés')))
     qte_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Recyclée')))
-    nbt_pallete = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nb Pallete')))
+    nbt_pallete = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Palletes')))
     gpl_1 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','% Citerne GPL 1')))
     gpl_2 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','% Citerne GPL 2')))
     observation_rec = forms.CharField(widget=forms.Textarea(attrs= getAttrs('textarea','Observation')), required=False)
@@ -123,7 +122,7 @@ class MPConsumedForm(ModelForm):
         fields = '__all__'
 
     numo_product = forms.ModelChoiceField(queryset=NumoProduct.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Numo Product")
-    qte_consumed = forms.IntegerField(widget=forms.NumberInput(attrs=getAttrs('control','Qte Consomée')))
+    qte_consumed = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Qte Consomée')))
     observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Observation')), required=False)
 
     def __init__(self, *args, **kwargs):
@@ -136,7 +135,7 @@ class EtatSiloForm(ModelForm):
         fields = '__all__'
 
     silo = forms.ModelChoiceField(queryset=Silo.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Silo")
-    etat = forms.ChoiceField(choices=EtatSilo.ETATS, widget=forms.Select(attrs=getAttrs('select')))
+    etat = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','État')))
     observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Observation')), required=False)
 
     def __init__(self, *args, **kwargs):

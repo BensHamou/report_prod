@@ -20,8 +20,8 @@
                                 <td>{{ arret.type_stop }}</td>
                                 <td>{{ arret.reason_stop }}</td>
                                 <td>{{ arret.duration }}</td>
-                                <td>{{ arret.actions }}</td>
-                                <td>{{ arret.observation }}</td>
+                                <td>{% if arret.actions  %}{{ arret.actions }}{% else %}/{% endif %}</td>
+                                <td>{% if arret.observation  %}{{ arret.observation }}{% else %}/{% endif %}</td>
                             </tr>
                         {% empty %}
                             <tr>

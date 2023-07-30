@@ -117,7 +117,7 @@ Rapport
         <div class="row mb-4">
             <div class="col">
                 <div class="form-outline">
-                    <label class="form-label mt-2 labelCustom" for="nbt_melange">Nb Mélange</label>
+                    <label class="form-label mt-2 labelCustom" for="nbt_melange">Nombre Mélange</label>
                     {{ form.nbt_melange }}
                 {% if form.nbt_melange.errors %}
                     <div style="color: red;">
@@ -130,7 +130,7 @@ Rapport
             </div>
             <div class="col">
                 <div class="form-outline">
-                    <label class="form-label mt-2 labelCustom" for="qte_sac_prod">Nb Sacs Produit</label>
+                    <label class="form-label mt-2 labelCustom" for="qte_sac_prod">Nombre Sacs Produit</label>
                     {{ form.qte_sac_prod }}
                     {% if form.qte_sac_prod.errors %}
                         <div style="color: red;">
@@ -156,7 +156,7 @@ Rapport
             </div>
             <div class="col">
                 <div class="form-outline">
-                    <label class="form-label mt-2 labelCustom" for="qte_tn">Quantité Tn</label>
+                    <label class="form-label mt-2 labelCustom" for="qte_tn">Quantité Tonne</label>
                     {{ form.qte_tn }}
                 {% if form.qte_tn.errors %}
                     <div style="color: red;">
@@ -172,7 +172,7 @@ Rapport
         <div class="row mb-4">
             <div class="col">
                 <div class="form-outline">
-                    <label class="form-label mt-2 labelCustom" for="qte_sac_reb">Nb Sacs Rebutés</label>
+                    <label class="form-label mt-2 labelCustom" for="qte_sac_reb">Nombre Sacs Rebutés</label>
                     {{ form.qte_sac_reb }}
                     {% if form.qte_sac_reb.errors %}
                         <div style="color: red;">
@@ -185,7 +185,7 @@ Rapport
             </div>
             <div class="col">
                 <div class="form-outline">
-                    <label class="form-label mt-2 labelCustom" for="qte_sac_rec">Nb Sacs Récyclés</label>
+                    <label class="form-label mt-2 labelCustom" for="qte_sac_rec">Nombre Sacs Récyclés</label>
                     {{ form.qte_sac_rec }}
                     {% if form.qte_sac_rec.errors %}
                         <div style="color: red;">
@@ -211,7 +211,7 @@ Rapport
             </div>
             <div class="col">
                 <div class="form-outline">
-                    <label class="form-label mt-2 labelCustom" for="nbt_pallete">Nb Pallete</label>
+                    <label class="form-label mt-2 labelCustom" for="nbt_pallete">Nombre Palletes</label>
                     {{ form.nbt_pallete }}
                     {% if form.nbt_pallete.errors %}
                         <div style="color: red;">
@@ -240,7 +240,7 @@ Rapport
             </div>
             <div class="col">
                 <div class="form-outline">
-                    <label class="form-label mt-2 labelCustom" for="gpl_2">% Citerne GPL 1</label>
+                    <label class="form-label mt-2 labelCustom" for="gpl_2">% Citerne GPL 2</label>
                     {{ form.gpl_2 }}
                     {% if form.gpl_2.errors %}
                         <div style="color: red;">
@@ -592,8 +592,9 @@ Rapport
               }
             });
         });
+        product = $('#prod_product-select').val();
         formInstance = $('#isUpdating').val();
-        if(!formInstance) {
+        if(!formInstance && !product) {
           onChangeLine.trigger('change');
         }
     });

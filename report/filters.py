@@ -3,6 +3,7 @@ from django_filters import ChoiceFilter
 from django import forms
 from .forms import getAttrs
 from .models import *
+from django.db.models import Q
 
 class ProductFilter(django_filters.FilterSet):
 

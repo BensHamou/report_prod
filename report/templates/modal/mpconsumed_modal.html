@@ -17,7 +17,7 @@
                             <tr style="border-color: transparent; color: #d9dce1;">
                                 <td>{{ mpconsumed.numo_product }}</td>
                                 <td>{{ mpconsumed.qte_consumed }}</td>
-                                <td>{{ mpconsumed.observation }}</td>
+                                <td>{% if mpconsumed.observation  %}{{ mpconsumed.observation }}{% else %}/{% endif %}</td>
                             </tr>
                         {% empty %}
                             <tr>

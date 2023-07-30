@@ -20,7 +20,8 @@ from django.db.models import Count
 from django.template.defaulttags import register
 from functools import wraps
 from django.core.mail import send_mail
-from django.conf import settings
+from django.utils.html import format_html
+from datetime import datetime
 
 
 def check_creator(view_func):
@@ -306,10 +307,36 @@ def editReasonStopView(request, id):
 
 #REPORTS
 
+class CheckEditorMixin:
+    def check_editor(self, report):
+        if (report.creator != self.request.user or self.request.user.role != "Gestionnaire de production" or 
+            report.state not in ['Brouillon','Refusé par GS','Refusé par DI']) and self.request.user.role != 'Admin':
+            return False
+        return True
+
+    def dispatch(self, request, *args, **kwargs):
+        report = self.get_object()  
+        if not self.check_editor(report):
+            return render(request, '403.html', status=403)
+        return super().dispatch(request, *args, **kwargs)
+    
+class CheckReportViewerMixin:
+    def check_viewer(self, report):
+        if report.line not in self.request.user.lines.all() and self.request.user.role != 'Admin':
+            return False
+        return True
+
+    def dispatch(self, request, *args, **kwargs):
+        report = self.get_object()  
+        if not self.check_viewer(report):
+            return render(request, '403.html', status=403)
+        return super().dispatch(request, *args, **kwargs)
+
 class ReportInline():
     form_class = ReportForm
     model = Report
     template_name = "report_form.html"    
+    login_url = 'login'
     
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -379,7 +406,7 @@ class ReportInline():
             consumed_product.save()
 
 
-class ReportCreate(ReportInline, CreateView):
+class ReportCreate(LoginRequiredMixin, ReportInline, CreateView):
 
     def get_context_data(self, **kwargs):
         ctx = super(ReportCreate, self).get_context_data(**kwargs)
@@ -400,7 +427,7 @@ class ReportCreate(ReportInline, CreateView):
                 'etatsilos': EtatSiloFormSet(self.request.POST or None, prefix='etatsilos'),
             }
 
-class ReportUpdate(ReportInline, UpdateView):
+class ReportUpdate(LoginRequiredMixin, CheckEditorMixin, ReportInline, UpdateView):
 
     def get_context_data(self, **kwargs):
         ctx = super(ReportUpdate, self).get_context_data(**kwargs)
@@ -414,7 +441,7 @@ class ReportUpdate(ReportInline, UpdateView):
             'etatsilos': EtatSiloFormSet(self.request.POST or None, instance=self.object, prefix='etatsilos'),
         }
     
-class ReportDetail(DetailView):
+class ReportDetail(LoginRequiredMixin, CheckReportViewerMixin, DetailView):
     model = Report
     template_name = 'report_detail.html'
     context_object_name = 'report'
@@ -624,7 +651,7 @@ def confirmReport(request, pk):
         recipient_list.append('benshamou@gmail.com')    
     address = 'http://myreporting.grupopuma-dz.com/report/'
      
-    #address = '127.0.0.1:8000/report/'
+    #address = 'http://127.0.0.1:8000/report/'
     #recipient_list = ['benshamou@gmail.com']
     #recipient_list = ['senoucisan@gmail.com']
 
@@ -632,41 +659,51 @@ def confirmReport(request, pk):
     subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
     message = ''''''
 
-    if old_state == 'Brouillon':
-        message += '''   Un rapport a été créé par ''' + request.user.fullname + '''(''' + report.line.designation + ''')''' + ''' :
-        N° Lot : ''' + report.n_lot + ''' 
-        Produit : ''' + report.prod_product.designation + '''
-        Date de production : ''' + str(report.prod_day) + '''
-        Équipe : ''' + report.team.designation + '''
-        Horaire : ''' + report.shift.__str__() + '''
-        Quantité : ''' + str(report.qte_tn) + ''' tonnes.
-        Nombre de sacs rébutés : ''' + str(report.qte_sac_reb) + '''
-        Nombre de sacs recyclés : ''' + str(report.qte_sac_rec) + '''
-        % Citerne GPL 1 : ''' + str(report.gpl_1) + '''
-        % Citerne GPL 2 : ''' + str(report.gpl_2)
-        if report.total_arrets > 0:
-            message += '''\n        Avec un total d'heures d'arrêt : ''' + str(report.total_arrets)
-
-        if report.total_arrets > 0:
-            arrets = report.arrets() 
-            message += '''\n\n        L'équipe de production a eu ''' + str(len(arrets)) + ''' arrêts: '''
-            for i,arret in enumerate(arrets):
-                message += '''          \n''' + str(i+1) + '''-    ''' + arret.__str__()
-        
-        message += '''\n\n        Produits consommés: '''
-        for i,mp in enumerate(report.mpconsumeds()):
-            message += '''          \n''' + str(i+1) + '''-    ''' + mp.__str__()
-        
-        message += '''\n\n        États de silos: '''
-        for i,silo in enumerate(report.etatsilos()):
-            message += '''          \n''' + str(i+1) + '''-    ''' + silo.__str__()
-
-        message += '''\n\n    Pour plus de détails - ''' + address + str(report.id) + '''/'''
-            
-    else:
-        message += request.user.fullname + '''(''' + report.line.designation + ''') a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/'''
     
-    send_mail(subject, message, 'Puma Production', recipient_list)
+    if old_state == 'Brouillon':
+        message = '''
+        <p>Bonjour l'équipe,</p>
+        <p>Un rapport a été créé par <b style="color: #002060">''' + request.user.fullname + '''</b> <b>(''' + report.line.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
+        <ul>
+            <li><b>N° Lot :</b> <b style="color: #002060">''' + report.n_lot + '''</b></li>
+            <li><b>Produit :</b> <b style="color: #002060">''' + report.prod_product.designation + '''</b></li>
+            <li><b>Date de production :</b> <b style="color: #002060">''' + str(report.prod_day) + '''</b></li>
+            <li><b>Équipe :</b> <b style="color: #002060">''' + report.team.designation + '''</b></li>
+            <li><b>Horaire :</b> <b style="color: #002060">''' + report.shift.__str__() + '''</b></li>
+            <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + '''</b> <b>tonnes</b></li>
+            <li><b>Nombre de sacs rébutés :</b> <b style="color: #002060">''' + str(report.qte_sac_reb) + '''</b></li>
+            <li><b>Nombre de sacs recyclés :</b> <b style="color: #002060">''' + str(report.qte_sac_rec) + '''</b></li>
+            <li><b>Citerne GPL 1 :</b> <b style="color: #002060">''' + str(report.gpl_1) + '''%</b></li>
+            <li><b>Citerne GPL 2 :</b> <b style="color: #002060">''' + str(report.gpl_2) + '''%</b></li>
+        </ul>'''
+
+        if report.total_arrets > 0:
+            message += '''</br><p><b>Avec un total d'heures d'arrêt : </b><b style="color: #002060">''' + str(report.total_arrets) + '''</b></p>'''
+            arrets = report.arrets() 
+            message += '''</br></br><h4> L'équipe de production a eu ''' + str(len(arrets)) + ''' arrêts:</h4>
+            <ul>'''
+            for arret in arrets:
+                message += '''<li><b style="color: #002060">''' + arret.__str__() + '''</b></li>'''
+            message += '''</ul>'''
+        
+        message += '''</br><h4>Produits consommés: </h4>
+        <ul>'''
+        for mpconsumed in report.mpconsumeds() :
+            message += '''<li><b style="color: #002060">''' + mpconsumed.__str__() + '''</b></li>'''
+        message += '''</ul>'''
+        
+        message += '''</br><h4>États de silos: </h4>
+        <ul>'''
+        for etatsilo in report.etatsilos() :
+            message += '''<li><b style="color: #002060">''' + etatsilo.__str__() + '''</b></li>'''
+        message += '''</ul>'''
+        
+        message += '''<p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
+    else:
+        message += '''<p><b style="color: #002060">''' + request.user.fullname + '''</b><b>(''' + report.line.designation + ''')</b> a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/</p>'''
+    
+    formatHtml = format_html(message)
+    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
 
     url_path = reverse('report_detail', args=[report.id])
@@ -740,17 +777,18 @@ def validateReport(request, pk):
         recipient_list.append('benshamou@gmail.com')    
     address = 'http://myreporting.grupopuma-dz.com/report/'
      
-    #address = '127.0.0.1:8000/report/'
-    #recipient_list = ['benshamou@gmail.com']
-    #recipient_list = ['senoucisan@gmail.com']
+    #address = 'http://127.0.0.1:8000/report/'
+    #ecipient_list = ['benshamou@gmail.com']
+    #ecipient_list = ['senoucisan@gmail.com']
 
     subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
-    message = '''Le rapport ''' + report.n_lot + ''' a été validé par ''' + request.user.fullname + '''(''' + report.line.designation + ''')
+    message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été <b>validé</b> par <b>''' + request.user.fullname + '''</b><b>(''' + report.line.designation + ''')</b>
     
-    Pour plus de détails - ''' + address + str(report.id) + '''/'''
+    <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
 
-    send_mail(subject, message, 'Puma Production', recipient_list)
-        
+    formatHtml = format_html(message)
+    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+
     messages.success(request, 'Report validated successfully' )
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())
@@ -795,18 +833,20 @@ def refuseReport(request, pk):
         recipient_list.append('benshamou@gmail.com')    
     address = 'http://myreporting.grupopuma-dz.com/report/'
      
-    #address = '127.0.0.1:8000/report/'
+    #address = 'http://127.0.0.1:8000/report/'
     #recipient_list = ['benshamou@gmail.com']
     #recipient_list = ['senoucisan@gmail.com']
-
-    subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
-    message = '''Le rapport ''' + report.n_lot + ''' a été refusé par ''' + request.user.fullname + '''(''' + report.line.designation + ''')
-    Motif: ''' + refusal_reason + '''
     
-    Pour plus de détails - ''' + address + str(report.id) + '''/'''
+    subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
+    message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été  <b>refusé</b> par <b>''' + request.user.fullname + '''</b><b>(''' + report.line.designation + ''')</b></p>
+    </br>
+    <p><b>Motif: ''' + refusal_reason + '''</b></p></br>
 
-    send_mail(subject, message, 'Puma Production', recipient_list)
-        
+    <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
+
+    formatHtml = format_html(message)
+    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+
     messages.success(request, 'Report refused successfully' )
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())

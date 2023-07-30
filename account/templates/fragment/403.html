@@ -3,73 +3,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erreur 403</title>
+    {% load bootstrap5 %} 
+    {% bootstrap_css %} 
+    {% bootstrap_javascript %}
     {% load static %} 
+    <link rel="stylesheet" href="{% static 'fontawesomefree/css/all.min.css' %}">
     <link rel="icon" type="image/ico" href="{% static 'img/favicon.ico' %}">
 </head>
 <style>
-    * {
-    font-family: sans-serif;
-    color: rgba(0,0,0,1);
-    }
-    body {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100vh;
-    padding: 0px 30px;
-    background: #ddd;
-    }
-    .wrapper {
-    max-width: 960px;
-    width: 100%; 
-    margin: 30px auto;
-    transform: scale(0.8);
-    }
-    .landing-page {
-    max-width: 960px;
-    height: 475px;
-    margin: 0;
-    box-shadow: 0px 0px 8px 1px #ccc;
-    background: rgba(14, 42, 91, 0.84);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(14, 42, 91, 0.3);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    }
-    h1 {
-    font-size: 48px;
-    margin: 0;
-    }
-    p {
-    font-size: 16px;
-    width: 35%; 
-    margin: 16px auto 24px;
+  body{
+    background: url('{% static "img/background.png" %}'); 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    height: 100%;
+  }
+  .error{
+    background: rgba(31, 57, 101, 0.6); 
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);  
+    height: 100%; 
+    backdrop-filter: blur(3.7px); 
+    -webkit-backdrop-filter: blur(3.7px);
+  }
+  .error_div{
+    background: rgba(31, 57, 101, 0.95); 
+    color: white; 
+    border-radius: 5px;
+    padding: 75px;
     text-align: center;
-    }
-    .goBack {
-    border-radius: 50px;
-    padding: 8px 24px;
-    font-size: 16px;
-    cursor: pointer;
-    background: #0e2a5b;
-    text-decoration: none;
-    color: #fff;
-    border: none;
-    box-shadow: 0 4px 8px 0 #ccc;
-    }
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  }
 </style>
 <body>
-    <div class="wrapper">
-        <div class="landing-page">
-          <h1>Erreur 403.</h1>
-          <p>Vous n'avez pas accès à cette page.</p>
-          <h3>Veuillez contacter votre administrateur.</h3>
-        </div>
-      </div>
+  <div class="error d-flex justify-content-center align-items-center">
+    <div class="error_div">
+      <p class="display-6 mb-5">
+        <i class="far fa-circle-xmark"></i>
+        Désolé, Vous n'avez pas l'autorisation d'accéder à cette page.
+      </p>
+      <p class="display-6 mb-5">Veuillez contacter l'administrateur</p>
+      <p class="text-muted lead">(Erreur 403)</p>
+    </div>
+  </div>
 </body>
 </html>
