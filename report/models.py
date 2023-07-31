@@ -140,7 +140,7 @@ class EtatSilo(models.Model):
 
 
     def __str__(self):
-        return self.silo.designation + " (" + str(self.etat) +"%)"
+        return self.silo.designation + " (" + str(self.etat) +")"
     
 class Validation(models.Model):
 

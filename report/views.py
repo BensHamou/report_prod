@@ -670,6 +670,8 @@ def confirmReport(request, pk):
             <li><b>Date de production :</b> <b style="color: #002060">''' + str(report.prod_day) + '''</b></li>
             <li><b>Équipe :</b> <b style="color: #002060">''' + report.team.designation + '''</b></li>
             <li><b>Horaire :</b> <b style="color: #002060">''' + report.shift.__str__() + '''</b></li>
+            <li><b>Nombre Mélange :</b> <b style="color: #002060">''' + str(report.nbt_melange) + '''</b></li>
+            <li><b>Nombre Sacs Produit :</b> <b style="color: #002060">''' + str(report.qte_sac_prod) + '''</b></li>
             <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + '''</b> <b>tonnes</b></li>
             <li><b>Nombre de sacs rébutés :</b> <b style="color: #002060">''' + str(report.qte_sac_reb) + '''</b></li>
             <li><b>Nombre de sacs recyclés :</b> <b style="color: #002060">''' + str(report.qte_sac_rec) + '''</b></li>
