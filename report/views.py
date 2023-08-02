@@ -340,6 +340,7 @@ class ReportInline():
     
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
+        kwargs['admin'] = self.request.user.role == 'Admin'
         kwargs['lines'] = self.request.user.lines.all()
         kwargs['team'] = self.request.user.team
         kwargs['site'] = self.request.user.lines.all().first().site
@@ -417,13 +418,13 @@ class ReportCreate(LoginRequiredMixin, ReportInline, CreateView):
         if self.request.method == "GET":
             return {
                 'arrets': ArretsFormSet(prefix='arrets', form_kwargs={'user': self.request.user}),
-                'consumed_products': MPConsumedsFormSet(prefix='consumed_products'),
+                'consumed_products': MPConsumedsFormSet(prefix='consumed_products', form_kwargs={'user': self.request.user}),
                 'etatsilos': EtatSiloFormSet(prefix='etatsilos'),
             }
         else:
             return {
                 'arrets': ArretsFormSet(self.request.POST or None, prefix='arrets', form_kwargs={'user': self.request.user}),
-                'consumed_products': MPConsumedsFormSet(self.request.POST or None, prefix='consumed_products'),
+                'consumed_products': MPConsumedsFormSet(self.request.POST or None, prefix='consumed_products', form_kwargs={'user': self.request.user}),
                 'etatsilos': EtatSiloFormSet(self.request.POST or None, prefix='etatsilos'),
             }
 
@@ -437,7 +438,7 @@ class ReportUpdate(LoginRequiredMixin, CheckEditorMixin, ReportInline, UpdateVie
     def get_named_formsets(self):
         return {
             'arrets': ArretsFormSet(self.request.POST or None, instance=self.object, prefix='arrets', form_kwargs={'user': self.request.user}),
-            'consumed_products': MPConsumedsFormSet(self.request.POST or None, instance=self.object, prefix='consumed_products'),
+            'consumed_products': MPConsumedsFormSet(self.request.POST or None, instance=self.object, prefix='consumed_products', form_kwargs={'user': self.request.user}),
             'etatsilos': EtatSiloFormSet(self.request.POST or None, instance=self.object, prefix='etatsilos'),
         }
     

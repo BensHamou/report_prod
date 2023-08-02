@@ -85,19 +85,20 @@ class ReportForm(ModelForm):
     shift = forms.ModelChoiceField(queryset=Horaire.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Horaire")
     team = forms.ModelChoiceField(queryset=Team.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Équipe")
     prod_product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Produit")
-    qte_sac_prod = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Produit')))
+    qte_sac_prod = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Produit')))
     nbt_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Mélange')))    
     qte_tn = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Tn')))
     qte_sac_reb = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Rebutés')))
-    poids_melange = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Poids Mélange')))
+    poids_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Poids Mélange')))
     qte_sac_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Récyclés')))
-    qte_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Recyclée')))
-    nbt_pallete = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Palletes')))
+    qte_rec = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Recyclée')))
+    nbt_pallete = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Palletes')))
     gpl_1 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','% Citerne GPL 1')))
     gpl_2 = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','% Citerne GPL 2')))
     observation_rec = forms.CharField(widget=forms.Textarea(attrs= getAttrs('textarea','Observation')), required=False)
 
     def __init__(self, *args, **kwargs):
+        admin = kwargs.pop('admin', None)
         lines = kwargs.pop('lines', None)
         teams = kwargs.pop('teams', None)
         team = kwargs.pop('team', None)
@@ -111,10 +112,11 @@ class ReportForm(ModelForm):
             self.fields['line'].initial = lines.first()
             self.fields['team'].initial = team
             self.fields['site'].initial = site
-            self.fields['line'].widget.attrs['disabled'] = True
-            self.fields['team'].widget.attrs['disabled'] = True
-            self.fields['site'].widget.attrs['disabled'] = True
             self.fields['prod_product'].queryset = products 
+            if not admin:
+                self.fields['line'].widget.attrs['disabled'] = True
+                self.fields['team'].widget.attrs['disabled'] = True
+                self.fields['site'].widget.attrs['disabled'] = True
 
 class MPConsumedForm(ModelForm):
     class Meta:
@@ -126,8 +128,11 @@ class MPConsumedForm(ModelForm):
     observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Observation')), required=False)
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super(MPConsumedForm, self).__init__(*args, **kwargs)
-        self.fields['numo_product'].widget.attrs['disabled'] = True
+        if user:
+            if not user.role == 'Admin':
+                self.fields['numo_product'].widget.attrs['disabled'] = True
 
 class EtatSiloForm(ModelForm):
     class Meta:

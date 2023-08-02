@@ -11,7 +11,7 @@ AUTHENTICATION_BACKENDS = [
 with open(os.path.join(BASE_DIR, 'secret_key.txt')) as f:
     SECRET_KEY = f.read().strip()
 
-DEBUG = True
+DEBUG = False
 
 AUTH_USER_MODEL = 'account.User'
 
@@ -132,3 +132,4 @@ EMAIL_HOST_USER = 'pumaprod.reports@gmail.com'
 EMAIL_HOST_PASSWORD = 'azefzqrsebojhusd'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'pumaprod.reports@gmail.com'
+
