@@ -627,6 +627,12 @@ def confirmReport(request, pk):
         redirect_url = f'{url_path}?cache={cache_param}'
         return redirect(redirect_url)
     
+    if report.state == 'Confirmé':
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}'
+        return redirect(redirect_url)
+    
     old_state = report.state
 
     refusal_reason = '/'
@@ -759,6 +765,16 @@ def validateReport(request, pk):
         redirect_url = f'{url_path}?cache={cache_param}'
         return redirect(redirect_url)
     
+    
+    isValidated1 = request.user.role in ['Gestionnaire de stock'] and report.state == 'Validé par GS'
+    isValidated2 = request.user.role in ['Directeur Industriel', 'Admin'] and report.state == 'Validé par DI'
+    isValidated = isValidated1 or isValidated2
+    if isValidated:
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}'
+        return redirect(redirect_url)
+    
     old_state = report.state
     
     if request.user.role in ['Gestionnaire de stock', 'Admin'] and report.state == 'Confirmé':
@@ -782,8 +798,8 @@ def validateReport(request, pk):
     address = 'http://myreporting.grupopuma-dz.com/report/'
      
     #address = 'http://127.0.0.1:8000/report/'
-    #ecipient_list = ['benshamou@gmail.com']
-    #ecipient_list = ['senoucisan@gmail.com']
+    #recipient_list = ['benshamou@gmail.com']
+    #recipient_list = ['senoucisan@gmail.com']
 
     subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
     message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été <b>validé</b> par <b>''' + request.user.fullname + '''</b><b>(''' + report.line.designation + ''')</b>
@@ -808,6 +824,16 @@ def refuseReport(request, pk):
         messages.success(
             request, 'Report Does not exit'
             )
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}'
+        return redirect(redirect_url)
+    
+    isRefused1 = request.user.role in ['Gestionnaire de stock'] and report.state == 'Refusé par GS'
+    isRefused2 = request.user.role in ['Directeur Industriel', 'Admin'] and report.state == 'Refusé par DI'
+    isRefused = isRefused1 or isRefused2
+    if isRefused:
+        messages.success(request, 'Report refused successfully' )
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
         redirect_url = f'{url_path}?cache={cache_param}'
