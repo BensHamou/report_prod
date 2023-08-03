@@ -675,10 +675,11 @@ def confirmReport(request, pk):
             <li><b>Nombre Sacs Produit :</b> <b style="color: #002060">''' + str(report.qte_sac_prod) + '''</b></li>
             <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + '''</b> <b>tonnes</b></li>
             <li><b>Nombre de sacs rébutés :</b> <b style="color: #002060">''' + str(report.qte_sac_reb) + '''</b></li>
-            <li><b>Nombre de sacs recyclés :</b> <b style="color: #002060">''' + str(report.qte_sac_rec) + '''</b></li>
-            <li><b>Citerne GPL 1 :</b> <b style="color: #002060">''' + str(report.gpl_1) + '''%</b></li>
-            <li><b>Citerne GPL 2 :</b> <b style="color: #002060">''' + str(report.gpl_2) + '''%</b></li>
-        </ul>'''
+            <li><b>Nombre de sacs recyclés :</b> <b style="color: #002060">''' + str(report.qte_sac_rec) + '''</b></li>'''
+        if report.site.designation == 'Constantine':
+            message += '''    <li><b>Citerne GPL 1 :</b> <b style="color: #002060">''' + str(report.gpl_1) + '''%</b></li>
+            <li><b>Citerne GPL 2 :</b> <b style="color: #002060">''' + str(report.gpl_2) + '''%</b></li>'''
+        message += '''</ul>'''
 
         if report.total_arrets > 0:
             message += '''</br><p><b>Avec un total d'heures d'arrêt : </b><b style="color: #002060">''' + str(report.total_arrets) + '''</b></p>'''
