@@ -5,7 +5,7 @@ from django.utils import timezone
 
 def getAttrs(type, placeholder=''):
     ATTRIBUTES = {
-        'control': {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'placeholder': '', "data-tooltip":"text info", "data-tooltip-location":"top"},
+        'control': {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'placeholder': ''},
         'search': {'class': 'form-control form-input', 'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; text-indent: 33px; border-radius: 5px;', 'type': 'search', 'placeholder': '', 'id': 'search'},
         'select': {'class': 'form-select', 'style': 'background-color: #cacfd7;'},
         'date': {'type': 'date', 'class': 'form-control dateinput','style': 'background-color: #cacfd7;'},
@@ -74,7 +74,7 @@ class ReasonStopForm(ModelForm):
 class ReportForm(ModelForm):
     class Meta:
         model = Report
-        fields = ['n_lot', 'line', 'site', 'prod_day', 'shift', 'team', 'prod_product', 'qte_sac_prod', 'nbt_melange', 'qte_tn', 'poids_melange' ,'qte_sac_reb', 
+        fields = ['n_lot', 'line', 'site', 'prod_day', 'shift', 'used_time', 'team', 'prod_product', 'qte_sac_prod', 'nbt_melange', 'qte_tn', 'poids_melange' ,'qte_sac_reb', 
                   'qte_sac_rec', 'qte_rec', 'nbt_pallete', 'observation_rec','gpl_1', 'gpl_2']
                 
 
@@ -83,6 +83,7 @@ class ReportForm(ModelForm):
     site = forms.ModelChoiceField(queryset=Site.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Site")
     prod_day = forms.DateField(initial=timezone.now().date(), widget=forms.widgets.DateInput(attrs= getAttrs('date'), format='%Y-%m-%d'))
     shift = forms.ModelChoiceField(queryset=Horaire.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Horaire")
+    used_time = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Mélange')))    
     team = forms.ModelChoiceField(queryset=Team.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Équipe")
     prod_product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Produit")
     qte_sac_prod = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Produit')))

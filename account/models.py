@@ -59,6 +59,14 @@ class Team(models.Model):
     def __str__(self):
         return self.designation + ' ('+self.line.designation +')'
 
+class Objectives(models.Model):
+    line = models.ForeignKey(Line, on_delete=models.CASCADE)
+    date_obj = models.DateField()
+    objectif = models.FloatField(default=0, validators=[MinValueValidator(0)])
+
+    def __str__(self):
+        return self.line.designation + ' ' + str(self.date_obj) + ' ('+self.line.designation +')'
+
 class Silo(models.Model):
     designation = models.CharField(max_length=50)
     line = models.ForeignKey(Line, on_delete=models.CASCADE)

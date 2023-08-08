@@ -14,7 +14,7 @@ class ProductFilter(django_filters.FilterSet):
             Q(designation__icontains=value) | (
             Q(line__designation__icontains=value) &
             Q(line__in=self.user.lines.all()) )  |
-            Q(numo_products__designation__contains=value)
+            Q(numo_products__designation__icontains=value)
         ).distinct()
 
     class Meta:
@@ -45,8 +45,8 @@ class TypeStopFilter(django_filters.FilterSet):
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(
-            Q(designation__contains=value) | (
-            Q(line__designation__contains=value) &
+            Q(designation__icontains=value) | (
+            Q(line__designation__icontains=value) &
             Q(line__in=self.user.lines.all()) )
         ).distinct()
 
@@ -65,8 +65,8 @@ class ReasonStopFilter(django_filters.FilterSet):
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(
-            Q(designation__contains=value) | (
-            Q(type__designation__contains=value) &
+            Q(designation__icontains=value) | (
+            Q(type__designation__icontains=value) &
             Q(type__line__in=self.user.lines.all()) )
         ).distinct()
 
@@ -87,11 +87,13 @@ class ReportFilter(django_filters.FilterSet):
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(
-            Q(n_lot__contains=value) | 
-            Q(prod_day__contains=value) | 
-            Q(prod_product__designation__contains=value) | 
-            Q(team__designation__contains=value)| 
-            Q(site__designation__contains=value)
+            Q(n_lot__icontains=value) | 
+            Q(prod_day__icontains=value) | 
+            Q(prod_product__designation__icontains=value) | 
+            Q(line__designation__icontains=value) | 
+            Q(team__designation__icontains=value) | 
+            Q(creator__fullname__icontains=value) | 
+            Q(site__designation__icontains=value)
         ).distinct()
 
     class Meta:

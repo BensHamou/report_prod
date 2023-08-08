@@ -112,6 +112,19 @@ Rapport
                   {% endif %}
                 </div>
             </div>
+            <div class="col">
+                <div class="form-outline">
+                    <label class="form-label mt-2 labelCustom" for="used_time">Temps utilisé</label>
+                    {{ form.used_time }}
+                    {% if form.used_time.errors %}
+                        <div style="color: red;">
+                        {% for error in form.used_time.errors %}
+                            *{{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
         <!-- NMELANGE - NBSAC - POIDS - QTE_TN -->
         <div class="row mb-4">
@@ -499,7 +512,9 @@ Rapport
             }});
     }
     $(document).ready(function() {
-        $('form').submit(function () { $('[disabled]').removeAttr('disabled'); });
+        $('form').submit(function () {
+            $('[disabled]').removeAttr('disabled'); 
+        });
         onChangeLine = $('#line-select').change(function() {
             var lineId = $(this).val();
             $.ajax({

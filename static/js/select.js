@@ -88,11 +88,14 @@ var bootstrap5 = (function (t, e) {
         const i = this.element.dataset.list;
         i && (this.list = document.getElementById(i)),
           Object.defineProperty(this.element, "value", { get: this.getValue }),
-          this.input.addEventListener("keydown", this.onKeyDown),
-          this.input.addEventListener("input", this.debounce(this.onInput)),
-          this.input.addEventListener("focusin", this.onFocusIn),
-          this.input.addEventListener("focusout", this.onFocusOut),
-          this.input.addEventListener("show.bs.dropdown", this.onShowBsDropdown),
+          this.input.addEventListener("input", this.debounce(this.onInput.bind(this)));
+          this.input.addEventListener("click", this.onClick.bind(this));
+          this.input.addEventListener("keydown", this.onKeyDown.bind(this));
+          this.input.addEventListener("focusin", this.onFocusIn.bind(this));
+          this.input.addEventListener("focusout", this.onFocusOut.bind(this));
+          this.input.addEventListener("show.bs.dropdown", this.onShowBsDropdown.bind(this));
+          this.input.addEventListener("shown.bs.dropdown", this.onShownBsDropdown.bind(this));
+          
           this.input.addEventListener(
             "shown.bs.dropdown",
             this.onShownBsDropdown
@@ -108,16 +111,39 @@ var bootstrap5 = (function (t, e) {
         for (const t of this.select.selectedOptions)
           this.addTag(t.label, t.value);
       }
+
       addTag(t, e = "") {
-        const s = document.createElement("span");
-        
-        s.classList.add("option"),
-          (s.innerText = t),
-          (s.dataset.label = t),
-          (s.dataset.value = e || t),
-          this.count++,
-          this.element.insertBefore(s, this.input);
+        const tagSpan = document.createElement("span");
+        tagSpan.classList.add("option");
+        tagSpan.dataset.label = t;
+        tagSpan.dataset.value = e || t;
+    
+        const closeButtonContainer = document.createElement("span");
+        closeButtonContainer.classList.add("position-absolute", "top-0", "start-100", "translate-middle", "badge", "rounded-pill");
+        closeButtonContainer.style.backgroundColor = "#d80000";
+        closeButtonContainer.style.cursor = "pointer"; // Set the cursor to pointer on hover
+    
+        const closeButton = document.createElement("span");
+        closeButton.innerHTML = "x";
+        closeButton.style.color = "white";
+        closeButton.style.fontSize = "10px";
+    
+        closeButton.addEventListener("click", () => this.removeItem(tagSpan));
+    
+        closeButtonContainer.appendChild(closeButton);
+    
+        const tagTextSpan = document.createElement("span");
+        tagTextSpan.innerText = t;
+    
+        tagSpan.appendChild(tagTextSpan);
+        tagSpan.appendChild(closeButtonContainer);
+    
+        this.count++;
+        this.element.insertBefore(tagSpan, this.input);
       }
+    
+
+      
       removeTag(t) {
         this.count--, t.remove();
       }
@@ -167,11 +193,12 @@ var bootstrap5 = (function (t, e) {
         this.dispatchChanged(), this.resetInput(), this.dropdown.hide();
       }
       removeItem() {
-        const t = this.input.previousElementSibling;
-        t &&
-          (this.removeTag(t),
-          this.setSelected(t.dataset.value, !1),
-          this.dispatchChanged());
+        const clickedTag = event.target.closest('.option');
+        if (clickedTag) {
+            this.removeTag(clickedTag);
+            this.setSelected(clickedTag.dataset.value, false);
+            this.dispatchChanged();
+        }
       }
       nextItem(t = !1) {
         const e = this.getActive();

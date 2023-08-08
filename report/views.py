@@ -492,7 +492,7 @@ class ReportList(LoginRequiredMixin, FilterView):
     def get_context_data(self, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        paginator = Paginator(context['reports'], 8)
+        paginator = Paginator(context['reports'], 12)
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         context['page'] = page_obj
