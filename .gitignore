@@ -1,5 +1,6 @@
 account/__pycache__/
 report/__pycache__/
+report_prod/__pycache__/
 
 account/migrations/
 report/migrations/

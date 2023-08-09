@@ -135,7 +135,7 @@ def listUsersView(request):
     if len(selectedLines) > 0:
         users = users.filter(lines__in=selectedLines)
 
-    paginator = Paginator(users, 8)  # Display 8 items per page
+    paginator = Paginator(users, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
@@ -152,7 +152,7 @@ def listNewUsersView(request):
     filteredData = UserFilter(request.GET, queryset=users)
     users = filteredData.qs
 
-    paginator = Paginator(users, 8)  # Display 8 items per page
+    paginator = Paginator(users, 10) 
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 

@@ -37,10 +37,15 @@ class NumoProduct(models.Model):
         return self.designation
     
 class Product(models.Model):
+    UNITE = [
+        ('Tn', 'Tn'),
+        ('L', 'L'),
+    ]
 
     designation = models.CharField(max_length=100)
     line = models.ForeignKey(Line, on_delete=models.CASCADE, null=True)
     numo_products = models.ManyToManyField(NumoProduct, blank=True)
+    unite = models.CharField(max_length=2, choices=UNITE, default='Tn')
 
     def __str__(self):
         return self.designation
@@ -79,7 +84,7 @@ class Report(models.Model):
     nbt_pallete = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     gpl_1 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     gpl_2 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    observation_rec = models.TextField()
+    observation_rec = models.TextField(null=True)
 
     def mpconsumeds(self):
         return self.mpconsumed_set.all()
@@ -125,7 +130,7 @@ class MPConsumed(models.Model):
     
     numo_product = models.ForeignKey(NumoProduct, null=True, on_delete=models.CASCADE)
     qte_consumed = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    observation = models.TextField()
+    observation = models.TextField(null=True)
 
 
     def __str__(self):
@@ -137,7 +142,7 @@ class EtatSilo(models.Model):
     
     silo = models.ForeignKey(Silo, null=True, on_delete=models.CASCADE)
     etat = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    observation = models.TextField()
+    observation = models.TextField(null=True)
 
 
     def __str__(self):

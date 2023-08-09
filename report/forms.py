@@ -23,12 +23,13 @@ def getAttrs(type, placeholder=''):
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        fields = ['designation', 'line', 'numo_products']
+        fields = ['designation', 'line', 'numo_products', 'unite']
 
     designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
     line = forms.ModelChoiceField(queryset=Line.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Ligne")
 
     numo_products = forms.SelectMultiple(attrs={'class': 'form-select'})
+    unite = forms.ChoiceField(choices=Product.UNITE, widget=forms.Select(attrs=getAttrs('select')))
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -86,9 +87,9 @@ class ReportForm(ModelForm):
     used_time = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Temps utilisé')))    
     team = forms.ModelChoiceField(queryset=Team.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Équipe")
     prod_product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Produit")
-    qte_sac_prod = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Produit')))
+    qte_sac_prod = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs/Bidons Produit')))
     nbt_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Mélange')))    
-    qte_tn = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Tn')))
+    qte_tn = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Tn/L')))
     qte_sac_reb = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Rebutés')))
     poids_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Poids Mélange')))
     qte_sac_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Récyclés')))
@@ -109,7 +110,7 @@ class ReportForm(ModelForm):
         if lines is not None:
             self.fields['line'].queryset = lines
             self.fields['team'].queryset = teams
-            self.fields['site'].queryset = Site.objects.filter(id = site.id)
+            #self.fields['site'].queryset = Site.objects.filter(id = site.id)
             self.fields['line'].initial = lines.first()
             self.fields['team'].initial = team
             self.fields['site'].initial = site
