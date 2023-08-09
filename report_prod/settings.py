@@ -1,22 +1,16 @@
 from pathlib import Path
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-AUTHENTICATION_BACKENDS = [    
+AUTHENTICATION_BACKENDS = [
     'account.authentication.ApiBackend',
     'django.contrib.auth.backends.ModelBackend',
     ]
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 with open(os.path.join(BASE_DIR, 'secret_key.txt')) as f:
     SECRET_KEY = f.read().strip()
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 AUTH_USER_MODEL = 'account.User'
@@ -27,7 +21,7 @@ ADMIN_URL = 'puma_prod/admin/'
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
 
 # Application definition
 
@@ -63,9 +57,9 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         'DIRS': [os.path.join(BASE_DIR, 'account', 'templates', 'user'), os.path.join(BASE_DIR, 'account', 'templates', 'location'),
-                 os.path.join(BASE_DIR, 'account', 'templates', 'horaire'), os.path.join(BASE_DIR, 'account', 'templates', 'fragment'), 
-                 os.path.join(BASE_DIR, 'report', 'templates', 'report'), os.path.join(BASE_DIR, 'report', 'templates', 'product'), 
-                 os.path.join(BASE_DIR, 'report', 'templates', 'numo_product'), os.path.join(BASE_DIR, 'report', 'templates', 'type_stop'), 
+                 os.path.join(BASE_DIR, 'account', 'templates', 'horaire'), os.path.join(BASE_DIR, 'account', 'templates', 'fragment'),
+                 os.path.join(BASE_DIR, 'report', 'templates', 'report'), os.path.join(BASE_DIR, 'report', 'templates', 'product'),
+                 os.path.join(BASE_DIR, 'report', 'templates', 'numo_product'), os.path.join(BASE_DIR, 'report', 'templates', 'type_stop'),
                  os.path.join(BASE_DIR, 'report', 'templates', 'reason_stop'), os.path.join(BASE_DIR, 'report', 'templates', 'modal')],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -82,32 +76,17 @@ TEMPLATES = [
 WSGI_APPLICATION = "report_prod.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'prod_report',
-        'USER': 'puma_u',
-        'PASSWORD': 'puma_u',
-        'HOST': '192.168.135.1',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
-    #'default': {
-    #    'ENGINE': 'django.db.backends.postgresql',
-    #    'NAME': os.environ.get('DB_HOST'),
-    #    'USER': os.environ.get('DB_NAME'),
-    #    'PASSWORD': os.environ.get('DB_USER'),
-    #    'HOST': os.environ.get('DB_PASS'),
-    #    'PORT': os.environ.get('DB_PORT'),
-    #}
 }
 
-        #'HOST': '192.168.56.1',
-
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -125,8 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = "fr"
 
@@ -136,16 +113,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -160,3 +132,4 @@ EMAIL_HOST_USER = 'pumaprod.reports@gmail.com'
 EMAIL_HOST_PASSWORD = 'azefzqrsebojhusd'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'pumaprod.reports@gmail.com'
+
