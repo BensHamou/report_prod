@@ -11,7 +11,7 @@ AUTHENTICATION_BACKENDS = [
 with open(os.path.join(BASE_DIR, 'secret_key.txt')) as f:
     SECRET_KEY = f.read().strip()
 
-DEBUG = False
+DEBUG = True
 
 AUTH_USER_MODEL = 'account.User'
 

@@ -113,8 +113,8 @@ class ReportForm(ModelForm):
             self.fields['line'].initial = lines.first()
             self.fields['team'].initial = team
             self.fields['site'].initial = site
-            self.fields['prod_product'].queryset = products 
-            if not admin:
+            self.fields['prod_product'].queryset = products
+            if not admin and len(lines) < 2:
                 self.fields['line'].widget.attrs['disabled'] = True
                 self.fields['team'].widget.attrs['disabled'] = True
                 self.fields['site'].widget.attrs['disabled'] = True

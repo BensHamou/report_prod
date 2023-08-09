@@ -487,12 +487,14 @@ class ReportList(LoginRequiredMixin, FilterView):
         elif role == 'Admin':
             queryset = queryset.filter(Q(line__in=lines) & Q(state__in=self.all_A))
 
-        return queryset
+        return queryset    
+    
 
     def get_context_data(self, **kwargs):
-
         context = super().get_context_data(**kwargs)
-        paginator = Paginator(context['reports'], 12)
+        page_size_param = self.request.GET.get('page_size')
+        page_size = int(page_size_param) if page_size_param else 12        
+        paginator = Paginator(context['reports'], page_size)
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         context['page'] = page_obj
