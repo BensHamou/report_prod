@@ -668,13 +668,6 @@ def confirmReport(request, pk):
     subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
     message = ''''''
 
-    if report.prod_product.unite == 'Tn':
-        unite = 'tonnes'
-        bag = 'Sacs'
-    else:
-        unite = 'litres'
-        bag = 'Bidons'
-
     if old_state == 'Brouillon':
         message = '''
         <p>Bonjour l'équipe,</p>
@@ -686,8 +679,8 @@ def confirmReport(request, pk):
             <li><b>Équipe :</b> <b style="color: #002060">''' + report.team.designation + '''</b></li>
             <li><b>Horaire :</b> <b style="color: #002060">''' + report.shift.__str__() + '''</b></li>
             <li><b>Nombre Mélange :</b> <b style="color: #002060">''' + str(report.nbt_melange) + '''</b></li>
-            <li><b>Nombre ''' + bag + '''   Produit :</b> <b style="color: #002060">''' + str(report.qte_sac_prod) + '''</b></li>
-            <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + '''</b> <b>''' + unite + '''</b></li>
+            <li><b>Nombre ''' + report.prod_product.unite.conditionnement + '''   Produit :</b> <b style="color: #002060">''' + str(report.qte_sac_prod) + '''</b></li>
+            <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + '''</b> <b>''' + report.prod_product.unite.designation + '''</b></li>
             <li><b>Nombre de sacs rébutés :</b> <b style="color: #002060">''' + str(report.qte_sac_reb) + '''</b></li>
             <li><b>Nombre de sacs recyclés :</b> <b style="color: #002060">''' + str(report.qte_sac_rec) + '''</b></li>'''
         if report.site.designation == 'Constantine':

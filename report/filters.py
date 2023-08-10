@@ -27,6 +27,21 @@ class ProductFilter(django_filters.FilterSet):
         self.user = user
         super(ProductFilter, self).__init__(*args, **kwargs)
         
+class UniteFilter(django_filters.FilterSet):
+
+    search = django_filters.CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
+
+    def filter_search(self, queryset, name, value):
+        return queryset.filter(
+            Q(designation__icontains=value) |
+            Q(code__icontains=value) |
+            Q(conditionnement__icontains=value)
+        ).distinct()
+
+    class Meta:
+        model = Unite
+        fields = ['search']
+        
 class NumoProductFilter(django_filters.FilterSet):
 
     search = django_filters.CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
@@ -37,7 +52,7 @@ class NumoProductFilter(django_filters.FilterSet):
         ).distinct()
 
     class Meta:
-        model = Product
+        model = NumoProduct
         fields = ['search']
 
 class TypeStopFilter(django_filters.FilterSet):

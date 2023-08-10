@@ -29,7 +29,7 @@ class ProductForm(ModelForm):
     line = forms.ModelChoiceField(queryset=Line.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Ligne")
 
     numo_products = forms.SelectMultiple(attrs={'class': 'form-select'})
-    unite = forms.ChoiceField(choices=Product.UNITE, widget=forms.Select(attrs=getAttrs('select')))
+    unite = forms.ModelChoiceField(queryset=Unite.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Unité")
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -39,10 +39,19 @@ class ProductForm(ModelForm):
 
 class NumoProductForm(ModelForm):
     class Meta:
-        model = Product
+        model = NumoProduct
         fields = ['designation']
 
     designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
+
+class UniteForm(ModelForm):
+    class Meta:
+        model = Unite
+        fields = ['code','designation', 'conditionnement']
+
+    code = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Code')))
+    designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
+    conditionnement = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Conditionnement')))
 
 class TypeStopForm(ModelForm):
     class Meta:

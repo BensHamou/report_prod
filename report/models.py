@@ -35,17 +35,22 @@ class NumoProduct(models.Model):
 
     def __str__(self):
         return self.designation
+
+class Unite(models.Model):
+
+    code = models.CharField(max_length=20)
+    designation = models.CharField(max_length=20)
+    conditionnement = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.code
     
 class Product(models.Model):
-    UNITE = [
-        ('Tn', 'Tn'),
-        ('L', 'L'),
-    ]
 
     designation = models.CharField(max_length=100)
     line = models.ForeignKey(Line, on_delete=models.CASCADE, null=True)
     numo_products = models.ManyToManyField(NumoProduct, blank=True)
-    unite = models.CharField(max_length=2, choices=UNITE, default='Tn')
+    unite = models.ForeignKey(Unite, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.designation
