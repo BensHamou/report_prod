@@ -51,7 +51,7 @@ def get_item(dictionary, key):
 
 # PRODUCTS
 @login_required(login_url='login')
-@admin_required
+@admin_required 
 def listProductList(request):
     products = Product.objects.filter(line__in=request.user.lines.all()).order_by('id')
     filteredData = ProductFilter(request.GET, queryset=products, user = request.user)
