@@ -56,7 +56,7 @@ def listProductList(request):
     products = Product.objects.filter(line__in=request.user.lines.all()).order_by('id')
     filteredData = ProductFilter(request.GET, queryset=products, user = request.user)
     products = filteredData.qs
-    paginator = Paginator(products, 8)
+    paginator = Paginator(products, 7)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
@@ -122,7 +122,7 @@ def listNumoProductView(request):
     products = NumoProduct.objects.all().order_by('id')
     filteredData = NumoProductFilter(request.GET, queryset=products)
     products = filteredData.qs
-    paginator = Paginator(products, 8)
+    paginator = Paginator(products, 7)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
