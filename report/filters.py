@@ -11,7 +11,7 @@ class ProductFilter(django_filters.FilterSet):
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(
-            Q(unite__icontains=value) |
+            Q(unite__code__icontains=value) |
             Q(designation__icontains=value) | (
             Q(line__designation__icontains=value) &
             Q(line__in=self.user.lines.all()) )  |
