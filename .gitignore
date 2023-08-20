@@ -1,6 +1,7 @@
 account/__pycache__/
 report/__pycache__/
 report_prod/__pycache__/
+report_prod/settings.py
 
 account/migrations/*
 !account/migrations/__init__.py

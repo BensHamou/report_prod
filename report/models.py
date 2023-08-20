@@ -82,7 +82,7 @@ class Report(models.Model):
     nbt_melange = models.FloatField(default=0, validators=[MinValueValidator(0)])
     qte_sac_prod = models.IntegerField(default=1, validators=[MinValueValidator(0)])
     poids_melange = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    qte_tn = models.FloatField(default=0, validators=[MinValueValidator(0)])
+    qte_tn = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(200)])
     qte_sac_reb = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     qte_sac_rec = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     qte_rec = models.FloatField(default=0, validators=[MinValueValidator(0)])

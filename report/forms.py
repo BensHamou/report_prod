@@ -3,7 +3,7 @@ from django import forms
 from .models import *
 from django.utils import timezone
 
-def getAttrs(type, placeholder=''):
+def getAttrs(type, placeholder='', other={}):
     ATTRIBUTES = {
         'control': {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'placeholder': ''},
         'search': {'class': 'form-control form-input', 'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; text-indent: 33px; border-radius: 5px;', 'type': 'search', 'placeholder': '', 'id': 'search'},
@@ -12,10 +12,13 @@ def getAttrs(type, placeholder=''):
         'textarea': {"rows": "3", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #cacfd7;'}
     }
 
+    
     if type in ATTRIBUTES:
         attributes = ATTRIBUTES[type]
         if 'placeholder' in attributes:
             attributes['placeholder'] = placeholder
+        if other:
+            attributes.update(other)
         return attributes
     else:
         return {}
@@ -98,7 +101,7 @@ class ReportForm(ModelForm):
     prod_product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Produit")
     qte_sac_prod = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs/Bidons Produit')))
     nbt_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Mélange')))    
-    qte_tn = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Tn/L')))
+    qte_tn = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Tn/L', {'max': '200', 'step': '0.01'})))
     qte_sac_reb = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Rebutés')))
     poids_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Poids Mélange')))
     qte_sac_rec = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs Récyclés')))
