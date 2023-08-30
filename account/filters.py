@@ -1,5 +1,4 @@
 import django_filters
-from django_filters import CharFilter, ChoiceFilter, ModelMultipleChoiceFilter, ModelChoiceFilter
 from django import forms
 from django.db.models import Q
 
@@ -19,7 +18,7 @@ class UserFilter(django_filters.FilterSet):
         ).distinct()
 
     class Meta:
-        model = Line
+        model = User
         fields = ['search']
 
 class SiteFilter(django_filters.FilterSet):
