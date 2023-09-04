@@ -41,5 +41,6 @@ urlpatterns = [
     path('report/get-arretData-by-line/', views.get_arretData_by_line, name='get_arretData_by_line'),
     path('report/get-reasons-by-type/', views.get_reasons_by_type, name='get_reasons_by_type'),
     path('report/get-numo-by-product/', views.get_numo_by_product, name='get_numo_by_product'),
+    path('report/get-qte-by-product/', views.get_qte_per_container, name='get_qte_per_container'),
 ]
 

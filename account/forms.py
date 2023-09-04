@@ -46,11 +46,12 @@ class SiteForm(ModelForm):
 class LineForm(ModelForm):
     class Meta:
         model = Line
-        fields = ['designation', 'site']
+        fields = ['designation', 'site', 'obj_ctd']
 
     designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control', 'Désignation')))
     site = forms.ModelChoiceField(queryset=Site.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Site")
-
+    obj_ctd = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Objective quotidienne')))
+    
     def __init__(self, *args, **kwargs):
         site = kwargs.pop('site', None)
         super(LineForm, self).__init__(*args, **kwargs)

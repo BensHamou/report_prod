@@ -30,6 +30,7 @@
                 <th></th>
                 <th>Désignation</th>
                 <th>Unité</th>
+                <th>Qté par Sac/Bidon</th>
                 <th>Ligne</th>
                 <th style="width: 20vh;">Actions</th>
                 </tr>
@@ -40,6 +41,7 @@
                     <td></td>
                     <td>{{ product.designation }}</td>
                     <td>{{ product.unite }}</td>
+                    <td>{{ product.qte_per_container }}</td>
                     <td>{{ product.line }}</td>
                     <td style="vertical-align: middle;">
                         <button type="button" onclick="window.location='{% url 'edit_product' product.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}'" class="btn"><i class="fas fa-edit" style="color: white;"></i></button>

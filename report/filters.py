@@ -15,7 +15,8 @@ class ProductFilter(django_filters.FilterSet):
             Q(designation__icontains=value) | (
             Q(line__designation__icontains=value) &
             Q(line__in=self.user.lines.all()) )  |
-            Q(numo_products__designation__icontains=value)
+            Q(numo_products__designation__icontains=value)|
+            Q(qte_per_container__exact=value) 
         ).distinct()
 
     class Meta:

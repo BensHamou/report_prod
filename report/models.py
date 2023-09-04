@@ -51,6 +51,7 @@ class Product(models.Model):
     line = models.ForeignKey(Line, on_delete=models.CASCADE, null=True)
     numo_products = models.ManyToManyField(NumoProduct, blank=True)
     unite = models.ForeignKey(Unite, on_delete=models.SET_NULL, null=True, blank=True)
+    qte_per_container = models.FloatField(default=0, null=True, validators=[MinValueValidator(0)])
 
     def __str__(self):
         return self.designation
@@ -89,7 +90,7 @@ class Report(models.Model):
     nbt_pallete = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     gpl_1 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     gpl_2 = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
-    observation_rec = models.TextField(null=True)
+    observation_rec = models.TextField(null=True, blank=True)
 
     def mpconsumeds(self):
         return self.mpconsumed_set.all()
@@ -106,7 +107,7 @@ class Report(models.Model):
     @property
     def total_arrets(self):
         return round(sum(arret.duration for arret in self.arrets()), 2)
-
+    
     def __str__(self):
         return self.n_lot + " - " + self.prod_product.designation + " (" + str(self.date_created) +")"
 
@@ -115,15 +116,15 @@ class Arret(models.Model):
     type_stop = models.ForeignKey(TypeStop, null=True, on_delete=models.SET_NULL)
     reason_stop = models.ForeignKey(ReasonStop, null=True, on_delete=models.SET_NULL)
     
-    hour = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(12)])
+    hour = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(8)])
     minutes = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(59)])
     
     @property
     def duration(self):
         return round(self.hour + self.minutes / 60 , 2)
     
-    actions = models.TextField()
-    observation = models.TextField(null=True)
+    actions = models.TextField(null=True, blank=True)
+    observation = models.TextField(null=True, blank=True)
 
     report = models.ForeignKey(Report, on_delete=models.CASCADE)
 
@@ -135,7 +136,7 @@ class MPConsumed(models.Model):
     
     numo_product = models.ForeignKey(NumoProduct, null=True, on_delete=models.CASCADE)
     qte_consumed = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    observation = models.TextField(null=True)
+    observation = models.TextField(null=True, blank=True)
 
 
     def __str__(self):
@@ -147,7 +148,7 @@ class EtatSilo(models.Model):
     
     silo = models.ForeignKey(Silo, null=True, on_delete=models.CASCADE)
     etat = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    observation = models.TextField(null=True)
+    observation = models.TextField(null=True, blank=True)
 
 
     def __str__(self):

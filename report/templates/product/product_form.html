@@ -18,26 +18,34 @@ Produit
 <form method="POST">
   {% csrf_token %}
   <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
-      <div class="row mb-4">
-        <div class="col-md-7">
-          <div class="form-outline">
-              <label class="form-label labelCustom" for="designation">Désignation</label>
-              {{ form.designation }}
-          </div>
-        </div>
-        <div class="col">
-            <div class="form-outline">
-                <label class="form-label labelCustom" for="unite">Unité</label>
-                {{ form.unite }}
-              </div>
-        </div>
-        <div class="col">
-            <div class="form-outline">
-                <label class="form-label labelCustom" for="line">Ligne</label>
-                {{ form.line }}
-              </div>
+    <div class="row mb-4">
+      <div class="col">
+        <div class="form-outline">
+            <label class="form-label labelCustom" for="designation">Désignation</label>
+            {{ form.designation }}
         </div>
       </div>
+      <div class="col">
+          <div class="form-outline">
+              <label class="form-label labelCustom" for="line">Ligne</label>
+              {{ form.line }}
+            </div>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col">
+        <div class="form-outline">
+            <label class="form-label labelCustom" for="unite">Unité</label>
+            {{ form.unite }}
+        </div>
+      </div>
+      <div class="col">
+          <div class="form-outline">
+              <label class="form-label labelCustom" for="qte_per_container">Qté par Sac/Bidon</label>
+              {{ form.qte_per_container }}
+            </div>
+      </div>
+    </div>
       <div class="col">
         <div class="form-outline">
           <label class="form-label labelCustom" for="numo_products">Nomenclatures</label>

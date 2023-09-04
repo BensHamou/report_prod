@@ -290,11 +290,7 @@ def createLineView(request):
         form = LineForm(request.POST)
         if form.is_valid():
             cache_param = str(uuid.uuid4())
-            designation = form.cleaned_data['designation']
-            site = form.cleaned_data['site']
-
-            line = Line(designation=designation, site=site)
-            line.save()
+            form.save()
             redirect_url = request.GET.get('redirect_url', 'location_teams')
             page = request.GET.get('page', '1')
             if 'site_' in redirect_url:

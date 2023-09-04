@@ -42,6 +42,7 @@ class Site(models.Model):
 class Line(models.Model):
     designation = models.CharField(max_length=100)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
+    obj_ctd = models.FloatField(default=0, null=True, validators=[MinValueValidator(0)])
     
     def teams(self):
         return self.team_set.all()

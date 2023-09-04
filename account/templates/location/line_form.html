@@ -18,18 +18,24 @@ Ligne
   {% csrf_token %}
   <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
       <div class="row mb-4">
-        <div class="col-md-7">
+        <div class="col-md-5">
           <div class="form-outline">
             <label class="form-label labelCustom" for="designation">Désignation</label>
             {{ form.designation }}
           </div>
         </div>
-          <div class="col">
-            <div class="form-outline">
-              <label class="form-label labelCustom" for="site">Site</label>
-                {{ form.site }}
-              </div>
-          </div>
+        <div class="col-md-3">
+          <div class="form-outline">
+            <label class="form-label labelCustom" for="site">Site</label>
+              {{ form.site }}
+            </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-outline">
+            <label class="form-label labelCustom" for="obj_ctd">Objective quotidienne</label>
+              {{ form.obj_ctd }}
+            </div>
+        </div>
       </div>
       
       <div class="row">

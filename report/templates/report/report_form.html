@@ -19,6 +19,7 @@ Rapport
                 <div class="form-outline">
                     <label class="form-label labelCustom" for="prod_product">Produit</label>
                     {{ form.prod_product|attr:"id:prod_product-select" }}
+                    <input type="hidden" value="0" id="qte_per_container"/> 
                     {% if form.prod_product.errors %}
                         <div style="color: red;">
                         {% for error in form.prod_product.errors %}
@@ -494,6 +495,7 @@ Rapport
 <script>
     const deleteRow = (row) => {
         row.remove();
+        $('#id_arrets-TOTAL_FORMS').val($('#id_arrets-TOTAL_FORMS').val() - 1);
     }
     const confirmArretDel = (arretId) => {
         swal({ 
@@ -513,7 +515,30 @@ Rapport
     }
     $(document).ready(function() {
         $('form').submit(function () {
-            $('[disabled]').removeAttr('disabled'); 
+            let totalHours = 0;
+            let totalMinutes = 0;
+
+            for (let i = 1; i <= $('#id_arrets-TOTAL_FORMS').val(); i++) {
+                let hourElement = document.getElementById(`id_arrets-${i-1}-hour`);
+                let minuteElement = document.getElementById(`id_arrets-${i-1}-minutes`);
+
+                let hours = parseInt(hourElement.value) || 0;
+                let minutes = parseInt(minuteElement.value) || 0;
+
+                totalHours += hours;
+                totalMinutes += minutes;
+            }
+            totalHours += Math.floor(totalMinutes / 60);
+            totalMinutes %= 60;
+            if (totalHours > 8 || (totalHours === 8 && totalMinutes > 0)) {
+                swal({title: `Oops, le total dépasse 8 heures!`,   
+                        text: `Veuillez modifier votre saisie pour qu'elle dure moins de 8 heures au total.`, confirmButtonColor: "#DD6B55",   
+                        confirmButtonText: "Ok", type: "warning", closeOnCancel: true });
+                return false;
+            }
+            else{
+                $('[disabled]').removeAttr('disabled'); 
+            }
         });
         onChangeLine = $('#line-select').change(function() {
             var lineId = $(this).val();
@@ -611,6 +636,16 @@ Rapport
         formInstance = $('#isUpdating').val();
         if(!formInstance && !product) {
           onChangeLine.trigger('change');
+        }else{
+            $.ajax({ url: '{% url 'get_qte_per_container' %}', type: 'GET',
+                    data: {'product': product, 'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),},
+                success: function(response) {
+                    $('#qte_per_container').val(response.qte_per_container);
+                },
+                error: function(xhr, errmsg, err) {
+                  console.log(errmsg);
+                }
+            });
         }
     });
 
@@ -622,7 +657,7 @@ Rapport
             var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
             $('#item-arrets').append(compiledTmpl);
             
-            $('#id_arrets-TOTAL_FORMS').attr('value', count+1);    
+            $('#id_arrets-TOTAL_FORMS').attr('value', count+1);
             
             var newElement = $('#item-arrets').children().last()[0];
             newElement.scrollIntoView({ behavior: 'smooth' });
@@ -689,6 +724,13 @@ Rapport
                 }
             });
         });
+
+        $('#id_qte_sac_prod').on('change', function() {
+            if ($('#id_qte_sac_prod').val() && $('#qte_per_container').val()){
+                qte = $('#qte_per_container').val() * $('#id_qte_sac_prod').val();
+                $('#id_qte_tn').val(qte / 1000);
+            }
+        });
         
         $('#prod_product-select').on('change', function() {
             var selectedProduct = $(this).val();
@@ -717,12 +759,20 @@ Rapport
                     select.value = response.mp_list[i];
                     count += 1;
                 }
+                // set the element with the id 'id_qte_tn' = response.qte_per_container * the element with the id 'id_qte_sac_prod' * 1000
+                
+                $('#qte_per_container').val(response.qte_per_container);
+
+                if ($('#id_qte_sac_prod').val()){
+                    qte = $('#qte_per_container').val() * $('#id_qte_sac_prod').val()
+                    $('#id_qte_tn').val(qte / 1000);
+                }
               },
               error: function(xhr, textStatus, error) {
                 console.log(error);
               }
             });
-          });
+        });
     });
 </script>
         

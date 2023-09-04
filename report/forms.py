@@ -26,13 +26,14 @@ def getAttrs(type, placeholder='', other={}):
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        fields = ['designation', 'line', 'numo_products', 'unite']
+        fields = ['designation', 'line', 'numo_products', 'unite', 'qte_per_container']
 
     designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
     line = forms.ModelChoiceField(queryset=Line.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Ligne")
 
     numo_products = forms.SelectMultiple(attrs={'class': 'form-select'})
     unite = forms.ModelChoiceField(queryset=Unite.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Unité")
+    qte_per_container = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Qté par Sac/Bidon')))
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -117,6 +118,8 @@ class ReportForm(ModelForm):
         teams = kwargs.pop('teams', None)
         team = kwargs.pop('team', None)
         site = kwargs.pop('site', None)
+        DI = kwargs.pop('DI', None)
+        state = kwargs.pop('state', None)
         products = kwargs.pop('products', None)
         super(ReportForm, self).__init__(*args, **kwargs)
         if lines is not None:
@@ -125,6 +128,7 @@ class ReportForm(ModelForm):
             #self.fields['site'].queryset = Site.objects.filter(id = site.id)
             self.fields['line'].initial = lines.first()
             self.fields['team'].initial = team
+            self.fields['qte_tn'].initial = 0
             self.fields['site'].initial = site
             self.fields['prod_product'].queryset = products
             if not admin and len(lines) < 2:
@@ -132,6 +136,14 @@ class ReportForm(ModelForm):
             if not admin:    
                 self.fields['team'].widget.attrs['disabled'] = True
                 self.fields['site'].widget.attrs['disabled'] = True
+                self.fields['qte_tn'].widget.attrs['disabled'] = True
+            
+            if DI and state == 'Validé par GS':
+                fields_to_disable = ['line', 'n_lot', 'prod_day', 'shift', 'used_time', 'team', 'prod_product', 'qte_sac_prod', 'nbt_melange',
+                                     'qte_sac_reb', 'poids_melange', 'qte_sac_rec', 'qte_rec', 'nbt_pallete', 'gpl_1', 'gpl_2', 'observation_rec']
+                for field_name in fields_to_disable:
+                    self.fields[field_name].widget.attrs['disabled'] = True
+
 
 class MPConsumedForm(ModelForm):
     class Meta:
@@ -144,10 +156,14 @@ class MPConsumedForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
+        state = kwargs.pop('state', None)
         super(MPConsumedForm, self).__init__(*args, **kwargs)
         if user:
             if not user.role == 'Admin':
                 self.fields['numo_product'].widget.attrs['disabled'] = True
+            if user.role == 'Directeur Industriel' and state == 'Validé par GS':
+                self.fields['qte_consumed'].widget.attrs['disabled'] = True
+                self.fields['observation'].widget.attrs['disabled'] = True
 
 class EtatSiloForm(ModelForm):
     class Meta:
@@ -159,8 +175,14 @@ class EtatSiloForm(ModelForm):
     observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Observation')), required=False)
 
     def __init__(self, *args, **kwargs):
+        role = kwargs.pop('role', None)
+        state = kwargs.pop('state', None)
         super(EtatSiloForm, self).__init__(*args, **kwargs)
         self.fields['silo'].widget.attrs['disabled'] = True
+        if role == 'Directeur Industriel' and state == 'Validé par GS':
+            self.fields['etat'].widget.attrs['disabled'] = True
+            self.fields['observation'].widget.attrs['disabled'] = True
+
 
 
 class ArretForm(ModelForm):
@@ -177,6 +199,7 @@ class ArretForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
+        instance = kwargs.get('instance')
         super(ArretForm, self).__init__(*args, **kwargs)
         if user: 
             types = TypeStop.objects.filter(line__in=user.lines.all())
@@ -184,6 +207,8 @@ class ArretForm(ModelForm):
             self.fields['reason_stop'].queryset = ReasonStop.objects.filter(type__in=types)
         self.fields['type_stop'].required = True
         self.fields['reason_stop'].required = True
+        if instance:
+            self.fields['reason_stop'].queryset = ReasonStop.objects.filter(type=instance.type_stop.id)
 
 MPConsumedsFormSet = inlineformset_factory(Report, MPConsumed, form=MPConsumedForm, fields=['numo_product', 'qte_consumed', 'observation'], extra=0)
 

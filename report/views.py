@@ -39,6 +39,8 @@ def check_creatorArret(view_func):
     def wrapper(request, *args, **kwargs):
         arret_id = kwargs.get('pk')
         arret = Arret.objects.get(id=arret_id)
+        if arret.report.state == 'Validé par GS' and request.user.role == 'Directeur Industriel':
+            return view_func(request, *args, **kwargs)
         if not (arret.report.state in ['Brouillon','Refusé par GS', 'Refusé par DI'] and (request.user.role == "Gestionnaire de production" and request.user == arret.report.creator or request.user.role == 'Admin')):
             return render(request, '403.html', status=403)
         return view_func(request, *args, **kwargs)
@@ -309,6 +311,8 @@ def editReasonStopView(request, id):
 
 class CheckEditorMixin:
     def check_editor(self, report):
+        if self.request.user.role == 'Directeur Industriel' and report.state == 'Validé par GS':
+            return True
         if (report.creator != self.request.user or self.request.user.role != "Gestionnaire de production" or 
             report.state not in ['Brouillon','Refusé par GS','Refusé par DI']) and self.request.user.role != 'Admin':
             return False
@@ -341,11 +345,14 @@ class ReportInline():
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['admin'] = self.request.user.role == 'Admin'
+        kwargs['DI'] = self.request.user.role == 'Directeur Industriel'
         kwargs['lines'] = self.request.user.lines.all()
         kwargs['team'] = self.request.user.team
         kwargs['site'] = self.request.user.lines.all().first().site
         kwargs['teams'] = Team.objects.filter(line__in=self.request.user.lines.all())
         kwargs['products'] = Product.objects.filter(line__in=self.request.user.lines.all())
+        if self.object:
+            kwargs['state'] = self.object.state
         return kwargs
 
     def form_valid(self, form):
@@ -438,8 +445,8 @@ class ReportUpdate(LoginRequiredMixin, CheckEditorMixin, ReportInline, UpdateVie
     def get_named_formsets(self):
         return {
             'arrets': ArretsFormSet(self.request.POST or None, instance=self.object, prefix='arrets', form_kwargs={'user': self.request.user}),
-            'consumed_products': MPConsumedsFormSet(self.request.POST or None, instance=self.object, prefix='consumed_products', form_kwargs={'user': self.request.user}),
-            'etatsilos': EtatSiloFormSet(self.request.POST or None, instance=self.object, prefix='etatsilos'),
+            'consumed_products': MPConsumedsFormSet(self.request.POST or None, instance=self.object, prefix='consumed_products', form_kwargs={'user': self.request.user, 'state': self.object.state}),
+            'etatsilos': EtatSiloFormSet(self.request.POST or None, instance=self.object, prefix='etatsilos', form_kwargs={'role': self.request.user.role, 'state': self.object.state }),
         }
     
 class ReportDetail(LoginRequiredMixin, CheckReportViewerMixin, DetailView):
@@ -583,7 +590,7 @@ def get_data_by_line(request):
     team_list = [{'id': team.id, 'designation': team.__str__()} for team in Team.objects.filter(line_id=line_id)]
     product_list = [{'id': product.id, 'designation': product.__str__()} for product in Product.objects.filter(line_id=line_id)]
     type_stop_list = [{'id': type_stop.id, 'designation': type_stop.__str__()} for type_stop in type_stops]
-    reason_stop_list = [{'id': reason_stop.id, 'designation': reason_stop.__str__()} for reason_stop in ReasonStop.objects.filter(type__in=type_stops)]
+    reason_stop_list = [{'id': reason_stop.id, 'designation': reason_stop.__str__()} for reason_stop in ReasonStop.objects.none()]
 
     return JsonResponse({'teams': team_list, 'products': product_list, 'type_stops': type_stop_list, 
                          'reason_stops': reason_stop_list, 'silos': silo_list, 'horaires_list': horaires_list})
@@ -596,7 +603,7 @@ def get_arretData_by_line(request):
     type_stops = TypeStop.objects.filter(line_id=line_id)
 
     type_stop_list = [{'id': type_stop.id, 'designation': type_stop.__str__()} for type_stop in type_stops]
-    reason_stop_list = [{'id': reason_stop.id, 'designation': reason_stop.__str__()} for reason_stop in ReasonStop.objects.filter(type__in=type_stops)]
+    reason_stop_list = [{'id': reason_stop.id, 'designation': reason_stop.__str__()} for reason_stop in ReasonStop.objects.none()]
 
     return JsonResponse({'type_stops': type_stop_list, 'reason_stops': reason_stop_list })
 
@@ -611,9 +618,25 @@ def get_reasons_by_type(request):
 def get_numo_by_product(request):
     numo_products = NumoProduct.objects.filter(product=request.GET.get('product'))
 
+    try:
+        product = Product.objects.get(id=request.GET.get('product'))
+        qte_per_container = product.qte_per_container
+    except Product.DoesNotExist:
+        qte_per_container = 0
+
     mp_list = [numo_product.id for numo_product in numo_products]
 
-    return JsonResponse({'mp_list': mp_list })
+    return JsonResponse({'mp_list': mp_list, 'qte_per_container': qte_per_container })
+
+@login_required(login_url='login')
+def get_qte_per_container(request):
+    try:
+        product = Product.objects.get(id=request.GET.get('product'))
+        qte_per_container = product.qte_per_container
+        print('HEREEEEE')
+    except Product.DoesNotExist:
+        qte_per_container = 0
+    return JsonResponse({'qte_per_container': qte_per_container })
 
 @login_required(login_url='login')
 @check_creator
@@ -669,6 +692,7 @@ def confirmReport(request, pk):
     message = ''''''
 
     if old_state == 'Brouillon':
+        taux = str(round(report.qte_tn / report.line.obj_ctd, 2) * 100) + '%'
         message = '''
         <p>Bonjour l'équipe,</p>
         <p>Un rapport a été créé par <b style="color: #002060">''' + request.user.fullname + '''</b> <b>(''' + report.line.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
@@ -681,7 +705,7 @@ def confirmReport(request, pk):
             <li><b>Temps Utilisé :</b> <b style="color: #002060">''' + str(report.used_time) + '''h</b></li>
             <li><b>Nombre Mélange :</b> <b style="color: #002060">''' + str(report.nbt_melange) + '''</b></li>
             <li><b>Nombre ''' + report.prod_product.unite.conditionnement + '''   Produit :</b> <b style="color: #002060">''' + str(report.qte_sac_prod) + '''</b></li>
-            <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + '''</b> <b>''' + report.prod_product.unite.designation + '''</b></li>
+            <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + '''</b> <b>''' + report.prod_product.unite.designation + ''' (''' + taux + ''' de l'objectif quotidienne)</b></li>
             <li><b>Nombre de sacs rébutés :</b> <b style="color: #002060">''' + str(report.qte_sac_reb) + '''</b></li>
             <li><b>Nombre de sacs recyclés :</b> <b style="color: #002060">''' + str(report.qte_sac_rec) + '''</b></li>'''
         if report.site.designation == 'Constantine':
