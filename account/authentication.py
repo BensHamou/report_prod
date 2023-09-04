@@ -10,14 +10,6 @@ class ApiBackend(BaseBackend):
             user = User.objects.get(username = 'admin')
             return user
         
-        if username == 'imad.sebti@grupopuma-dz.com' and password == 'Azerty1234':
-            user = User.objects.get(username = 'sebti_i')
-            return user
-        
-        if username == 'Houari.DJEFFAL@grupopuma-dz.com' and password == 'AdvAdv-123':
-            user = User.objects.get(username = 'djeffal_mh')
-            return user
-        
         auth = HTTPBasicAuth(username, password)
 
         response = requests.post('https://api.ldap.groupe-hasnaoui.com/pumaprd/auth', auth=auth)
