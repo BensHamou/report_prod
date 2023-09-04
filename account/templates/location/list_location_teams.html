@@ -41,8 +41,8 @@ Emplacements & Équipes
             <thead style="border-bottom: 2px solid white;">
                 <tr class="text-white">
                 <th></th>
-                <th>Site</th>
-                <th>Ligne</th>
+                <th style="width: 24vh;">Site</th>
+                <th style="width: 26vh;">Ligne</th>
                 <th>Équipes</th>
                 <th>Silos</th>
                 </tr>
@@ -55,12 +55,12 @@ Emplacements & Équipes
                                 <td></td>
                                 <td>
                                     {{ line.site }} 
-                                    <span class="badge">
+                                    <span class="badge" style='padding: 5px;'>
                                         <a href="{% url 'edit_site' line.site.id %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </span>
-                                    <span class="badge">
+                                    <span class="badge" style='padding: 2px;'>
                                         <a onclick="confirmSiteDel('{{line.site.id|escapejs}}', '{{line.site.designation|escapejs}}')" style="color: white; cursor: pointer; text-decoration: none;">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
@@ -68,12 +68,12 @@ Emplacements & Équipes
                                 </td>
                                 <td>
                                     {{ line.designation }} 
-                                    <span class="badge">
+                                    <span class="badge" style='padding: 5px;'>
                                         <a href="{% url 'edit_line' line.id %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}" style="color: white; text-decoration: none;">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </span>
-                                    <span class="badge">
+                                    <span class="badge" style='padding: 2px;'>
                                         <a onclick="confirmLineDel('{{line.id|escapejs}}', '{{line.designation|escapejs}}')" style="color: white; cursor: pointer; text-decoration: none;">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
