@@ -82,6 +82,7 @@ class User(AbstractUser):
         ('Gestionnaire de production', 'Gestionnaire de production'),
         ('Gestionnaire de stock', 'Gestionnaire de stock'),
         ('Directeur Industriel', 'Directeur Industriel'),
+        ('Observateur', 'Observateur'),
         ('Admin', 'Admin'),
     ]
 

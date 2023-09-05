@@ -44,17 +44,17 @@ List des rapports
     <section class="sectionList"> 
         <table class="table table-borderless">
             <thead style="border-bottom: 2px solid white;">
-                <tr class="text-white">
+                <tr class="text-white" style="vertical-align: middle;">
                 <th>N° Lot</th>
-                <th>Date Création</th>
-                <th>Date Production</th>
+                <th style="width: 19vh;">Date de création</th>
+                <th style="width: 8vh;">Date de production</th>
                 <th>Équipe</th>
                 <th>Produit</th>
                 <th>Quantité</th>
                 <th>Total d'arréts</th>
                 <th>État</th>
                 {% if user.role == 'Gestionnaire de production' %}
-                    <th style="width: 15vh;">Actions</th>
+                    <th style="width: 6vh;">Actions</th>
                 {% endif %}
                 </tr>
             </thead>
@@ -62,19 +62,19 @@ List des rapports
                 {% for report in page %}
                 <tr style="color: #dde3f0;">
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.n_lot }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.date_created }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_day }}</td>
+                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.date_created|date:"d/m/Y h:i" }}</td>
+                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_day|date:"d/m/Y" }}</td>
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.team }}</td>
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_product }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_sac_prod }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.total_arrets }}</td>
+                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_sac_prod }} {{ report.prod_product.unite.code }}</td>
+                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.total_arrets }}h</td>
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.state }}</td>
                     {% if report.creator == user and user.role == 'Gestionnaire de production' %}
-                    <td style="vertical-align: middle;">            
-                        <button type="button" onclick="window.location='{% url 'update_report' report.id %}'" 
+                    <td style="vertical-align: middle; padding: 8px 0px; text-align: center;">            
+                        <button type="button" onclick="window.location='{% url 'update_report' report.id %}'"  style="padding: 2px;"
                         class="btn" {% if report.state != 'Brouillon' %} disabled {% endif %}><i class="fas fa-edit" style="color: white;"></i></button>
                         {% if report.creator and report.creator == user %}
-                            <button type="button" {% if report.state != 'Brouillon' %} disabled {% endif %} onclick="confirmRepDel('{{report.id|escapejs}}', '{{report.n_lot|escapejs}}', '{{report.team|escapejs}}', '{{report.prod_day|escapejs}}', '{{report.prod_product|escapejs}}')" class="btn">
+                            <button type="button" {% if report.state != 'Brouillon' %} disabled {% endif %}  style="padding: 2px;" onclick="confirmRepDel('{{report.id|escapejs}}', '{{report.n_lot|escapejs}}', '{{report.team|escapejs}}', '{{report.prod_day|escapejs}}', '{{report.prod_product|escapejs}}')" class="btn">
                                 <i class="far fa-trash-alt" style="color: white;"></i>
                             </button>
                         {% endif %}

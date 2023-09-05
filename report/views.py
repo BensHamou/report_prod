@@ -324,9 +324,21 @@ class CheckEditorMixin:
             return render(request, '403.html', status=403)
         return super().dispatch(request, *args, **kwargs)
     
+class CheckCreatorMixin:
+    def check_can_create(self):
+        if self.request.user.role in ['Observateur', 'Nouveau']:
+            return False
+        return True
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.check_can_create():
+            return render(request, '403.html', status=403)
+        return super().dispatch(request, *args, **kwargs)
+    
 class CheckReportViewerMixin:
     def check_viewer(self, report):
-        if report.line not in self.request.user.lines.all() and self.request.user.role != 'Admin':
+        lines = self.request.user.lines.all()
+        if report.line not in lines and self.request.user.role != 'Admin':
             return False
         return True
 
@@ -414,7 +426,7 @@ class ReportInline():
             consumed_product.save()
 
 
-class ReportCreate(LoginRequiredMixin, ReportInline, CreateView):
+class ReportCreate(LoginRequiredMixin, CheckCreatorMixin, ReportInline, CreateView):
 
     def get_context_data(self, **kwargs):
         ctx = super(ReportCreate, self).get_context_data(**kwargs)
@@ -471,6 +483,7 @@ class ReportList(LoginRequiredMixin, FilterView):
     all_A = ['Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
     all_GS = ['Confirmé', 'Validé par GS', 'Refusé par GS', 'Refusé par DI']
     all_DI = ['Validé par GS', 'Validé par DI', 'Refusé par DI']
+    all_NV = ['']
 
     def get_filterset_kwargs(self, filterset_class):
         kwargs = super().get_filterset_kwargs(filterset_class)
@@ -490,8 +503,11 @@ class ReportList(LoginRequiredMixin, FilterView):
                 
         elif role == 'Directeur Industriel':
             queryset = queryset.filter(Q(line__in=lines) & Q(state__in=self.all_DI))
+                
+        elif role == 'Nouveau':
+            queryset = queryset.filter(Q(state__in=self.all_NV))
 
-        elif role == 'Admin':
+        elif role in ['Admin', 'Observateur']:
             queryset = queryset.filter(Q(line__in=lines) & Q(state__in=self.all_A))
 
         return queryset    
@@ -507,7 +523,7 @@ class ReportList(LoginRequiredMixin, FilterView):
         context['page'] = page_obj
         context['state_totals'] = self.get_state_totals()
         context['all_total'] = len(context['reports'])
-        role_state = {'Gestionnaire de production': self.all_GP, 'Gestionnaire de stock': self.all_GS, 'Directeur Industriel': self.all_DI, 'Admin': self.all_A}
+        role_state = {'Gestionnaire de production': self.all_GP, 'Gestionnaire de stock': self.all_GS, 'Directeur Industriel': self.all_DI, 'Admin': self.all_A, 'Observateur': self.all_A, 'Nouveau': self.all_NV}
         context['role_state'] = role_state
         return context
     
@@ -633,7 +649,6 @@ def get_qte_per_container(request):
     try:
         product = Product.objects.get(id=request.GET.get('product'))
         qte_per_container = product.qte_per_container
-        print('HEREEEEE')
     except Product.DoesNotExist:
         qte_per_container = 0
     return JsonResponse({'qte_per_container': qte_per_container })
