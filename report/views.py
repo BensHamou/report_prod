@@ -637,21 +637,23 @@ def get_numo_by_product(request):
     try:
         product = Product.objects.get(id=request.GET.get('product'))
         qte_per_container = product.qte_per_container
+        code_unite = product.unite.code
     except Product.DoesNotExist:
         qte_per_container = 0
 
     mp_list = [numo_product.id for numo_product in numo_products]
 
-    return JsonResponse({'mp_list': mp_list, 'qte_per_container': qte_per_container })
+    return JsonResponse({'mp_list': mp_list, 'qte_per_container': qte_per_container, 'code_unite': code_unite})
 
 @login_required(login_url='login')
 def get_qte_per_container(request):
     try:
         product = Product.objects.get(id=request.GET.get('product'))
         qte_per_container = product.qte_per_container
+        code_unite = product.unite.code
     except Product.DoesNotExist:
         qte_per_container = 0
-    return JsonResponse({'qte_per_container': qte_per_container })
+    return JsonResponse({'qte_per_container': qte_per_container, 'code_unite': code_unite })
 
 @login_required(login_url='login')
 @check_creator
@@ -707,7 +709,12 @@ def confirmReport(request, pk):
     message = ''''''
 
     if old_state == 'Brouillon':
-        taux = str(round(report.qte_tn / report.line.obj_ctd, 2) * 100) + '%'
+        taux_nbr = 0
+        if report.line.obj_ctd > 0:
+            relative_time_spent = report.used_time / report.shift.passed_time
+            real_obj = report.line.obj_ctd * relative_time_spent
+            taux_nbr = report.qte_tn / real_obj
+        taux = str(round(taux_nbr, 2) * 100) + '%'
         message = '''
         <p>Bonjour l'équipe,</p>
         <p>Un rapport a été créé par <b style="color: #002060">''' + request.user.fullname + '''</b> <b>(''' + report.line.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>

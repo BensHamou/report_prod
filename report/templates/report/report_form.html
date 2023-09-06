@@ -20,6 +20,7 @@ Rapport
                     <label class="form-label labelCustom" for="prod_product">Produit</label>
                     {{ form.prod_product|attr:"id:prod_product-select" }}
                     <input type="hidden" value="0" id="qte_per_container"/> 
+                    <input type="hidden" value="Tn" id="code_unite"/> 
                     {% if form.prod_product.errors %}
                         <div style="color: red;">
                         {% for error in form.prod_product.errors %}
@@ -513,6 +514,19 @@ Rapport
               window.location.href = "{% url 'delete_arret' 123456789 %}".replace(/123456789/, arretId);
             }});
     }
+
+    const set_qte_code = (product, csrf) => {
+        $.ajax({ url: '{% url 'get_qte_per_container' %}', type: 'GET',
+            data: {'product': product, 'csrfmiddlewaretoken': csrf,},
+                success: function(response) {
+                    $('#qte_per_container').val(response.qte_per_container);
+                    $('#code_unite').val(response.code_unite);
+                },
+                error: function(xhr, errmsg, err) {
+                console.log(errmsg);
+                }
+            });
+    }
     $(document).ready(function() {
         $('form').submit(function () {
             let totalHours = 0;
@@ -637,15 +651,8 @@ Rapport
         if(!formInstance && !product) {
           onChangeLine.trigger('change');
         }else{
-            $.ajax({ url: '{% url 'get_qte_per_container' %}', type: 'GET',
-                    data: {'product': product, 'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),},
-                success: function(response) {
-                    $('#qte_per_container').val(response.qte_per_container);
-                },
-                error: function(xhr, errmsg, err) {
-                  console.log(errmsg);
-                }
-            });
+            var csrf = $('input[name=csrfmiddlewaretoken]').val();
+            set_qte_code(product, csrf);
         }
     });
 
@@ -728,7 +735,11 @@ Rapport
         $('#id_qte_sac_prod').on('change', function() {
             if ($('#id_qte_sac_prod').val() && $('#qte_per_container').val()){
                 qte = $('#qte_per_container').val() * $('#id_qte_sac_prod').val();
-                $('#id_qte_tn').val(qte / 1000);
+                code = $('#code_unite').val();
+                if(code == 'Tn'){
+                    qte = qte / 1000;
+                }
+                $('#id_qte_tn').val(qte);
             }
         });
         
@@ -762,10 +773,15 @@ Rapport
                 // set the element with the id 'id_qte_tn' = response.qte_per_container * the element with the id 'id_qte_sac_prod' * 1000
                 
                 $('#qte_per_container').val(response.qte_per_container);
+                $('#code_unite').val(response.code_unite);
 
                 if ($('#id_qte_sac_prod').val()){
                     qte = $('#qte_per_container').val() * $('#id_qte_sac_prod').val()
-                    $('#id_qte_tn').val(qte / 1000);
+                    code = $('#code_unite').val();
+                    if(code == 'Tn'){
+                        qte = qte / 1000;
+                    }
+                    $('#id_qte_tn').val(qte);
                 }
               },
               error: function(xhr, textStatus, error) {
