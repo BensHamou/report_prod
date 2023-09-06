@@ -714,7 +714,9 @@ def confirmReport(request, pk):
             relative_time_spent = report.used_time / report.shift.passed_time
             real_obj = report.line.obj_ctd * relative_time_spent
             taux_nbr = report.qte_tn / real_obj
-        taux = str(round(taux_nbr, 2) * 100) + '%'
+            taux_nbr = taux_nbr * 100
+            taux_nbr = round(taux_nbr, 2)
+        taux = str(taux_nbr) + '%'
         message = '''
         <p>Bonjour l'équipe,</p>
         <p>Un rapport a été créé par <b style="color: #002060">''' + report.creator.fullname + '''</b> <b>(''' + report.line.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
@@ -727,7 +729,8 @@ def confirmReport(request, pk):
             <li><b>Temps Utilisé :</b> <b style="color: #002060">''' + str(report.used_time) + '''h</b></li>
             <li><b>Nombre Mélange :</b> <b style="color: #002060">''' + str(report.nbt_melange) + '''</b></li>
             <li><b>Nombre ''' + report.prod_product.unite.conditionnement + '''   Produit :</b> <b style="color: #002060">''' + str(report.qte_sac_prod) + '''</b></li>
-            <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + '''</b> <b>''' + report.prod_product.unite.designation + ''' (''' + taux + ''' de l'objectif par shift.)</b></li>
+            <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + ''' ''' + report.prod_product.unite.designation + '''</b></li>
+            <li><b>Objectif par shift :</b> <b style="color: #002060">''' + taux + '''</b></li>
             <li><b>Nombre de sacs rébutés :</b> <b style="color: #002060">''' + str(report.qte_sac_reb) + '''</b></li>
             <li><b>Nombre de sacs recyclés :</b> <b style="color: #002060">''' + str(report.qte_sac_rec) + '''</b></li>'''
         if report.site.designation == 'Constantine':
