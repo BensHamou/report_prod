@@ -717,7 +717,7 @@ def confirmReport(request, pk):
         taux = str(round(taux_nbr, 2) * 100) + '%'
         message = '''
         <p>Bonjour l'équipe,</p>
-        <p>Un rapport a été créé par <b style="color: #002060">''' + request.user.fullname + '''</b> <b>(''' + report.line.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
+        <p>Un rapport a été créé par <b style="color: #002060">''' + report.creator.fullname + '''</b> <b>(''' + report.line.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
         <ul>
             <li><b>N° Lot :</b> <b style="color: #002060">''' + report.n_lot + '''</b></li>
             <li><b>Produit :</b> <b style="color: #002060">''' + report.prod_product.designation + '''</b></li>
@@ -761,7 +761,7 @@ def confirmReport(request, pk):
         message += '''<p><b style="color: #002060">''' + request.user.fullname + '''</b><b>(''' + report.line.designation + ''')</b> a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/</p>'''
     
     formatHtml = format_html(message)
-    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+    #send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
 
     url_path = reverse('report_detail', args=[report.id])

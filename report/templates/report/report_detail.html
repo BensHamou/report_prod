@@ -228,7 +228,13 @@ Rapport
                                 <p class="lead m-0 p-0" style="font-size: 18px;">Annuler</p>
                             </a>
                         {% else %}
-                            <h4 class="lead text-white"><strong></br></strong></h4>
+                            <a href="{% url 'confirm_report' report.id %}" class="btn btn-success text-white p-0" 
+                            style="width: 25%; margin-right: 2%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                <p class="lead m-0 p-0" style="font-size: 18px;">Confirmer</p>
+                            </a>
+                            <a href="{% url 'cancel_report' report.id %}" class="btn btn-danger text-white p-0" style="width: 25%; margin-right: 2%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                <p class="lead m-0 p-0" style="font-size: 18px;">Annuler</p>
+                            </a>
                         {% endif %}
                     {% else %}
                         <h4 class="lead text-white"><strong></br></strong></h4>
