@@ -477,7 +477,7 @@ class ReportList(LoginRequiredMixin, FilterView):
     template_name = "list_reports.html"
     context_object_name = "reports"
     filterset_class = ReportFilter
-    ordering = ['-date_modified']
+    ordering = ['-prod_day']
         
     all_GP = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
     all_A = ['Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
