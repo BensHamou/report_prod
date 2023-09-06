@@ -727,7 +727,7 @@ def confirmReport(request, pk):
             <li><b>Temps Utilisé :</b> <b style="color: #002060">''' + str(report.used_time) + '''h</b></li>
             <li><b>Nombre Mélange :</b> <b style="color: #002060">''' + str(report.nbt_melange) + '''</b></li>
             <li><b>Nombre ''' + report.prod_product.unite.conditionnement + '''   Produit :</b> <b style="color: #002060">''' + str(report.qte_sac_prod) + '''</b></li>
-            <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + '''</b> <b>''' + report.prod_product.unite.designation + ''' (''' + taux + ''' de l'objectif quotidienne)</b></li>
+            <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + '''</b> <b>''' + report.prod_product.unite.designation + ''' (''' + taux + ''' de l'objectif par shift.)</b></li>
             <li><b>Nombre de sacs rébutés :</b> <b style="color: #002060">''' + str(report.qte_sac_reb) + '''</b></li>
             <li><b>Nombre de sacs recyclés :</b> <b style="color: #002060">''' + str(report.qte_sac_rec) + '''</b></li>'''
         if report.site.designation == 'Constantine':
@@ -761,7 +761,7 @@ def confirmReport(request, pk):
         message += '''<p><b style="color: #002060">''' + request.user.fullname + '''</b><b>(''' + report.line.designation + ''')</b> a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/</p>'''
     
     formatHtml = format_html(message)
-    #send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
 
     url_path = reverse('report_detail', args=[report.id])

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %} PUMA Production {% endblock %}</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
     {% load bootstrap5 %} 
     {% bootstrap_css %} 
     {% bootstrap_javascript %}
@@ -14,9 +13,10 @@
     <link rel="stylesheet" href="{% static 'css/sweetalert.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="{% static 'fontawesomefree/css/all.min.css' %}">
-    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet" />
-    <link rel="icon" type="image/ico" href="{% static 'img/favicon.ico' %}">
+    {% block scripts %} {% endblock %}
     <link href="https://fonts.cdnfonts.com/css/arial" rel="stylesheet">
+    <link rel="icon" type="image/ico" href="{% static 'img/favicon.ico' %}">
+
   </head>
   <body style="background: url('{% static "img/background.png" %}'); background-position: center; background-repeat: no-repeat; background-size: cover; height: 100%;">
     <div class="wrapper d-flex align-items-stretch"  style="background: {% if user.is_authenticated %}rgba(14, 42, 91, 0.7){% else %}rgba(14, 42, 91, 0.2){% endif %}; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);  
