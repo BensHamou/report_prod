@@ -1,11 +1,11 @@
 import django_filters
-from django_filters import ChoiceFilter
+from django_filters import ChoiceFilter, CharFilter, DateFilter, ModelChoiceFilter, FilterSet
 from django import forms
 from .forms import getAttrs
 from .models import *
 from django.db.models import Q
 
-class ProductFilter(django_filters.FilterSet):
+class ProductFilter(FilterSet):
 
     search = django_filters.CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
 
@@ -27,7 +27,7 @@ class ProductFilter(django_filters.FilterSet):
         self.user = user
         super(ProductFilter, self).__init__(*args, **kwargs)
         
-class UniteFilter(django_filters.FilterSet):
+class UniteFilter(FilterSet):
 
     search = django_filters.CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
 
@@ -42,7 +42,7 @@ class UniteFilter(django_filters.FilterSet):
         model = Unite
         fields = ['search']
         
-class NumoProductFilter(django_filters.FilterSet):
+class NumoProductFilter(FilterSet):
 
     search = django_filters.CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
 
@@ -55,7 +55,7 @@ class NumoProductFilter(django_filters.FilterSet):
         model = NumoProduct
         fields = ['search']
 
-class TypeStopFilter(django_filters.FilterSet):
+class TypeStopFilter(FilterSet):
 
     search = django_filters.CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
 
@@ -75,7 +75,7 @@ class TypeStopFilter(django_filters.FilterSet):
         self.user = user
         super(TypeStopFilter, self).__init__(*args, **kwargs)
 
-class ReasonStopFilter(django_filters.FilterSet):
+class ReasonStopFilter(FilterSet):
 
     search = django_filters.CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
 
@@ -96,17 +96,20 @@ class ReasonStopFilter(django_filters.FilterSet):
         super(ReasonStopFilter, self).__init__(*args, **kwargs)
 
 
-class ReportFilter(django_filters.FilterSet):
+class ReportFilter(FilterSet):
 
-    search = django_filters.CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
+    other = {'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; border-radius: 5px;'}
+    other_line = {'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #30343b; height: 40px; border-radius: 5px;'}
+    search = CharFilter(method='filter_search', widget=forms.TextInput(attrs=getAttrs('search', 'Rechercher..')))
     state = ChoiceFilter(choices=Report.STATE_REPORT, widget=forms.Select(attrs=getAttrs('select')), empty_label="État")
+    start_date = DateFilter(field_name='prod_day', lookup_expr='gte', widget=forms.widgets.DateInput(attrs= getAttrs('date', other=other), format='%d-%m-%Y'))
+    end_date = DateFilter(field_name='prod_day', lookup_expr='lte', widget=forms.widgets.DateInput(attrs= getAttrs('date', other=other), format='%d-%m-%Y'))
+    line = ModelChoiceFilter(queryset=Line.objects.all(), widget=forms.Select(attrs= getAttrs('select', other=other)), empty_label="Ligne")
 
     def filter_search(self, queryset, name, value):
         return queryset.filter(
             Q(n_lot__icontains=value) | 
-            Q(prod_day__icontains=value) | 
             Q(prod_product__designation__icontains=value) | 
-            Q(line__designation__icontains=value) | 
             Q(team__designation__icontains=value) | 
             Q(creator__fullname__icontains=value) | 
             Q(site__designation__icontains=value)
@@ -114,7 +117,7 @@ class ReportFilter(django_filters.FilterSet):
 
     class Meta:
         model = Report
-        fields = ['search', 'state']
+        fields = ['search', 'state', 'start_date', 'end_date', 'line']
         
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -129,3 +132,5 @@ class ReportFilter(django_filters.FilterSet):
             elif user.role == 'Admin':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] not in 
                                         ['Brouillon']]
+            self.filters['line'].queryset = user.lines.all()
+

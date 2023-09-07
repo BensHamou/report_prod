@@ -17,10 +17,22 @@ List des rapports
                     <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>{{ filter.form.search }}
                 </div>
             </div>
+            <div class="col-md-2" style="width: 12%;">
+                {{ filter.form.start_date }}
+            </div>
+            <div class="col-md-2" style="width: 12%;">
+                {{ filter.form.end_date }}
+            </div>
+            <div class="col-md-2" style="width: 10%;">
+                {{ filter.form.line }}
+            </div>
             <div class="col-md-1" style="width: 7%;">
                 <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" style="background-color: rgba(202, 207, 215, 0.5); 
-                border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2;" name="page_size">
-             </div>
+                border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px;" name="page_size">
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
+            </div>
         </div>
         <ul class="nav nav-tabs mt-3" style="border-bottom: 1px solid #b7b9bd;">
             <li class="nav-item {% if not request.GET.state %}customActive{% endif %}">
@@ -121,6 +133,11 @@ List des rapports
         {% include 'empty_list.html' %}
     {% endif %}
 </div>
+<style>
+    select option {
+        background: rgba(127, 139, 161, 0.9);
+    }
+</style>
 <script>
     const confirmRepDel = (repID, repNLt, repTeam, repDay, repProd) => {
         swal({ 

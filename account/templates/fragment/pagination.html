@@ -2,19 +2,19 @@
     <nav>
         <ul class="pagination">
             {% if page.has_previous %}
-                <li class="page-item"><a class="page-link" style="background: none; color: #bcc2cf;" href="?page={{ page.previous_page_number }}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}"><span aria-hidden="true">&laquo;</span></a></li>
+                <li class="page-item"><a class="page-link" style="background: none; color: #bcc2cf;" href="?page={{ page.previous_page_number }}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}"><span aria-hidden="true">&laquo;</span></a></li>
             {% endif %}
 
             {% for num in page.paginator.page_range %}
                 {% if page.number == num %}
-                    <li class="page-item"><a class="page-link" style="background: none; color: {% if page.number == num %}white{% else %}#bcc2cf{% endif %};" href="?page={{ num }}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}">{{ num }}</a></li>
+                    <li class="page-item"><a class="page-link" style="background: none; color: {% if page.number == num %}white{% else %}#bcc2cf{% endif %};" href="?page={{ num }}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}">{{ num }}</a></li>
                 {% elif num > page.number|add:'-2' and num < page.number|add:'3' %}
-                    <li class="page-item"><a class="page-link" style="background: none; color: {% if page.number == num %}white{% else %}#bcc2cf{% endif %};" href="?page={{ num }}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}">{{ num }}</a></li>
+                    <li class="page-item"><a class="page-link" style="background: none; color: {% if page.number == num %}white{% else %}#bcc2cf{% endif %};" href="?page={{ num }}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}">{{ num }}</a></li>
                 {% endif %}
             {% endfor %}
 
             {% if page.has_next %}
-                <li class="page-item"><a class="page-link" style="background: none; color: #bcc2cf;" href="?page={{ page.next_page_number }}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}"><span aria-hidden="true">&raquo;</span></a></li>
+                <li class="page-item"><a class="page-link" style="background: none; color: #bcc2cf;" href="?page={{ page.next_page_number }}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}"><span aria-hidden="true">&raquo;</span></a></li>
             {% endif %}
         </ul>
     </nav>
