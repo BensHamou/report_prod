@@ -66,26 +66,5 @@ Produit
   </div>
 </form>
 
-<script>
-  
-  const confirmTeamDel = (numoId, numoDes, productId) => {
-    event.stopPropagation();
-    swal({ 
-    title: `Confirmation de la suppression.`,   
-    text: `Etes-vous sûr que vous voulez supprimer ${numoDes}?`,   
-    type: "warning",
-    showCancelButton: true,   
-    confirmButtonColor: "#DD6B55",   
-    confirmButtonText: "Oui",   
-    cancelButtonText: "Non",   
-    closeOnConfirm: true,   
-    closeOnCancel: true }, 
-    function(isConfirm){   
-        if (isConfirm){
-          window.location.href = "{% url 'delete_numo_product' 123456789 %}?p_id=55555".replace(/123456789/, numoId).replace(55555,productId);
-        }});
-}
-</script>
-
 
 {% endblock %}
