@@ -33,5 +33,5 @@ class SiteFilter(django_filters.FilterSet):
         ).distinct()
 
     class Meta:
-        model = Line
+        model = Site
         fields = ['search']
