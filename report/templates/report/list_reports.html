@@ -62,6 +62,7 @@ List des rapports
                 <th style="width: 8vh;">Date de production</th>
                 <th>Équipe</th>
                 <th>Produit</th>
+                <th>Unité logistique</th>
                 <th>Quantité</th>
                 <th>Total d'arréts</th>
                 <th>État</th>
@@ -78,7 +79,8 @@ List des rapports
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_day|date:"d/m/Y" }}</td>
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.team }}</td>
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_product }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_sac_prod }} {{ report.prod_product.unite.code }}</td>
+                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_sac_prod }} {{ report.prod_product.unite.conditionnement }}</td>
+                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_tn }} {{ report.prod_product.unite.code }}</td>
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.total_arrets }}h</td>
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.state }}</td>
                     {% if report.creator == user and user.role == 'Gestionnaire de production' %}
