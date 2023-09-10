@@ -17,13 +17,13 @@ Utilisateur - {{ user_details.username }}
   {% csrf_token %}
 
     <div class="row mb-4">
-      <div class="col">
+      <div class="col-md-6 col-sm-6">
         <div class="form-outline">
             <label class="form-label labelCustom" for="username">Username</label> {% if user_details.is_admin %} <b class="labelCustom">(Admin)</b> {% endif %}
             <input type="text" id="username" class="form-control" value="{{ user_details.username }}" disabled/>
         </div>
       </div>
-      <div class="col">
+      <div class="col-md-6 col-sm-6">
           <div class="form-outline">
             <label class="form-label labelCustom" for="email">Email</label>
             <input type="email" id="email" class="form-control" value="{{ user_details.email }}" disabled/>
@@ -32,13 +32,13 @@ Utilisateur - {{ user_details.username }}
     </div>
   
     <div class="row mb-4">
-      <div class="col">
+      <div class="col-md-6 col-sm-6">
         <div class="form-outline">
             <label class="form-label labelCustom" for="fullname">Nom complet</label>
             <input type="text" id="fullname" class="form-control" value="{{ user_details.fullname }}" disabled/>
         </div>
       </div>
-        <div class="col">
+        <div class="col-md-6 col-sm-6">
           <div class="form-outline">
               <label class="form-label labelCustom" for="role">Rôle</label>
               <input type="text" id="role" class="form-control" value="{{ user_details.role }}" disabled/>
@@ -47,7 +47,7 @@ Utilisateur - {{ user_details.username }}
     </div>
   
     <div class="row mb-4">
-        <div class="col">
+        <div class="col-md-6 col-sm-6">
             <div class="form-outline">
                 <label class="form-label labelCustom" for="lines">Lignes</label> </br>
                 {% for line in user_details.lines.all %}
@@ -57,7 +57,7 @@ Utilisateur - {{ user_details.username }}
                 {% endfor %}
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-6 col-sm-6">
           <div class="form-outline">
               <label class="form-label labelCustom" for="team">Équipe</label>
               <input type="text" id="team" class="form-control" value="{{ user_details.team }}" disabled/>

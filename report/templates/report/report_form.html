@@ -33,7 +33,7 @@ Rapport
         </div>
         <!-- SITE - LIGNE - EQUIPE -->
         <div class="row mb-4">
-            <div class="col">
+            <div class="col-md-4 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="site">Site</label>
                     {{ form.site }}
@@ -46,7 +46,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-4 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="line">Ligne</label>
                     {{ form.line|attr:"id:line-select" }}
@@ -59,7 +59,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-4 col-sm-6 ">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="team">Équipe</label>
                     {{ form.team|attr:"id:team-select" }}
@@ -75,7 +75,7 @@ Rapport
         </div>
         <!-- NLOT - DATE - HORAIRE -->
         <div class="row mb-4">
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="n_lot">N° Lot</label>
                     {{ form.n_lot }}
@@ -88,7 +88,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="prod_day">Date de Production</label>
                     {{ form.prod_day }}
@@ -101,7 +101,7 @@ Rapport
                 {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="shift">Slot Horaire</label>
                     {{ form.shift|attr:"id:shift-select" }}
@@ -114,7 +114,7 @@ Rapport
                   {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="used_time">Temps utilisé</label>
                     {{ form.used_time }}
@@ -130,7 +130,7 @@ Rapport
         </div>
         <!-- NMELANGE - NBSAC - POIDS - QTE_TN -->
         <div class="row mb-4">
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="nbt_melange">Nombre Mélange</label>
                     {{ form.nbt_melange }}
@@ -143,7 +143,7 @@ Rapport
                 {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="qte_sac_prod">Nombre Sacs/Bidons Produit</label>
                     {{ form.qte_sac_prod }}
@@ -156,7 +156,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="poids_melange">Poids Mélange</label>
                     {{ form.poids_melange }}
@@ -169,7 +169,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="qte_tn">Quantité Tonne/Litre</label>
                     {{ form.qte_tn }}
@@ -185,7 +185,7 @@ Rapport
         </div>
         <!-- NMS_REB - NMS_REC - QTE_REC - NB_T -->
         <div class="row mb-4">
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="qte_sac_reb">Nombre Sacs Rebutés</label>
                     {{ form.qte_sac_reb }}
@@ -198,7 +198,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="qte_sac_rec">Nombre Sacs Récyclés</label>
                     {{ form.qte_sac_rec }}
@@ -211,7 +211,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="qte_rec">Quantité Recyclée</label>
                     {{ form.qte_rec }}
@@ -224,7 +224,7 @@ Rapport
                 {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="nbt_pallete">Nombre Palletes</label>
                     {{ form.nbt_pallete }}
@@ -240,7 +240,7 @@ Rapport
         </div>
         <!-- GPL1 - GPL2 -->
         <div class="row mb-4">
-            <div class="col">
+            <div class="col-md-6 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="gpl_1">% Citerne GPL 1</label>
                     {{ form.gpl_1 }}
@@ -253,7 +253,7 @@ Rapport
                     {% endif %}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-6 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="gpl_2">% Citerne GPL 2</label>
                     {{ form.gpl_2 }}

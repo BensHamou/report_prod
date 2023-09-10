@@ -19,7 +19,7 @@ Horaire
   {% csrf_token %}
   <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
     <div class="row d-flex justify-content-center align-items-center">
-        <div class="col-md-1">
+        <div class="col-md-1 col-sm-6 mb-2">
             <div class="form-outline">
               <div class="d-flex align-items-center">
                 {{ form.hour_start }}
@@ -27,7 +27,7 @@ Horaire
               </div>
             </div>
         </div>
-        <div class="col-md-1">
+        <div class="col-md-1 col-sm-6 mb-2">
             <div class="form-outline">
               <div class="d-flex align-items-center">
                 {{ form.minutes_start }}
@@ -35,14 +35,14 @@ Horaire
               </div>
             </div>
         </div>
-        <div class="col-md-1">
+        <div class="col-md-1 col-sm-6">
             <div class="form-outline">
               <div class="d-flex align-items-center justify-content-center">
                 <label class="form-label labelCustom me-2">--</label>
               </div>
             </div>
         </div>
-        <div class="col-md-1">
+        <div class="col-md-1 col-sm-6 mb-2">
             <div class="form-outline">
               <div class="d-flex align-items-center">
                 {{ form.hour_end }}
@@ -50,7 +50,7 @@ Horaire
               </div>
             </div>
         </div>
-        <div class="col-md-1">
+        <div class="col-md-1 col-sm-6 mb-2">
             <div class="form-outline">
               <div class="d-flex align-items-center">
                 {{ form.minutes_end }}
