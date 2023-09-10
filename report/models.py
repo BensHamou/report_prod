@@ -63,7 +63,7 @@ class Report(models.Model):
         ('Confirmé', 'Confirmé'),
         ('Validé par GS', 'Validé par GS'),
         ('Validé par DI', 'Validé par DI'),
-        ('Refusé par GS', 'RRefusé par GS'),
+        ('Refusé par GS', 'Refusé par GS'),
         ('Refusé par DI', 'Refusé par DI'),
         ('Annulé', 'Annulé'),
     ]
