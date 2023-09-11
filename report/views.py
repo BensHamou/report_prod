@@ -249,7 +249,7 @@ def listReasonStopList(request):
     reasons = ReasonStop.objects.filter(type__in=TypeStop.objects.filter(line__in=request.user.lines.all())).order_by('id')
     filteredData = ReasonStopFilter(request.GET, queryset=reasons, user = request.user)
     reasons = filteredData.qs
-    paginator = Paginator(reasons, 10)
+    paginator = Paginator(reasons, 8)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {

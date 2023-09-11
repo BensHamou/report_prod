@@ -51,7 +51,7 @@
               <label class="form-label labelCustom">Lignes: </label> </br>
               {% for line in site.lines.all %}
               <button onclick="window.location='{% url 'edit_line' line.id %}?redirect_url=site_{{site.id}}'"  
-              type="button" class="badge position-relative formBadge" style="border: none;">
+              type="button" class="badge position-relative formBadge mb-1" style="border: none;">
               <p class="lead p-0 m-0 formBadgeText">{{ line.designation }}</p>
                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
                       <a onclick="confirmLineDel('{{line.id|escapejs}}', '{{line.designation|escapejs}}', '{{site.id|escapejs}}');" 

@@ -19,21 +19,21 @@
         <table class="table table-borderless">
             <thead style="border-bottom: 2px solid white;">
                 <tr class="text-white">
-                <th>#</th>
+                <th class="d-none d-md-table-cell">#</th>
                 <th>Horaire</th>
                 <th>Durée</th>
-                <th style="width: 20vh;">Actions</th>
+                <th style="width: 6vh;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for horaire in page %}
                 <tr style="color: #dde3f0;">
-                    <td>{{ horaire.id }}</td>
+                    <td class="d-none d-md-table-cell">{{ horaire.id }}</td>
                     <td>{{ horaire }}</td>
                     <td>{{ horaire.passed_time }}</td>
                     <td style="vertical-align: middle;">
-                        <button type="button" onclick="window.location='{% url 'edit_horaire' horaire.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}'" class="btn"><i class="fas fa-edit" style="color: white;"></i></button>
-                        <button type="button" onclick="confirmHoraireDel('{{horaire.id|escapejs}}', '{{horaire|escapejs}}')" class="btn" style="color: white;"><i class="far fa-trash-alt"></i></button>
+                        <button type="button" onclick="window.location='{% url 'edit_horaire' horaire.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
+                        <button type="button" onclick="confirmHoraireDel('{{horaire.id|escapejs}}', '{{horaire|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
                     </td>
                 </tr>
                 {% endfor %}

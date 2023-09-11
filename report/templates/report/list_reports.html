@@ -9,28 +9,29 @@ List des rapports
 {% block content %}
 <div class="row mb-3">
     {% if page %}
-    <form method="GET" style="margin: 20px 0px;">
+    <form method="GET" style="{% if page %}margin: 20px 0px 0px 0px;{% else %}margin-top: 13%;{% endif %}">
         {% csrf_token %}
         <div class="row height d-flex justify-content-center align-items-center">
-            <div class="col-md-6">
+            <div class="col-md-4 col-sm-6 mb-2">
                 <div class="form" style="position: relative;">
-                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>{{ filter.form.search }}
+                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>
+                    {{ filter.form.search }}
                 </div>
             </div>
-            <div class="col-md-2" style="width: 12%;">
+            <div class="col-md-2 col-sm-6 mb-2">
                 {{ filter.form.start_date }}
             </div>
-            <div class="col-md-2" style="width: 12%;">
+            <div class="col-md-2 col-sm-6 mb-2">
                 {{ filter.form.end_date }}
             </div>
-            <div class="col-md-2" style="width: 10%;">
+            <div class="col-md-2 col-sm-6 mb-2">
                 {{ filter.form.line }}
             </div>
-            <div class="col-md-1" style="width: 7%;">
+            <div class="col-md-1 col-sm-6 mb-2">
                 <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" style="background-color: rgba(202, 207, 215, 0.5); 
                 border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px;" name="page_size">
             </div>
-            <div class="col-md-1">
+            <div class="col-md-1 col-sm-6 mb-2">
                 <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
             </div>
         </div>
@@ -58,13 +59,13 @@ List des rapports
             <thead style="border-bottom: 2px solid white;">
                 <tr class="text-white" style="vertical-align: middle;">
                 <th>N° Lot</th>
-                <th style="width: 19vh;">Date de création</th>
+                <th class="d-none d-md-table-cell" style="width: 19vh;">Date de création</th>
                 <th style="width: 8vh;">Date de production</th>
                 <th>Équipe</th>
-                <th>Produit</th>
-                <th>Unité logistique</th>
-                <th>Quantité</th>
-                <th>Total d'arréts</th>
+                <th class="d-none d-md-table-cell">Produit</th>
+                <th class="d-none d-md-table-cell">Unité logistique</th>
+                <th class="d-none d-md-table-cell">Quantité</th>
+                <th class="d-none d-md-table-cell">Total d'arréts</th>
                 <th>État</th>
                 {% if user.role == 'Gestionnaire de production' %}
                     <th style="width: 6vh;">Actions</th>
@@ -75,13 +76,13 @@ List des rapports
                 {% for report in page %}
                 <tr style="color: #dde3f0;">
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.n_lot }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.date_created|date:"d/m/Y h:i" }}</td>
+                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.date_created|date:"d/m/Y h:i" }}</td>
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_day|date:"d/m/Y" }}</td>
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.team }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_product }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_sac_prod }} {{ report.prod_product.unite.conditionnement }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_tn }} {{ report.prod_product.unite.code }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.total_arrets }}h</td>
+                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_product }}</td>
+                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_sac_prod }} {{ report.prod_product.unite.conditionnement }}</td>
+                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_tn }} {{ report.prod_product.unite.code }}</td>
+                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.total_arrets }}h</td>
                     <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.state }}</td>
                     {% if report.creator == user and user.role == 'Gestionnaire de production' %}
                     <td style="vertical-align: middle; padding: 8px 0px; text-align: center;">            
@@ -138,6 +139,20 @@ List des rapports
 <style>
     select option {
         background: rgba(127, 139, 161, 0.9);
+    }
+    .width7 {
+        width: 7%;
+    }
+    .width10 {
+        width: 10%;
+    }
+    .width12 {
+        width: 12%;
+    }
+    @media only screen and (max-width: 767px) {
+        body {
+          background-color: lightblue;
+        }
     }
 </style>
 <script>

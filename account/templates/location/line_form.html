@@ -44,7 +44,7 @@ Ligne
               <label class="form-label mb-3" style="color: #c6ccd7; font-size: 14px;">Silos: </label> </br>
               {% for silo in line.silos.all %}
               <button onclick="window.location='{% url 'edit_silo' silo.id %}?redirect_url=line_{{line.id}}'"  
-              type="button" class="badge position-relative formBadge" style="border: none;">
+              type="button" class="badge position-relative formBadge mb-1" style="border: none;">
               <p class="lead p-0 m-0 formBadgeText">{{ silo.designation }}</p>
                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
                       <a onclick="confirmSiloDel('{{silo.id|escapejs}}', '{{silo.designation|escapejs}}', '{{line.designation|escapejs}}', '{{line.id|escapejs}}');" 
@@ -64,7 +64,7 @@ Ligne
               <label class="form-label mb-3" style="color: #c6ccd7; font-size: 14px;">Équipes: </label> </br>
               {% for team in line.teams.all %}
               <button onclick="window.location='{% url 'edit_team' team.id %}?redirect_url=line_{{line.id}}'"  
-              type="button" class="badge position-relative formBadge" style="border: none;">
+              type="button" class="badge position-relative formBadge mb-1" style="border: none;">
               <p class="lead p-0 m-0 formBadgeText">{{ team.designation }}</p>
                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
                       <a onclick="confirmTeamDel('{{team.id|escapejs}}', '{{team.designation|escapejs}}', '{{line.designation|escapejs}}', '{{line.id|escapejs}}');" 

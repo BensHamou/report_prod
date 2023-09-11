@@ -12,12 +12,13 @@ Utilisateurs
 {% block content %}
 
 <div class="row mb-3"> 
-    <form method="GET" style="{% if page %}margin: 20px 0px;{% else %}margin-top: 13%;{% endif %}">
+    <form method="GET" style="{% if page %}margin: 20px 0px 0px 0px;{% else %}margin-top: 13%;{% endif %}">
         {% csrf_token %}
         <div class="row height d-flex justify-content-center align-items-center">
-            <div class="col-md-6">
+            <div class="col-md-5 mb-2">
                 <div class="form" style="position: relative;">
-                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>{{ filtredData.form.search }}
+                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>
+                    {{ filtredData.form.search }}
                 </div>
             </div>
         </div>
@@ -28,26 +29,26 @@ Utilisateurs
             <thead style="border-bottom: 2px solid white;">
                 <tr class="text-white">
                   <th>Nom et prénom</th>
-                  <th>Rôle</th>
-                  <th>Admin</th>
-                  <th>Lignes</th>
-                  <th>Équipe</th>
-                  <th style="width: 20vh;">Actions</th>
+                  <th class="d-none d-md-table-cell">Rôle</th>
+                  <th class="d-none d-md-table-cell">Admin</th>
+                  <th class="d-none d-md-table-cell">Lignes</th>
+                  <th style="width: 12vh;">Équipe</th>
+                  <th style="width: 6vh;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for usr in page %}
                 <tr style="color: #dde3f0;">
                     <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">{{ usr.fullname }}</td>
-                    <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">{{ usr.role }}</td>
-                    <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">
+                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">{{ usr.role }}</td>
+                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">
                         {% if usr.is_admin %}
                             <i class="fas fa-check"></i>
                         {% else %}
                             <i class="fas fa-x"></i>
                         {% endif %}
                     </td>
-                    <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">
+                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">
                         {% for line in usr.lines.all %}
                             <span class="badge listBadge">
                                 <p class="lead p-0 m-0 listBadgeText">{{ line.designation }}</p>
@@ -58,8 +59,8 @@ Utilisateurs
                     </td>
                     <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">{% if usr.team %}{{ usr.team }}{% else %}/{% endif %}</td>
                     <td style="vertical-align: middle;">
-                        <button type="button" onclick="window.location='{% url 'edit_user' usr.id %}'" class="btn"><i class="fas fa-edit" style="color: white;"></i></button>
-                        <button type="button" onclick="confirmUserDel('{{usr.id|escapejs}}', '{{usr.fullname|escapejs}}')" class="btn"><i class="far fa-trash-alt" style="color: white;"></i></button>
+                        <button type="button" onclick="window.location='{% url 'edit_user' usr.id %}'" class="btn"  style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
+                        <button type="button" onclick="confirmUserDel('{{usr.id|escapejs}}', '{{usr.fullname|escapejs}}')" class="btn"  style="padding: 2px;"><i class="far fa-trash-alt" style="color: white;"></i></button>
                     </td>
                 </tr>
                  {% endfor %}

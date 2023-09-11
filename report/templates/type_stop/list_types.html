@@ -8,10 +8,10 @@ Types d'arrêt
 
 {% block content %}
 <div class="row mb-3">
-    <form method="GET" style="{% if page %}margin: 20px 0px;{% else %}margin-top: 13%;{% endif %}">
+    <form method="GET" style="{% if page %}margin: 20px 0px 0px 0px;{% else %}margin-top: 13%;{% endif %}">
         {% csrf_token %}
         <div class="row height d-flex justify-content-center align-items-center">
-            <div class="col-md-5">
+            <div class="col-md-5 mb-2">
                 <div class="form" style="position: relative;">
                     <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>
                     {{ filtredData.form.search }}
@@ -27,22 +27,24 @@ Types d'arrêt
         <table class="table table-borderless">
             <thead style="border-bottom: 2px solid white;">
                 <tr class="text-white">
-                <th></th>
+                <th class="d-none d-md-table-cell"></th>
                 <th>Désignation</th>
-                <th>Ligne</th>
-                <th style="width: 20vh;">Actions</th>
+                <th class="d-none d-md-table-cell">Ligne</th>
+                <th style="width: 6vh;">Actions</th>
+                <th class="d-none d-md-table-cell"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for type in page %}
                 <tr style="color: #dde3f0;">
-                    <td></td>
+                    <td class="d-none d-md-table-cell"></td>
                     <td>{{ type.designation }}</td>
-                    <td>{{ type.line }}</td>
+                    <td class="d-none d-md-table-cell">{{ type.line }}</td>
                     <td style="vertical-align: middle;">
-                        <button type="button" onclick="window.location='{% url 'edit_type' type.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}'" class="btn"><i class="fas fa-edit" style="color: white;"></i></button>
-                        <button type="button" onclick="confirmTypeDel('{{type.id|escapejs}}', '{{type.designation|escapejs}}')" class="btn"><i class="far fa-trash-alt" style="color: white;"></i></button>
+                        <button type="button" onclick="window.location='{% url 'edit_type' type.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
+                        <button type="button" onclick="confirmTypeDel('{{type.id|escapejs}}', '{{type.designation|escapejs}}')" class="btn" style="padding: 2px;"><i class="far fa-trash-alt" style="color: white;"></i></button>
                     </td>
+                    <td class="d-none d-md-table-cell"></td>
                 </tr>
                 {% endfor %}
             </tbody>

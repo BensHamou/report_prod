@@ -19,13 +19,13 @@ Utilisateur - {{ user_to_edit.username }}
   <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
       {% csrf_token %}
       <div class="row mb-4">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6 col-sm-6 mb-sm-2">
           <div class="form-outline">
             <label class="form-label labelCustom" for="firstname">Nom</label>
               {{ form.first_name }}
           </div>
         </div>
-          <div class="col-md-6 col-sm-6">
+          <div class="col-md-6 col-sm-6 mb-sm-2">
             <div class="form-outline">
                 <label class="form-label labelCustom" for="lastname">Prénom</label>
                 {{ form.last_name }}
@@ -33,13 +33,13 @@ Utilisateur - {{ user_to_edit.username }}
           </div>
       </div>
       <div class="row mb-4">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6 col-sm-6 mb-sm-2">
           <div class="form-outline">
             <label class="form-label labelCustom" for="username">Username</label> {% if user_to_edit.is_admin %} <b class="labelCustom">(Admin)</b> {% endif %}
               {{ form.username }}
           </div>
         </div>
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6 col-sm-6 mb-sm-2">
             <div class="form-outline">
               <label class="form-label labelCustom" for="email">Email</label>
               {{ form.email }}
@@ -47,13 +47,13 @@ Utilisateur - {{ user_to_edit.username }}
         </div>
       </div>
       <div class="row mb-4">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-6 col-sm-6 mb-sm-2">
           <div class="form-outline">
               <label class="form-label labelCustom" for="fullname">Nom complet</label>
               {{ form.fullname }}
           </div>
         </div>
-          <div class="col-md-6 col-sm-6">
+          <div class="col-md-6 col-sm-6 mb-sm-2">
             <div class="form-outline">
                 <label class="form-label labelCustom" for="role">Rôle</label>
                 {{ form.role }}
@@ -61,7 +61,7 @@ Utilisateur - {{ user_to_edit.username }}
           </div>
       </div>
       <div class="row mb-4">
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-4 col-sm-6 mb-sm-2">
           <div class="form-outline">
             <label class="form-label labelCustom" for="lines">Lignes</label>
             <div id="line" class="form-control select" style="background-color: #cacfd7;">
@@ -75,13 +75,13 @@ Utilisateur - {{ user_to_edit.username }}
             </div>
           </div>
         </div>
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-4 col-sm-6 mb-sm-2">
           <div class="form-outline">
               <label class="form-label labelCustom" for="team">Équipe</label>
               {{ form.team }}
             </div>
         </div>
-        <div class="col-md-6 col-sm-6">
+        <div class="col-md-4 col-sm-6 mb-sm-2">
           <div class="form-outline">
             <label class="form-label labelCustom" for="is_admin">Admin?</label>
           </br>
