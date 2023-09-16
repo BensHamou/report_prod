@@ -22,10 +22,10 @@ Rapport
                 <input class="form-control lead"  value="{{  report.state }}" style="background-color: #637188; border-color: transparent; color: white;" disabled>
             </div>
             <div class="col-md-3 d-flex justify-content-end">
-                <button id="validation-card-small" class="btn btn-secondary btn-block customSaveButton d-block d-sm-none">
+                <button id="validation-cardS" class="btn btn-secondary btn-block customSaveButton d-block d-sm-none">
                     <i class="fas fa-arrows-spin"></i>
                 </button>
-                <button id="validation-card-large" class="btn btn-secondary btn-block customSaveButton d-none d-sm-block">
+                <button id="validation-cardB" class="btn btn-secondary btn-block customSaveButton d-none d-sm-block">
                     Cycle de Validation
                 </button>
   
@@ -70,10 +70,10 @@ Rapport
                         {% endif %}
                     {% elif report.state == 'Confirmé' %}
                         {% if user.role == 'Admin' or user.role == 'Gestionnaire de stock' %}                            
-                            <a href="{% url 'validate_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
+                            <a href="{% url 'validate_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
                                 <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
                             </a>
-                            <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
+                            <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); padding: 10px;">
                                 <p class="lead m-0 p-0">Réfuser <i class="fas fa-x"></i></p>
                             </a>
                         {% else %}
@@ -82,10 +82,10 @@ Rapport
                         
                         {% elif report.state == 'Validé par GS' %}
                             {% if user.role == 'Admin' or user.role == 'Directeur Industriel' %}                            
-                                <a href="{% url 'validate_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
+                                <a href="{% url 'validate_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
                                     <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
                                 </a>
-                                <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
+                                <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); padding: 10px;">
                                     <p class="lead m-0 p-0">Réfuser <i class="fas fa-x"></i></p>
                                 </a>
                             {% else %}
