@@ -8,8 +8,9 @@ Rapport
 {% block activeListReport %} {% include 'active_bar.html' %} {% endblock %}
 
 {% block content %}
-<div class="row mt-3">
-    <div class="col-md-8" style="margin-bottom: 20px;">
+
+<div class="row">
+    <div class="col-md-8">
         <div class="d-flex mb-5 justify-content-between">
             <div class="col-md-1">
                 <a href="{% url 'list_report' %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
@@ -21,7 +22,13 @@ Rapport
                 <input class="form-control lead"  value="{{  report.state }}" style="background-color: #637188; border-color: transparent; color: white;" disabled>
             </div>
             <div class="col-md-3 d-flex justify-content-end">
-                <button id="validation-card" class="btn btn-secondary btn-block customSaveButton">Cycle de Validation</button>
+                <button id="validation-card-small" class="btn btn-secondary btn-block customSaveButton d-block d-sm-none">
+                    <i class="fas fa-arrows-spin"></i>
+                </button>
+                <button id="validation-card-large" class="btn btn-secondary btn-block customSaveButton d-none d-sm-block">
+                    Cycle de Validation
+                </button>
+  
                 {% if report.state in 'Brouillon,Refusé par GS,Refusé par DI' and user.role in 'Admin,Gestionnaire de production' and user == report.creator %}
                 <button onclick="window.location='{% url 'update_report' report.id %}'" class="btn btn-secondary btn-block customSaveButton" style="margin-left: 2%;">
                     <i class="fas fa-edit"></i>
@@ -37,8 +44,62 @@ Rapport
                 {% endif %}
             </div>
         </div>
-        
-
+    </div>
+    <div class="col-md-4 justify-content-center">
+        <div class="row">
+            <div class="d-flex justify-content-center">
+                    {% if report.state == 'Brouillon' or report.state == 'Refusé par GS' or report.state == 'Refusé par DI' %}
+                        {% if user.role == 'Admin' or user.role == 'Gestionnaire de production' %}
+                            {% if user == report.creator %}
+                                <a href="{% url 'confirm_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                    <p class="lead m-0 p-0">Confirmer</p>
+                                </a>
+                                <a href="{% url 'cancel_report' report.id %}" class="btn btn-danger text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                    <p class="lead m-0 p-0">Annuler</p>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'confirm_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                    <p class="lead m-0 p-0">Confirmer</p>
+                                </a>
+                                <a href="{% url 'cancel_report' report.id %}" class="btn btn-danger text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                    <p class="lead m-0 p-0">Annuler</p>
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <h4 class="lead text-white"><strong></br></strong></h4>
+                        {% endif %}
+                    {% elif report.state == 'Confirmé' %}
+                        {% if user.role == 'Admin' or user.role == 'Gestionnaire de stock' %}                            
+                            <a href="{% url 'validate_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
+                                <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
+                            </a>
+                            <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
+                                <p class="lead m-0 p-0">Réfuser <i class="fas fa-x"></i></p>
+                            </a>
+                        {% else %}
+                            <h4 class="lead text-white"><strong></br></strong></h4>
+                        {% endif %}
+                        
+                        {% elif report.state == 'Validé par GS' %}
+                            {% if user.role == 'Admin' or user.role == 'Directeur Industriel' %}                            
+                                <a href="{% url 'validate_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
+                                    <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
+                                </a>
+                                <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
+                                    <p class="lead m-0 p-0">Réfuser <i class="fas fa-x"></i></p>
+                                </a>
+                            {% else %}
+                            <h4 class="lead text-white"><strong></br></strong></h4>
+                            {% endif %}
+                        {% else %}
+                        <h4 class="lead text-white"><strong></br></strong></h4>
+                        {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-md-8" style="margin-bottom: 20px;">
         <div class="card" style="background: rgba(107, 122, 147, 0.4); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); color: #b7b9bd;">
             <div class="card-body p-3">
                 <div class="form-group row mb-1">
@@ -213,57 +274,8 @@ Rapport
             </div>
         </div>
     </div>
-    
     <div class="col-md-4 justify-content-center">
         <div class="row">
-            <div class="d-flex justify-content-center" style="margin-bottom: 38px;">
-                {% if report.state == 'Brouillon' or report.state == 'Refusé par GS' or report.state == 'Refusé par DI' %}
-                    {% if user.role == 'Admin' or user.role == 'Gestionnaire de production' %}
-                        {% if user == report.creator %}
-                            <a href="{% url 'confirm_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
-                                <p class="lead m-0 p-0">Confirmer</p>
-                            </a>
-                            <a href="{% url 'cancel_report' report.id %}" class="btn btn-danger text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
-                                <p class="lead m-0 p-0">Annuler</p>
-                            </a>
-                        {% else %}
-                            <a href="{% url 'confirm_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
-                                <p class="lead m-0 p-0">Confirmer</p>
-                            </a>
-                            <a href="{% url 'cancel_report' report.id %}" class="btn btn-danger text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
-                                <p class="lead m-0 p-0">Annuler</p>
-                            </a>
-                        {% endif %}
-                    {% else %}
-                        <h4 class="lead text-white"><strong></br></strong></h4>
-                    {% endif %}
-                {% elif report.state == 'Confirmé' %}
-                    {% if user.role == 'Admin' or user.role == 'Gestionnaire de stock' %}                            
-                        <a href="{% url 'validate_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
-                            <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
-                        </a>
-                        <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
-                            <p class="lead m-0 p-0">Réfuser <i class="fas fa-x"></i></p>
-                        </a>
-                    {% else %}
-                        <h4 class="lead text-white"><strong></br></strong></h4>
-                    {% endif %}
-                    
-                    {% elif report.state == 'Validé par GS' %}
-                        {% if user.role == 'Admin' or user.role == 'Directeur Industriel' %}                            
-                            <a href="{% url 'validate_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
-                                <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
-                            </a>
-                            <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px;">
-                                <p class="lead m-0 p-0">Réfuser <i class="fas fa-x"></i></p>
-                            </a>
-                        {% else %}
-                        <h4 class="lead text-white"><strong></br></strong></h4>
-                        {% endif %}
-                    {% else %}
-                    <h4 class="lead text-white"><strong></br></strong></h4>
-                    {% endif %}
-            </div>
             <div class="col-md-12 mt-3">
                 <div class="card mx-auto text-white" id="arret-card" style="cursor: pointer; background: rgba(110, 125, 150, 0.5); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6); max-width: 350px;">
                     <div class="ratio" style="--bs-aspect-ratio: 40%;">
