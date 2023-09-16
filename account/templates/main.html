@@ -91,8 +91,8 @@
           </div>
           <div class="col-md-12 d-flex justify-content-end p-0">
             <div class="d-flex flex-column align-items-center justify-content-center centered-text float-end m-2">
-              <p class="text-white lead p-0 m-0">{{ user.fullname }}</p>
-              <p class="p-0" style="color: #b7b9bd;">{{ user.role }}</p>
+              <p class="lead p-0 m-0 nameStyle">{{ user.fullname }}</p>
+              <p class="p-0 roleStyle">{{ user.role }}</p>
             </div>
           </div>
         </div>
@@ -165,6 +165,20 @@
     .hidden {
       display: none;
     }
+    .nameStyle{
+      color: white;
+    }
+    .roleStyle{
+      color: #b7b9bd;
+    }
+    @media only screen and (max-width: 767px) {
+      .nameStyle{
+        color: transparent;
+      }
+      .roleStyle{
+        color: transparent;
+      }
+  }
     
     /* .dropdown-menu{ 
       background: rgba(127, 139, 161, 0.9);  

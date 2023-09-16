@@ -1,26 +1,42 @@
 <div class="modal" id="mpconsumedsModal" tabindex="-1" aria-labelledby="mpconsumedsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        <div class="modal-content" style="background: rgba(107, 122, 147, 0.75); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); backdrop-filter: blur(2px);">
+        <div class="modal-content contentStyle">
             <div class="modal-header text-white" style="border-color: rgba(171, 175, 181, 0.4);">
-                <h5 class="modal-title" id="mpconsumedsModalLabel">Produits Consomés</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" id="buttonMPX" aria-label="Close"></button>
+                <h4 class="headerStyle mb-0">Produits Consomés - {{ report.n_lot }}</h4>
+                <p class="lead mb-0 dateStyle" style="">{{ report.prod_day|date:"d/m/Y"}}</p>
+                <button type="button" class="btn-close" style="margin-left: 10px;" data-dismiss="modal" id="buttonMPX" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <table class="table card-header text-white" style="background: rgba(0, 0, 0, 0);">
                     <thead style="border-color: white;">
-                        <th>Nomenclature</th>
-                        <th>Qte</th>
-                        <th>Observation</th>
+                        <th class="d-none d-md-table-cell">Nomenclature</th>
+                        <th class="d-none d-md-table-cell">Quantité</th>
+                        <th class="d-none d-md-table-cell">Observation</th>
                     </thead>
                     <tbody id="item-mpconsumeds">
                         {% for mpconsumed in report.mpconsumeds.all %}
-                            <tr style="border-color: transparent; color: #d9dce1;">
-                                <td>{{ mpconsumed.numo_product }}</td>
-                                <td>{{ mpconsumed.qte_consumed }}</td>
-                                <td>{% if mpconsumed.observation  %}{{ mpconsumed.observation }}{% else %}/{% endif %}</td>
+                        <tr class="trS">
+                            <td>
+                                <div>
+                                    <p class="tdLabel">Nomenclature</p>
+                                    <p class="valueLead mb-0">{{ mpconsumed.numo_product }}</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <p class="tdLabel">Quantité</p>
+                                    <p class="valueLead mb-0">{{ mpconsumed.qte_consumed }}</p>
+                                </div>
+                            </td>
+                            <td class="tdLast">
+                                <div>
+                                    <p class="tdLabel">Observation</p>
+                                    <p class="valueLead mb-0">{% if mpconsumed.observation  %}{{ mpconsumed.observation }}{% else %}/{% endif %}</p>
+                                </div>
+                            </td>
                             </tr>
                         {% empty %}
-                            <tr>
+                            <tr class="trS">
                                 <td>Pas d'enregistrements.</td>
                                 <td>Pas d'enregistrements.</td>
                                 <td>Pas d'enregistrements.</td>
@@ -35,6 +51,65 @@
         </div>
     </div>
 </div>
+
+<style>
+    .contentStyle {
+        background: rgba(107, 122, 147, 0.75); 
+        border-radius: 16px; 
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+        backdrop-filter: blur(2px);
+    }
+    .tdLabel{
+        display: none;
+    }
+    .trS {
+        border-color: transparent; 
+        color: #d9dce1;
+    }
+    .dateStyle{
+        margin-left: auto; 
+    }
+    @media only screen and (max-width: 767px) {
+        .contentStyle {
+            background: rgba(236, 239, 242, 0.95);
+            border-radius: 16px; 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+            backdrop-filter: blur(2px);
+        }
+        .dateStyle{
+            color: #747474;
+        }
+        .headerStyle{
+            color: #0c2858;
+            font-weight: bold;
+        }
+        td {
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            margin: 0 0 2px 10px;
+        }
+        .trS {
+            border-left: 4px solid #8b99b0;
+            border-radius: 5px;
+            color: #5b5b5b;
+            border-top: 10px solid transparent;
+        }
+        .tdLast{
+            border-bottom: 2px solid white;
+        }
+        .valueLead{
+            font-size: 16px;
+        }
+        .tdLabel{
+            display: block;
+            color: #929292; 
+            font-size: 16px; 
+            margin-bottom: 5px;
+        }
+    }
+</style>
 
 <script>
     $(document).ready(function () {

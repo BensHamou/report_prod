@@ -35,7 +35,7 @@ List des rapports
                 <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
             </div>
         </div>
-        <ul class="nav nav-tabs mt-3" style="border-bottom: 1px solid #b7b9bd;">
+        <ul class="nav nav-tabs mt-3 showUl">
             <li class="nav-item {% if not request.GET.state %}customActive{% endif %}">
                 <button class="nav-link text-decoration-none customUnactive {% if not request.GET.state %}text-white{% endif %}" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
                 onMouseOut="this.style.color='#b7b9bd'" style="font-size: 1.15rem;" onclick="location.href='{% url 'list_report' %}'{% if request.GET.search %}?search={{ request.GET.search }}{% endif %};">
@@ -53,6 +53,27 @@ List des rapports
                 {% endfor %}
             {% endwith %}
         </ul>
+        <div class="dropdown mt-3 showDrop">
+            {% with allowed_states=role_state|get_item:user.role %}
+                <a class="btn btn-secondary dropdown-toggle" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);" 
+                    href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if request.GET.state %}{{ request.GET.state }}{% else %} Tous {% if not request.GET.state %}({{ all_total }}){% endif %} {% endif %}
+                </a>
+                <ul class="dropdown-menu ulStyle" aria-labelledby="dropdownMenuLink">
+                    <li class="nav-item {% if request.GET.state == state %}cActive{% endif %}">
+                        <button class="CustBtn" type="submit" name="state" value="{{ state }}">
+                            Tous {% if not request.GET.state %}({{ all_total }}){% endif %}
+                        </button>
+                    </li>
+                    {% for state in allowed_states %}
+                        <li class="nav-item {% if request.GET.state == state %}cActive{% endif %}">
+                            <button class="CustBtn" type="submit" name="state" value="{{ state }}">
+                                {{ state }} ({{ state_totals|get_item:state }})
+                            </button>
+                        </li>
+                    {% endfor %}
+            {% endwith %}
+        </div>
     </form>
     <section class="sectionList"> 
         <table class="table table-borderless">
@@ -66,9 +87,9 @@ List des rapports
                 <th class="d-none d-md-table-cell">Unité logistique</th>
                 <th class="d-none d-md-table-cell">Quantité</th>
                 <th class="d-none d-md-table-cell">Total d'arréts</th>
-                <th>État</th>
+                <th class="d-none d-md-table-cell">État</th>
                 {% if user.role == 'Gestionnaire de production' %}
-                    <th style="width: 6vh;">Actions</th>
+                    <th class="d-none d-md-table-cell" style="width: 6vh;">Actions</th>
                 {% endif %}
                 </tr>
             </thead>
@@ -83,9 +104,9 @@ List des rapports
                     <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_sac_prod }} {{ report.prod_product.unite.conditionnement }}</td>
                     <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_tn }} {{ report.prod_product.unite.code }}</td>
                     <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.total_arrets }}h</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.state }}</td>
+                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.state }}</td>
                     {% if report.creator == user and user.role == 'Gestionnaire de production' %}
-                    <td style="vertical-align: middle; padding: 8px 0px; text-align: center;">            
+                    <td class="d-none d-md-table-cell" style="vertical-align: middle; padding: 8px 0px; text-align: center;">            
                         <button type="button" onclick="window.location='{% url 'update_report' report.id %}'"  style="padding: 2px;"
                         class="btn" {% if report.state != 'Brouillon' %} disabled {% endif %}><i class="fas fa-edit" style="color: white;"></i></button>
                         {% if report.creator and report.creator == user %}
@@ -95,7 +116,6 @@ List des rapports
                         {% endif %}
                     </td>
                     {% endif %}
-                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -108,13 +128,30 @@ List des rapports
     <form method="GET" style="margin: 20px 0px;">
         {% csrf_token %}
         <div class="row height d-flex justify-content-center align-items-center">
-            <div class="col-md-6">
+            <div class="col-md-4 col-sm-6 mb-2">
                 <div class="form" style="position: relative;">
-                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>{{ filter.form.search }}
+                    <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>
+                    {{ filter.form.search }}
                 </div>
             </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filter.form.start_date }}
+            </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filter.form.end_date }}
+            </div>
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filter.form.line }}
+            </div>
+            <div class="col-md-1 col-sm-6 mb-2">
+                <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" style="background-color: rgba(202, 207, 215, 0.5); 
+                border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px;" name="page_size">
+            </div>
+            <div class="col-md-1 col-sm-6 mb-2">
+                <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
+            </div>
         </div>
-        <ul class="nav nav-tabs mt-3" style="border-bottom: 1px solid #b7b9bd;">
+        <ul class="nav nav-tabs mt-3 showUl">
             <li class="nav-item {% if not request.GET.state %}customActive{% endif %}">
                 <button class="nav-link text-decoration-none customUnactive {% if not request.GET.state %}text-white{% endif %}" onMouseOver="this.style.borderColor='transparent'; this.style.color='white';" 
                 onMouseOut="this.style.color='#b7b9bd'" style="font-size: 1.15rem;" onclick="location.href='{% url 'list_report' %}'{% if request.GET.search %}?search={{ request.GET.search }}{% endif %};">
@@ -132,26 +169,64 @@ List des rapports
                 {% endfor %}
             {% endwith %}
         </ul>
+        <div class="dropdown mt-3 showDrop">
+            {% with allowed_states=role_state|get_item:user.role %}
+                <a class="btn btn-secondary dropdown-toggle" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);" 
+                    href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if request.GET.state %}{{ request.GET.state }}{% else %} Tous {% if not request.GET.state %}({{ all_total }}){% endif %} {% endif %}
+                </a>
+                <ul class="dropdown-menu ulStyle" aria-labelledby="dropdownMenuLink">
+                    <li class="nav-item {% if request.GET.state == state %}cActive{% endif %}">
+                        <button class="CustBtn" type="submit" name="state" value="{{ state }}">
+                            Tous {% if not request.GET.state %}({{ all_total }}){% endif %}
+                        </button>
+                    </li>
+                    {% for state in allowed_states %}
+                        <li class="nav-item {% if request.GET.state == state %}cActive{% endif %}">
+                            <button class="CustBtn" type="submit" name="state" value="{{ state }}">
+                                {{ state }} ({{ state_totals|get_item:state }})
+                            </button>
+                        </li>
+                    {% endfor %}
+            {% endwith %}
+        </div>
     </form>
         {% include 'empty_list.html' %}
     {% endif %}
 </div>
 <style>
+    .ulStyle{
+        background: rgba(127, 139, 161, 0.9);  
+        border-radius: 5px; 
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    }
+    .cActive{
+        background-color: rgba(14, 42, 91, 0.3);
+        border-bottom: 0px solid transparent;
+    }
+    .CustBtn{
+        border: none;
+        background-color: transparent;
+        width: 100%;
+        text-align: left;
+        color: white;
+        margin-left: 3px;
+    }
+    .CustBtn:hover{
+        background-color: rgba(14, 42, 91, 0.3);
+    }
     select option {
         background: rgba(127, 139, 161, 0.9);
     }
-    .width7 {
-        width: 7%;
-    }
-    .width10 {
-        width: 10%;
-    }
-    .width12 {
-        width: 12%;
+    .showDrop{
+        display: none;
     }
     @media only screen and (max-width: 767px) {
-        body {
-          background-color: lightblue;
+        .showDrop{
+            display: block;
+        }
+        .showUl{
+            display: none;
         }
     }
 </style>

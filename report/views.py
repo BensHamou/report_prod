@@ -710,7 +710,7 @@ def confirmReport(request, pk):
 
     if old_state == 'Brouillon':
         taux_nbr = 0
-        if report.line.obj_ctd > 0:
+        if report.line.obj_ctd > 0 and report.used_time > 0:
             relative_time_spent = report.used_time / report.shift.passed_time
             real_obj = report.line.obj_ctd * relative_time_spent
             taux_nbr = report.qte_tn / real_obj

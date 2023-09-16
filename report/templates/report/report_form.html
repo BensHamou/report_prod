@@ -426,9 +426,11 @@ Rapport
                 {% for field in formset.empty_form.visible_fields %}
                 <td>
                     {% if field.label == 'Supprimer' %}
-                    <button type="button" onclick="deleteRow(this.parentNode.parentNode)" class="btn" style="color: white;">
-                        <i class="far fa-trash-alt"></i>
-                    </button>
+                    <div class="d-flex justify-content-center">
+                        <button type="button" onclick="deleteRow(this.parentNode.parentNode.parentNode)" class="btn" style="color: white;">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </div>
                     {% else %}
                         {{ field }}
                         {% for error in field.errors %}
@@ -464,15 +466,19 @@ Rapport
                             {% endfor %}
                             {% if formss.instance.pk %}
                             <td>
-                                <button type="button" onclick="confirmArretDel('{{formss.instance.pk|escapejs}}')" class="btn" style="color: white;">
-                                    <i class="far fa-trash-alt"></i>
-                                </button>
-                            </td>    
+                                <div class="d-flex justify-content-center">
+                                    <button type="button" onclick="confirmArretDel('{{formss.instance.pk|escapejs}}')" class="btn" style="color: white;">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
                             {% else %}
                             <td>
-                                <button type="button" onclick="deleteRow(this.parentNode.parentNode)" class="btn" style="color: white;">
-                                    <i class="far fa-trash-alt"></i>
-                                </button>
+                                <div class="d-flex justify-content-center">
+                                    <button type="button" onclick="deleteRow(this.parentNode.parentNode)" class="btn" style="color: white;">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
                             </td>    
                             {% endif %}
                         </tr>
@@ -793,5 +799,15 @@ Rapport
         });
     });
 </script>
-        
+<style>
+    @media only screen and (max-width: 767px) {
+        td {
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+    }
+</style>
 {% endblock content %}

@@ -1,30 +1,55 @@
 <div class="modal" id="validationsModal" tabindex="-1" aria-labelledby="validationsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        <div class="modal-content" style="background: rgba(107, 122, 147, 0.75); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); backdrop-filter: blur(2px);">
+        <div class="modal-content contentStyle">
             <div class="modal-header text-white" style="border-color: rgba(171, 175, 181, 0.4);">
-                <h5 class="modal-title" id="validationsModalLabel">Validations</h5>
-                <button type="button" class="btn-close" data-dismiss="modal" id="buttonValidationX" aria-label="Close"></button>
+                <h4 class="headerStyle mb-0">Cycle de validation</h4>
+                <button type="button" class="btn-close" style="margin-left: 10px;" data-dismiss="modal" id="buttonValidationX" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <table class="table card-header text-white" style="background: rgba(0, 0, 0, 0);">
                     <thead style="border-color: white;">
-                        <th>Ancien état</th>
-                        <th>Nouvel état</th>
-                        <th>Date d'action</th>
-                        <th>Utilisateur</th>
-                        <th>Commentaire</th>
+                        <th class="d-none d-md-table-cell">Ancien état</th>
+                        <th class="d-none d-md-table-cell">Nouvel état</th>
+                        <th class="d-none d-md-table-cell">Date d'action</th>
+                        <th class="d-none d-md-table-cell">Utilisateur</th>
+                        <th class="d-none d-md-table-cell">Commentaire</th>
                     </thead>
                     <tbody id="item-validations">
                         {% for validation in report.validations.all %}
-                            <tr style="border-color: transparent; color: #d9dce1;">
-                                <td>{{ validation.old_state }}</td>
-                                <td>{{ validation.new_state }}</td>
-                                <td>{{ validation.date }}</td>
-                                <td>{{ validation.actor }}</td>
-                                <td>{{ validation.refusal_reason }}</td>
+                            <tr class="trS">
+                                <td>
+                                    <div>
+                                        <p class="tdLabel">Ancien état</p>
+                                        <p class="valueLead mb-0">{{ validation.old_state }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="tdLabel">Nouvel état</p>
+                                        <p class="valueLead mb-0">{{ validation.new_state }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="tdLabel">Date d'action</p>
+                                        <p class="valueLead mb-0">{{ validation.date }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <p class="tdLabel">Utilisateur</p>
+                                        <p class="valueLead mb-0">{{ validation.actor }}</p>
+                                    </div>
+                                </td>
+                                <td class="tdLast">
+                                    <div>
+                                        <p class="tdLabel">Commentaire</p>
+                                        <p class="valueLead mb-0">{% if validation.refusal_reason  %}{{ validation.refusal_reason }}{% else %}/{% endif %}</p>
+                                    </div>
+                                </td>
                             </tr>
                         {% empty %}
-                            <tr>
+                            <tr class="trS">
                                 <td>Pas d'enregistrements.</td>
                                 <td>Pas d'enregistrements.</td>
                                 <td>Pas d'enregistrements.</td>
@@ -41,6 +66,65 @@
         </div>
     </div>
 </div>
+
+<style>
+    .contentStyle {
+        background: rgba(107, 122, 147, 0.75); 
+        border-radius: 16px; 
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+        backdrop-filter: blur(2px);
+    }
+    .tdLabel{
+        display: none;
+    }
+    .trS {
+        border-color: transparent; 
+        color: #d9dce1;
+    }
+    .dateStyle{
+        margin-left: auto; 
+    }
+    @media only screen and (max-width: 767px) {
+        .contentStyle {
+            background: rgba(236, 239, 242, 0.95);
+            border-radius: 16px; 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+            backdrop-filter: blur(2px);
+        }
+        .dateStyle{
+            color: #747474;
+        }
+        .headerStyle{
+            color: #0c2858;
+            font-weight: bold;
+        }
+        td {
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            margin: 0 0 2px 10px;
+        }
+        .trS {
+            border-left: 4px solid #8b99b0;
+            border-radius: 5px;
+            color: #5b5b5b;
+            border-top: 10px solid transparent;
+        }
+        .tdLast{
+            border-bottom: 2px solid white;
+        }
+        .valueLead{
+            font-size: 16px;
+        }
+        .tdLabel{
+            display: block;
+            color: #929292; 
+            font-size: 16px; 
+            margin-bottom: 5px;
+        }
+    }
+</style>
 
 <script>
     $(document).ready(function () {

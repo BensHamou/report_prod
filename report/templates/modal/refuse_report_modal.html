@@ -1,9 +1,9 @@
 <div class="modal" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <form class="container" method="POST" action="{% url 'refuse_report' report.id %}">
-            <div class="modal-content" style="background: rgba(107, 122, 147, 0.75); border-radius: 16px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); backdrop-filter: blur(2px);">
+            <div class="modal-content contentStyle">
                 <div class="modal-header text-white" style="border-color: rgba(171, 175, 181, 0.4);">
-                    <h5 class="modal-title" id="refuseModalLabel">Motif de refus</h5>
+                    <h4 class="headerStyle mb-0">Motif de refus</h4>
                     <button type="button" class="btn-close" data-dismiss="modal" id="buttonRefuseX" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -11,13 +11,43 @@
                     <textarea class="form-control" placeholder="Veuillez indiquer la raison de votre refus." id="refusal_reason" name="refusal_reason" style="background-color: #cacfd7;" rows="4"></textarea>
                 </div>
                 <div class="modal-footer" style="border-color: transparent;">
-                    <button type="submit" class="btn btn-block" style="background-color: #23305d; color: white;">Soumettre</button>
-                    <button type="button" class="btn btn-secondary" style="background-color: #b7b9bd; color: white;" id="buttonRefuseCancel" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-block subButton">Soumettre</button>
+                    <button type="button" class="btn btn-secondary cancelButton" id="buttonRefuseCancel" data-dismiss="modal">Annuler</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+<style>
+    .subButton{
+        background-color: #23305d; 
+        color: white;
+    }
+    .cancelButton{
+        background-color: #b7b9bd; 
+        color: white;
+        border-color: transparent;
+    }
+    .contentStyle {
+        background: rgba(107, 122, 147, 0.75); 
+        border-radius: 16px; 
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+        backdrop-filter: blur(2px);
+    }
+    @media only screen and (max-width: 767px) {
+        .contentStyle {
+            background: rgba(236, 239, 242, 0.95);
+            border-radius: 16px; 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+            backdrop-filter: blur(2px);
+        }
+        .headerStyle{
+            color: #0c2858;
+            font-weight: bold;
+        }
+    }
+</style>
 
 <script>
     $(document).ready(function () {
