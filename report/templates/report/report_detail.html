@@ -118,7 +118,7 @@ Rapport
                     <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">N° Lot</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.n_lot }}
+                            {{ report.line.prefix_line }}{{ report.n_lot }}/{{ report.prod_day|date:"y" }}
                         </div>
                     </div>
                 </div>

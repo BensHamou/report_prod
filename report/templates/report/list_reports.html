@@ -12,7 +12,7 @@ List des rapports
     <form method="GET" style="{% if page %}margin: 20px 0px 0px 0px;{% else %}margin-top: 13%;{% endif %}">
         {% csrf_token %}
         <div class="row height d-flex justify-content-center align-items-center">
-            <div class="col-md-4 col-sm-6 mb-2">
+            <div class="col-lg-4 col-md-3 col-sm-6 mb-2">
                 <div class="form" style="position: relative;">
                     <i class="fa fa-search" style="position: absolute; top:12px; left: 17px; color: white;"></i>
                     {{ filter.form.search }}
@@ -76,50 +76,54 @@ List des rapports
         </div>
     </form>
     <section class="sectionList"> 
-        <table class="table table-borderless">
-            <thead style="border-bottom: 2px solid white;">
-                <tr class="text-white" style="vertical-align: middle;">
-                <th>N° Lot</th>
-                <th class="d-none d-md-table-cell" style="width: 19vh;">Date de création</th>
-                <th style="width: 8vh;">Date de production</th>
-                <th>Équipe</th>
-                <th class="d-none d-md-table-cell">Produit</th>
-                <th class="d-none d-md-table-cell">Unité logistique</th>
-                <th class="d-none d-md-table-cell">Quantité</th>
-                <th class="d-none d-md-table-cell">Total d'arréts</th>
-                <th class="d-none d-md-table-cell">État</th>
-                {% if user.role == 'Gestionnaire de production' %}
-                    <th class="d-none d-md-table-cell" style="width: 6vh;">Actions</th>
-                {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for report in page %}
-                <tr style="color: #dde3f0;">
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.n_lot }}</td>
-                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.date_created|date:"d/m/Y h:i" }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_day|date:"d/m/Y" }}</td>
-                    <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.team }}</td>
-                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_product }}</td>
-                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_sac_prod }} {{ report.prod_product.unite.conditionnement }}</td>
-                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_tn }} {{ report.prod_product.unite.code }}</td>
-                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.total_arrets }}h</td>
-                    <td class="d-none d-md-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.state }}</td>
-                    {% if report.creator == user and user.role == 'Gestionnaire de production' %}
-                    <td class="d-none d-md-table-cell" style="vertical-align: middle; padding: 8px 0px; text-align: center;">            
-                        <button type="button" onclick="window.location='{% url 'update_report' report.id %}'"  style="padding: 2px;"
-                        class="btn" {% if report.state != 'Brouillon' %} disabled {% endif %}><i class="fas fa-edit" style="color: white;"></i></button>
-                        {% if report.creator and report.creator == user %}
-                            <button type="button" {% if report.state != 'Brouillon' %} disabled {% endif %}  style="padding: 2px;" onclick="confirmRepDel('{{report.id|escapejs}}', '{{report.n_lot|escapejs}}', '{{report.team|escapejs}}', '{{report.prod_day|escapejs}}', '{{report.prod_product|escapejs}}')" class="btn">
-                                <i class="far fa-trash-alt" style="color: white;"></i>
-                            </button>
-                        {% endif %}
-                    </td>
+        <div class="tableStyle">
+            <table class="table table-borderless">
+                <thead style="border-bottom: 2px solid white;">
+                    <tr class="text-white" style="vertical-align: middle;">
+                    <th>N° Lot</th>
+                    <th class="d-none d-lg-table-cell" style="width: 19vh;">Date de création</th>
+                    <th style="width: 8vh;">Date de production</th>
+                    <th>Équipe</th>
+                    <th>Produit</th>
+                    <th>Unité logistique</th>
+                    <th>Quantité</th>
+                    <th>Shift</th>
+                    <th>Total d'arréts</th>
+                    <th>État</th>
+                    {% if user.role == 'Gestionnaire de production' %}
+                        <th class="d-none d-md-table-cell" style="width: 6vh;">Actions</th>
                     {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in page %}
+                    <tr style="color: #dde3f0;">
+                        <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.line.prefix_line }}{{ report.n_lot }}/{{ report.prod_day|date:"y" }}</td>
+                        <td class="d-none d-lg-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.date_created|date:"d/m/Y h:i" }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_day|date:"d/m/Y" }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.team }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_product }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_sac_prod }} {{ report.prod_product.unite.conditionnement }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.qte_tn }} {{ report.prod_product.unite.code }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.shift }}</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.total_arrets }}h</td>
+                        <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.state }}</td>
+                        {% if report.creator == user and user.role == 'Gestionnaire de production' %}
+                        <td class="d-none d-md-table-cell" style="vertical-align: middle; padding: 8px 0px; text-align: center;">            
+                            <button type="button" onclick="window.location='{% url 'update_report' report.id %}'"  style="padding: 2px;"
+                            class="btn" {% if report.state != 'Brouillon' %} disabled {% endif %}><i class="fas fa-edit" style="color: white;"></i></button>
+                            {% if report.creator and report.creator == user %}
+                                <button type="button" {% if report.state != 'Brouillon' %} disabled {% endif %}  style="padding: 2px;" onclick="confirmRepDel('{{report.id|escapejs}}', '{{report.n_lot|escapejs}}', '{{report.team|escapejs}}', '{{report.prod_day|escapejs}}', '{{report.prod_product|escapejs}}')" class="btn">
+                                    <i class="far fa-trash-alt" style="color: white;"></i>
+                                </button>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% if page.has_other_pages %}
             {% include 'pagination.html' %}
         {% endif %}    
@@ -221,12 +225,28 @@ List des rapports
     .showDrop{
         display: none;
     }
+    @media only screen and (max-width: 820px) {
+        table td, table th {
+            white-space: nowrap;
+        }
+        .tableStyle{
+            overflow-x: auto; 
+            width:  85vw;
+        }
+    }
     @media only screen and (max-width: 767px) {
         .showDrop{
             display: block;
         }
         .showUl{
             display: none;
+        }
+        table td, table th {
+            white-space: nowrap;
+        }
+        .tableStyle{
+            overflow-x: auto; 
+            width:  75vw;
         }
     }
 </style>

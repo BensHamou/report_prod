@@ -721,7 +721,7 @@ def confirmReport(request, pk):
         <p>Bonjour l'équipe,</p>
         <p>Un rapport a été créé par <b style="color: #002060">''' + report.creator.fullname + '''</b> <b>(''' + report.line.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
         <ul>
-            <li><b>N° Lot :</b> <b style="color: #002060">''' + report.n_lot + '''</b></li>
+            <li><b>N° Lot :</b> <b style="color: #002060">''' + report.line.prefix_line + '''''' + report.n_lot + '''/''' + report.prod_day.strftime("%y") + '''</b></li>
             <li><b>Produit :</b> <b style="color: #002060">''' + report.prod_product.designation + '''</b></li>
             <li><b>Date de production :</b> <b style="color: #002060">''' + str(report.prod_day) + '''</b></li>
             <li><b>Équipe :</b> <b style="color: #002060">''' + report.team.designation + '''</b></li>

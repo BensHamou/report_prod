@@ -43,6 +43,7 @@ class Line(models.Model):
     designation = models.CharField(max_length=100)
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     obj_ctd = models.FloatField(default=0, null=True, validators=[MinValueValidator(0)])
+    prefix_line = models.CharField(max_length=5, blank=True, null=True)
     
     def teams(self):
         return self.team_set.all()
