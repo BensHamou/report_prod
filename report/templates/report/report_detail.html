@@ -22,13 +22,9 @@ Rapport
                 <input class="form-control lead"  value="{{  report.state }}" style="background-color: #637188; border-color: transparent; color: white;" disabled>
             </div>
             <div class="col-md-3 d-flex justify-content-end">
-                <button id="validation-cardS" class="btn btn-secondary btn-block customSaveButton d-block d-sm-none">
-                    <i class="fas fa-arrows-spin"></i>
+                <button id="validation-card" class="btn btn-secondary btn-block customSaveButton">
+                    <i class="fas fa-arrows-spin d-block d-sm-none"></i><p class="d-none d-sm-block p-0 m-0">Cycle de Validation</p>
                 </button>
-                <button id="validation-cardB" class="btn btn-secondary btn-block customSaveButton d-none d-sm-block">
-                    Cycle de Validation
-                </button>
-  
                 {% if report.state in 'Brouillon,Refusé par GS,Refusé par DI' and user.role in 'Admin,Gestionnaire de production' and user == report.creator %}
                 <button onclick="window.location='{% url 'update_report' report.id %}'" class="btn btn-secondary btn-block customSaveButton" style="margin-left: 2%;">
                     <i class="fas fa-edit"></i>
