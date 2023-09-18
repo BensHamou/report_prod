@@ -73,7 +73,7 @@ class Report(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     state = models.CharField(choices=STATE_REPORT, max_length=40)
     prod_product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE, related_name='prod_product') ##
-    n_lot = models.CharField(max_length=30)
+    n_lot = models.IntegerField()
     line = models.ForeignKey(Line, on_delete=models.CASCADE) ##
     site = models.ForeignKey(Site, on_delete=models.CASCADE, null=True) ##
     prod_day = models.DateField()
@@ -109,7 +109,7 @@ class Report(models.Model):
         return round(sum(arret.duration for arret in self.arrets()), 2)
     
     def __str__(self):
-        return self.n_lot + " - " + self.prod_product.designation + " (" + str(self.date_created) +")"
+        return str(self.n_lot) + " - " + self.prod_product.designation + " (" + str(self.date_created) +")"
 
 class Arret(models.Model):
 

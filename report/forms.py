@@ -92,7 +92,7 @@ class ReportForm(ModelForm):
                   'qte_sac_rec', 'qte_rec', 'nbt_pallete', 'observation_rec','gpl_1', 'gpl_2']
                 
 
-    n_lot = forms.CharField(widget=forms.TextInput(attrs= getAttrs('control','N° Lot')))
+    n_lot = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','N° Lot')))
     line = forms.ModelChoiceField(queryset=Line.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Ligne")
     site = forms.ModelChoiceField(queryset=Site.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Site")
     prod_day = forms.DateField(initial=timezone.now().date(), widget=forms.widgets.DateInput(attrs= getAttrs('date'), format='%Y-%m-%d'))
