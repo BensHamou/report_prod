@@ -79,7 +79,7 @@ class Report(models.Model):
     prod_day = models.DateField()
     team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL) ##
     shift = models.ForeignKey(Horaire, null=True, on_delete=models.SET_NULL)
-    used_time =  models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(8)])
+    used_time =  models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(12)])
     nbt_melange = models.FloatField(default=0, validators=[MinValueValidator(0)])
     qte_sac_prod = models.IntegerField(default=1, validators=[MinValueValidator(0)])
     poids_melange = models.FloatField(default=0, validators=[MinValueValidator(0)])
