@@ -41,7 +41,10 @@ def check_creatorArret(view_func):
         arret = Arret.objects.get(id=arret_id)
         if arret.report.state == 'Validé par GS' and request.user.role == 'Directeur Industriel':
             return view_func(request, *args, **kwargs)
-        if not (arret.report.state in ['Brouillon','Refusé par GS', 'Refusé par DI'] and (request.user.role == "Gestionnaire de production" and request.user == arret.report.creator or request.user.role == 'Admin')):
+        if request.user.role == 'Admin':
+            return view_func(request, *args, **kwargs)
+        if not (arret.report.state in ['Brouillon','Refusé par GS', 'Refusé par DI'] and 
+                (request.user.role == "Gestionnaire de production" and request.user == arret.report.creator)):
             return render(request, '403.html', status=403)
         return view_func(request, *args, **kwargs)
     return wrapper
