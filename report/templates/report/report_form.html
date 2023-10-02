@@ -550,9 +550,9 @@ Rapport
             }
             totalHours += Math.floor(totalMinutes / 60);
             totalMinutes %= 60;
-            if (totalHours > 8 || (totalHours === 8 && totalMinutes > 0)) {
-                swal({title: `Oops, le total dépasse 8 heures!`,   
-                        text: `Veuillez modifier votre saisie pour qu'elle dure moins de 8 heures au total.`, confirmButtonColor: "#DD6B55",   
+            if (totalHours > 12 || (totalHours === 12 && totalMinutes > 0)) {
+                swal({title: `Oops, le total dépasse 12 heures!`,   
+                        text: `Veuillez modifier votre saisie pour qu'elle dure moins de 12 heures au total.`, confirmButtonColor: "#DD6B55",   
                         confirmButtonText: "Ok", type: "warning", closeOnCancel: true });
                 return false;
             }
