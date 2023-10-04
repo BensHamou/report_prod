@@ -116,7 +116,7 @@ class Arret(models.Model):
     type_stop = models.ForeignKey(TypeStop, null=True, on_delete=models.SET_NULL)
     reason_stop = models.ForeignKey(ReasonStop, null=True, on_delete=models.SET_NULL)
     
-    hour = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(8)])
+    hour = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(12)])
     minutes = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(59)])
     
     @property
