@@ -99,7 +99,7 @@ List des rapports
                     {% for report in page %}
                     <tr style="color: #dde3f0;">
                         <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.line.prefix_line }}{{ report.n_lot }}/{{ report.prod_day|date:"y" }}</td>
-                        <td class="d-none d-lg-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.date_created|date:"d/m/Y h:i" }}</td>
+                        <td class="d-none d-lg-table-cell" onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.date_created|date:"d/m/Y H:i" }}</td>
                         <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_day|date:"d/m/Y" }}</td>
                         <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.team }}</td>
                         <td onclick="window.location='{% url 'report_detail' report.id %}'" style="cursor: pointer;">{{ report.prod_product }}</td>
