@@ -43,8 +43,9 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('30 * * * *', 'report.cron.send_alert')
+    ('*/30 * * * *', 'report.cron.send_alert')
 ]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

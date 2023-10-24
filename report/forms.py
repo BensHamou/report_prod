@@ -144,6 +144,18 @@ class ReportForm(ModelForm):
                                      'qte_sac_reb', 'poids_melange', 'qte_sac_rec', 'qte_rec', 'nbt_pallete', 'gpl_1', 'gpl_2', 'observation_rec']
                 for field_name in fields_to_disable:
                     self.fields[field_name].widget.attrs['disabled'] = True
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        n_lot = cleaned_data.get('n_lot')
+        line = cleaned_data.get('line')
+
+        if n_lot and n_lot != 0 and line:
+            existing_report = Report.objects.filter(n_lot=n_lot, line=line).exists()
+            if existing_report:
+                self.add_error('n_lot', 'Un rapport avec ce numéro de lot existe déjà pour cette ligne.')
+
+        return cleaned_data
 
 
 class MPConsumedForm(ModelForm):
