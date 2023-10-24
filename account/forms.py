@@ -46,12 +46,14 @@ class SiteForm(ModelForm):
 class LineForm(ModelForm):
     class Meta:
         model = Line
-        fields = ['designation', 'site', 'obj_ctd', 'prefix_line']
+        fields = ['designation', 'site', 'obj_ctd', 'prefix_line', 'include_cron', 'allowed_delay']
 
     designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control', 'Désignation')))
     site = forms.ModelChoiceField(queryset=Site.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Site")
     obj_ctd = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Objective quotidienne')))
     prefix_line = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control', 'Préfixe')))
+    include_cron = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton'}))
+    allowed_delay = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Délai autorisé (Minutes)')), initial=00)
 
     
     def __init__(self, *args, **kwargs):

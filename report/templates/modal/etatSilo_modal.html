@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content contentStyle">
             <div class="modal-header text-white" style="border-color: rgba(171, 175, 181, 0.4);">
-                <h4 class="headerStyle mb-0">État Silos - {{ report.n_lot }}</h4>
+                <h4 class="headerStyle mb-0">État Silos - {{ report.line.prefix_line }}{{ report.n_lot }}/{{ report.prod_day|date:"y" }}</h4>
                 <p class="lead mb-0 dateStyle" style="">{{ report.prod_day|date:"d/m/Y"}}</p>
                 <button type="button" class="btn-close" style="margin-left: 10px;" data-dismiss="modal" id="buttonSiloX" aria-label="Close"></button>
             </div>

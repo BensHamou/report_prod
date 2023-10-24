@@ -52,6 +52,7 @@ class Product(models.Model):
     numo_products = models.ManyToManyField(NumoProduct, blank=True)
     unite = models.ForeignKey(Unite, on_delete=models.SET_NULL, null=True, blank=True)
     qte_per_container = models.FloatField(default=0, null=True, validators=[MinValueValidator(0)])
+    poids_melange = models.FloatField(default=0, null=True, blank=True, validators=[MinValueValidator(0)])
 
     def __str__(self):
         return self.designation

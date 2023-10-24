@@ -44,12 +44,17 @@ class Line(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE)
     obj_ctd = models.FloatField(default=0, null=True, validators=[MinValueValidator(0)])
     prefix_line = models.CharField(max_length=5, blank=True, null=True)
+    include_cron = models.BooleanField(default=False)
+    allowed_delay = models.IntegerField(default=0, validators=[MinValueValidator(0)]) 
     
     def teams(self):
         return self.team_set.all()
     
     def silos(self):
         return self.silo_set.all()
+    
+    def shifts(self):
+        return self.site.horaires.all()
 
     def __str__(self):
         return self.designation

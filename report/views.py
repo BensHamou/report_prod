@@ -336,6 +336,17 @@ class CheckCreatorMixin:
     def dispatch(self, request, *args, **kwargs):
         if not self.check_can_create():
             return render(request, '403.html', status=403)
+        return super().dispatch(request, *args, **kwargs)    
+    
+class CheckNoRefusedMixin:
+    def check_has_refused(self):
+        lines = self.request.user.lines.all()
+        reports = Report.objects.filter(Q(creator=self.request.user), Q(line__in=lines) & Q(state='Refusé par GS') | Q(state='Refusé par DI'))
+        return len(reports) == 0
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.check_has_refused():
+            return render(request, '403_refusal.html', status=403)
         return super().dispatch(request, *args, **kwargs)
     
 class CheckReportViewerMixin:
@@ -429,7 +440,7 @@ class ReportInline():
             consumed_product.save()
 
 
-class ReportCreate(LoginRequiredMixin, CheckCreatorMixin, ReportInline, CreateView):
+class ReportCreate(LoginRequiredMixin, CheckCreatorMixin, CheckNoRefusedMixin, ReportInline, CreateView):
 
     def get_context_data(self, **kwargs):
         ctx = super(ReportCreate, self).get_context_data(**kwargs)
@@ -483,7 +494,7 @@ class ReportList(LoginRequiredMixin, FilterView):
     ordering = ['-prod_day']
         
     all_GP = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
-    all_A = ['Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
+    all_A = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
     all_GS = ['Confirmé', 'Validé par GS', 'Refusé par GS', 'Refusé par DI']
     all_DI = ['Validé par GS', 'Validé par DI', 'Refusé par DI']
     all_NV = ['']
@@ -636,17 +647,17 @@ def get_reasons_by_type(request):
 @login_required(login_url='login')
 def get_numo_by_product(request):
     numo_products = NumoProduct.objects.filter(product=request.GET.get('product'))
-
     try:
         product = Product.objects.get(id=request.GET.get('product'))
         qte_per_container = product.qte_per_container
         code_unite = product.unite.code
+        poids_melange = product.poids_melange
     except Product.DoesNotExist:
         qte_per_container = 0
 
     mp_list = [numo_product.id for numo_product in numo_products]
 
-    return JsonResponse({'mp_list': mp_list, 'qte_per_container': qte_per_container, 'code_unite': code_unite})
+    return JsonResponse({'mp_list': mp_list, 'qte_per_container': qte_per_container, 'code_unite': code_unite, 'poids_melange': poids_melange})
 
 @login_required(login_url='login')
 def get_qte_per_container(request):

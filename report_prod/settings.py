@@ -39,6 +39,11 @@ INSTALLED_APPS = [
     'django_filters',
     'widget_tweaks',
     'django_extensions',
+    'django_crontab'
+]
+
+CRONJOBS = [
+    ('30 * * * *', 'report.cron.send_alert')
 ]
 
 MIDDLEWARE = [

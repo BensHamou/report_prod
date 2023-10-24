@@ -1,0 +1,45 @@
+from datetime import datetime, time, timedelta
+from django.core.mail import send_mail
+from django.utils.html import format_html
+from account.models import Line
+from report.models import Report
+def send_alert():
+    # get all lines that have include_cron = True
+    lines = Line.objects.filter(include_cron=True)
+    current_time = datetime.now().time().strftime('%H:%M:%S')
+    today = datetime.today().date()
+
+    for line in lines:
+        for shift in line.shifts():
+            shift_end_time = time(shift.hour_end, shift.minutes_end)
+            allowed_delay = timedelta(minutes=line.allowed_delay)
+            threshold = (datetime.combine(datetime.today(), shift_end_time) + allowed_delay).time().strftime('%H:%M:%S')
+            threshold_limit = (datetime.combine(datetime.today(), shift_end_time) + allowed_delay + timedelta(minutes=60)).time().strftime('%H:%M:%S')
+
+            if threshold <= current_time <= threshold_limit:
+                alert = True
+                latest_report = Report.objects.filter(line=line, shift=shift, date_created__date=today).first()
+
+                if latest_report:
+                    if shift.hour_start > shift.hour_end:
+                        yesterday = datetime.now() - timedelta(days=1)
+                        alert = latest_report.prod_day != yesterday
+                    else:
+                        alert = latest_report.prod_day != today
+                
+                recipient_list = []
+                
+                if line.site.address:
+                    recipient_list.append(line.site.address)
+                else:
+                    recipient_list.append('benshamou@gmail.com')
+                #recipient_list = ['benshamou@gmail.com']
+                #recipient_list = ['senoucisan@gmail.com']
+
+                subject = 'Notification d\'alerte ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                message = '''<p>Le rapport du shift [''' + shift.__str__() + '''] du ligne '''+line.__str__()+'''<b> n'est pas encore créé.</b>'''
+
+                formatHtml = format_html(message)
+                if alert:
+                    #print('HERE')
+                    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)

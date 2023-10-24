@@ -26,7 +26,7 @@ def getAttrs(type, placeholder='', other={}):
 class ProductForm(ModelForm):
     class Meta:
         model = Product
-        fields = ['designation', 'line', 'numo_products', 'unite', 'qte_per_container']
+        fields = ['designation', 'line', 'numo_products', 'unite', 'qte_per_container', 'poids_melange']
 
     designation = forms.CharField(widget=forms.TextInput(attrs=getAttrs('control','Designation')))
     line = forms.ModelChoiceField(queryset=Line.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Ligne")
@@ -34,6 +34,7 @@ class ProductForm(ModelForm):
     numo_products = forms.SelectMultiple(attrs={'class': 'form-select'})
     unite = forms.ModelChoiceField(queryset=Unite.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Unité")
     qte_per_container = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Qté par Sac/Bidon')))
+    poids_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Poids Mélange')))
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
