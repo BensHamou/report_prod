@@ -4,6 +4,7 @@ from django.utils.html import format_html
 from account.models import Line
 from report.models import Report
 def send_alert():
+    
     # get all lines that have include_cron = True
     lines = Line.objects.filter(include_cron=True)
     current_time = datetime.now().time().strftime('%H:%M:%S')
@@ -14,25 +15,25 @@ def send_alert():
             shift_end_time = time(shift.hour_end, shift.minutes_end)
             allowed_delay = timedelta(minutes=line.allowed_delay)
             threshold = (datetime.combine(datetime.today(), shift_end_time) + allowed_delay).time().strftime('%H:%M:%S')
-            threshold_limit = (datetime.combine(datetime.today(), shift_end_time) + allowed_delay + timedelta(minutes=60)).time().strftime('%H:%M:%S')
+            threshold_limit = (datetime.combine(datetime.today(), shift_end_time) + allowed_delay + timedelta(minutes=120)).time().strftime('%H:%M:%S')
 
             if threshold <= current_time <= threshold_limit:
                 alert = True
-                latest_report = Report.objects.filter(line=line, shift=shift, date_created__date=today).first()
-
+                if shift.hour_start > shift.hour_end:
+                    yesterday = datetime.now() - timedelta(days=1)
+                    latest_report = Report.objects.filter(line=line, shift=shift, prod_day=yesterday.strftime('%Y-%m-%d')).first()
+                else:
+                    latest_report = Report.objects.filter(line=line, shift=shift, prod_day=today).first()
+                
                 if latest_report:
-                    if shift.hour_start > shift.hour_end:
-                        yesterday = datetime.now() - timedelta(days=1)
-                        alert = latest_report.prod_day != yesterday
-                    else:
-                        alert = latest_report.prod_day != today
+                    alert = False
                 
                 recipient_list = []
                 
                 if line.site.address:
-                    recipient_list.append(line.site.address)
+                    recipient_list = line.site.address.split('&')
                 else:
-                    recipient_list.append('benshamou@gmail.com')
+                    recipient_list = ['benshamou@gmail.com']
                 #recipient_list = ['benshamou@gmail.com']
                 #recipient_list = ['senoucisan@gmail.com']
 
@@ -41,5 +42,5 @@ def send_alert():
 
                 formatHtml = format_html(message)
                 if alert:
-                    #print('HERE')
+                    #print('HERE', line, shift)
                     send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)

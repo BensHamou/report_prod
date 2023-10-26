@@ -7,7 +7,7 @@ from requests.auth import HTTPBasicAuth
 class ApiBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         if username == 'admin':
-            user = User.objects.get(username = 'admin', password = password)
+            user = User.objects.get(username = 'admin')
             return user
         
         auth = HTTPBasicAuth(username, password)

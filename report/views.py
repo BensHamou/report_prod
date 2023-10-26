@@ -709,9 +709,9 @@ def confirmReport(request, pk):
     recipient_list = []
 
     if report.site.address:
-        recipient_list.append(report.site.address)
+        recipient_list = report.site.address.split('&')
     else:
-        recipient_list.append('benshamou@gmail.com')    
+        recipient_list = ['benshamou@gmail.com'] 
     address = 'http://myreporting.grupopuma-dz.com/report/'
      
     #address = 'http://127.0.0.1:8000/report/'
@@ -857,9 +857,9 @@ def validateReport(request, pk):
     recipient_list = []
 
     if report.site.address:
-        recipient_list.append(report.site.address)
+        recipient_list = report.site.address.split('&')
     else:
-        recipient_list.append('benshamou@gmail.com')    
+        recipient_list = ['benshamou@gmail.com']   
     address = 'http://myreporting.grupopuma-dz.com/report/'
      
     #address = 'http://127.0.0.1:8000/report/'
@@ -923,9 +923,9 @@ def refuseReport(request, pk):
     recipient_list = []
 
     if report.site.address:
-        recipient_list.append(report.site.address)
+        recipient_list = report.site.address.split('&')
     else:
-        recipient_list.append('benshamou@gmail.com')    
+        recipient_list = ['benshamou@gmail.com']
     address = 'http://myreporting.grupopuma-dz.com/report/'
      
     #address = 'http://127.0.0.1:8000/report/'
