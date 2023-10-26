@@ -2,13 +2,15 @@ import requests
 from django.contrib.auth.backends import BaseBackend
 from .models import User
 from requests.auth import HTTPBasicAuth
+from django.contrib.auth.hashers import check_password
 
 
 class ApiBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         if username == 'admin':
             user = User.objects.get(username = 'admin')
-            return user
+            if check_password(password, user.password):
+                return user
         
         auth = HTTPBasicAuth(username, password)
 
