@@ -2,6 +2,7 @@ from django.forms import ModelForm, inlineformset_factory
 from django import forms
 from .models import *
 from django.utils import timezone
+from django.db.models import Q
 
 def getAttrs(type, placeholder='', other={}):
     ATTRIBUTES = {
@@ -152,9 +153,9 @@ class ReportForm(ModelForm):
 
         if n_lot and n_lot != 0 and line:
             if self.instance.pk:
-                existing_report = Report.objects.filter(n_lot=n_lot, line=line).exclude(id=self.instance.pk).exists()
+                existing_report = Report.objects.filter(n_lot=n_lot, line=line).exclude( Q(id=self.instance.pk) | Q(state='Annulé')).exists()
             else:
-                existing_report = Report.objects.filter(n_lot=n_lot, line=line).exists()
+                existing_report = Report.objects.filter(n_lot=n_lot, line=line).exclude(state='Annulé').exists()
             if n_lot and n_lot != 0 and line:
                 if existing_report:
                     self.add_error('n_lot', 'Un rapport avec ce numéro de lot existe déjà pour cette ligne.')
