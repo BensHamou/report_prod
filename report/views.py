@@ -871,7 +871,7 @@ def validateDIReport(request, pk):
     return redirect(redirect_url)
 
 @login_required(login_url='login')
-@DI_GS_required
+@GS_required
 def refuseReport(request, pk):
     try:
         report = Report.objects.get(id=pk)
