@@ -3,7 +3,7 @@ from account.models import *
 from .models import *
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from account.views import admin_required, DI_GS_required
+from account.views import admin_required, DI_required, GS_required
 import uuid
 from .forms import *
 from .filters import *
@@ -22,6 +22,7 @@ from functools import wraps
 from django.core.mail import send_mail
 from django.utils.html import format_html
 from datetime import datetime
+from .cron import send_alert
 
 
 def check_creator(view_func):
@@ -646,6 +647,7 @@ def get_reasons_by_type(request):
 
 @login_required(login_url='login')
 def get_numo_by_product(request):
+    send_alert()
     numo_products = NumoProduct.objects.filter(product=request.GET.get('product'))
     try:
         product = Product.objects.get(id=request.GET.get('product'))
@@ -706,79 +708,19 @@ def confirmReport(request, pk):
     validation.save()
     report.save()
 
-    recipient_list = []
-
     if report.site.address:
         recipient_list = report.site.address.split('&')
     else:
         recipient_list = ['benshamou@gmail.com'] 
-    address = 'http://myreporting.grupopuma-dz.com/report/'
      
     #address = 'http://127.0.0.1:8000/report/'
     #recipient_list = ['benshamou@gmail.com']
     #recipient_list = ['senoucisan@gmail.com']
 
     messages.success(request, 'Report Confirmé successfully')
-    subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
-    message = ''''''
 
-    if old_state == 'Brouillon':
-        taux_nbr = 0
-        if report.line.obj_ctd > 0 and report.used_time > 0:
-            relative_time_spent = report.used_time / report.shift.passed_time
-            real_obj = report.line.obj_ctd * relative_time_spent
-            taux_nbr = report.qte_tn / real_obj
-            taux_nbr = taux_nbr * 100
-            taux_nbr = round(taux_nbr, 2)
-        taux = str(taux_nbr) + '%'
-        message = '''
-        <p>Bonjour l'équipe,</p>
-        <p>Un rapport a été créé par <b style="color: #002060">''' + report.creator.fullname + '''</b> <b>(''' + report.line.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
-        <ul>
-            <li><b>N° Lot :</b> <b style="color: #002060">''' + report.line.prefix_line + '''''' + str(report.n_lot) + '''/''' + report.prod_day.strftime("%y") + '''</b></li>
-            <li><b>Produit :</b> <b style="color: #002060">''' + report.prod_product.designation + '''</b></li>
-            <li><b>Date de production :</b> <b style="color: #002060">''' + str(report.prod_day) + '''</b></li>
-            <li><b>Équipe :</b> <b style="color: #002060">''' + report.team.designation + '''</b></li>
-            <li><b>Horaire :</b> <b style="color: #002060">''' + report.shift.__str__() + '''</b></li>
-            <li><b>Temps Utilisé :</b> <b style="color: #002060">''' + str(report.used_time) + '''h</b></li>
-            <li><b>Nombre Mélange :</b> <b style="color: #002060">''' + str(report.nbt_melange) + '''</b></li>
-            <li><b>Nombre ''' + report.prod_product.unite.conditionnement + '''   Produit :</b> <b style="color: #002060">''' + str(report.qte_sac_prod) + '''</b></li>
-            <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + ''' ''' + report.prod_product.unite.designation + '''</b></li>
-            <li><b>Objectif par shift :</b> <b style="color: #002060">''' + taux + '''</b></li>
-            <li><b>Nombre de sacs rébutés :</b> <b style="color: #002060">''' + str(report.qte_sac_reb) + '''</b></li>
-            <li><b>Nombre de sacs recyclés :</b> <b style="color: #002060">''' + str(report.qte_sac_rec) + '''</b></li>'''
-        if report.site.designation == 'Constantine':
-            message += '''    <li><b>Citerne GPL 1 :</b> <b style="color: #002060">''' + str(report.gpl_1) + '''%</b></li>
-            <li><b>Citerne GPL 2 :</b> <b style="color: #002060">''' + str(report.gpl_2) + '''%</b></li>'''
-        message += '''</ul>'''
-
-        if report.total_arrets > 0:
-            message += '''</br><p><b>Avec un total d'heures d'arrêt : </b><b style="color: #002060">''' + str(report.total_arrets) + '''</b></p>'''
-            arrets = report.arrets() 
-            message += '''</br></br><h4> L'équipe de production a eu ''' + str(len(arrets)) + ''' arrêts:</h4>
-            <ul>'''
-            for arret in arrets:
-                message += '''<li><b style="color: #002060">''' + arret.__str__() + '''</b></li>'''
-            message += '''</ul>'''
-        
-        message += '''</br><h4>Produits consommés: </h4>
-        <ul>'''
-        for mpconsumed in report.mpconsumeds() :
-            message += '''<li><b style="color: #002060">''' + mpconsumed.__str__() + '''</b></li>'''
-        message += '''</ul>'''
-        
-        message += '''</br><h4>États de silos: </h4>
-        <ul>'''
-        for etatsilo in report.etatsilos() :
-            message += '''<li><b style="color: #002060">''' + etatsilo.__str__() + '''</b></li>'''
-        message += '''</ul>'''
-        
-        message += '''<p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
-    else:
-        message += '''<p><b style="color: #002060">''' + request.user.fullname + '''</b><b>(''' + report.line.designation + ''')</b> a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/</p>'''
-    
-    formatHtml = format_html(message)
-    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+    subject, formatHtml = getMail('confirm', report, request.user.fullname, old_state == 'Brouillon')
+    #send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
 
     url_path = reverse('report_detail', args=[report.id])
@@ -809,6 +751,20 @@ def cancelReport(request, pk):
     validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason='/', report=report)
     report.save()
     validation.save()
+
+    if old_state != 'Brouillon':    
+
+        if report.site.address:
+            recipient_list = report.site.address.split('&')
+        else:
+            recipient_list = ['benshamou@gmail.com']
+        
+        #address = 'http://127.0.0.1:8000/report/'
+        #recipient_list = ['benshamou@gmail.com']
+        #recipient_list = ['senoucisan@gmail.com']
+
+        subject, formatHtml = getMail('cancel', report, request.user.fullname)
+        #send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
         
     messages.success(request, 'Report Annulé successfully' )
     url_path = reverse('report_detail', args=[report.id])
@@ -817,8 +773,53 @@ def cancelReport(request, pk):
     return redirect(redirect_url)
 
 @login_required(login_url='login')
-@DI_GS_required
-def validateReport(request, pk):
+@GS_required
+def validateGSReport(request, pk):
+    try:
+        report = Report.objects.get(id=pk)
+    except Report.DoesNotExist:
+        messages.success(request, 'Report Does not exit')
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}'
+        return redirect(redirect_url)
+    
+    if report.state == 'Validé par GS':
+        url_path = reverse('report_detail', args=[report.id])
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}'
+        return redirect(redirect_url)
+    
+    old_state = report.state
+    
+    if report.state == 'Confirmé':
+        report.state = 'Validé par GS'
+
+    new_state = report.state
+    actor = request.user
+
+    validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason='/', report=report)
+    report.save()
+    validation.save()
+
+    if report.site.address:
+        recipient_list = report.site.address.split('&')
+    else:
+        recipient_list = ['benshamou@gmail.com']
+    #recipient_list = ['benshamou@gmail.com']
+
+    subject, formatHtml = getMail('validate', report, request.user.fullname)
+    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+
+    messages.success(request, 'Report validated successfully' )
+    url_path = reverse('report_detail', args=[report.id])
+    cache_param = str(uuid.uuid4())
+    redirect_url = f'{url_path}?cache={cache_param}'
+    return redirect(redirect_url)
+
+@login_required(login_url='login')
+@DI_required
+def validateDIReport(request, pk):
     try:
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
@@ -852,26 +853,15 @@ def validateReport(request, pk):
 
     validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason='/', report=report)
     report.save()
-    validation.save()    
-    
-    recipient_list = []
+    validation.save()
 
     if report.site.address:
         recipient_list = report.site.address.split('&')
     else:
-        recipient_list = ['benshamou@gmail.com']   
-    address = 'http://myreporting.grupopuma-dz.com/report/'
-     
-    #address = 'http://127.0.0.1:8000/report/'
+        recipient_list = ['benshamou@gmail.com']
     #recipient_list = ['benshamou@gmail.com']
-    #recipient_list = ['senoucisan@gmail.com']
 
-    subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
-    message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été <b>validé</b> par <b>''' + request.user.fullname + '''</b><b>(''' + report.line.designation + ''')</b>
-    
-    <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
-
-    formatHtml = format_html(message)
+    subject, formatHtml = getMail('validate', report, request.user.fullname)
     send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
     messages.success(request, 'Report validated successfully' )
@@ -918,32 +908,102 @@ def refuseReport(request, pk):
     validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason=refusal_reason, report=report)
     report.save()
     validation.save()
-    messages.success(request, 'Report Confirmé successfully')
-
-    recipient_list = []
 
     if report.site.address:
         recipient_list = report.site.address.split('&')
     else:
         recipient_list = ['benshamou@gmail.com']
-    address = 'http://myreporting.grupopuma-dz.com/report/'
      
     #address = 'http://127.0.0.1:8000/report/'
     #recipient_list = ['benshamou@gmail.com']
     #recipient_list = ['senoucisan@gmail.com']
-    
-    subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
-    message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été  <b>refusé</b> par <b>''' + request.user.fullname + '''</b><b>(''' + report.line.designation + ''')</b></p>
-    </br>
-    <p><b>Motif: ''' + refusal_reason + '''</b></p></br>
 
-    <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
-
-    formatHtml = format_html(message)
-    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+    subject, formatHtml = getMail('refuse', report, request.user.fullname, refusal_reason=refusal_reason)
+    #send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
     messages.success(request, 'Report refused successfully' )
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())
     redirect_url = f'{url_path}?cache={cache_param}'
     return redirect(redirect_url)
+    
+def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
+
+    subject = 'Rapport de production ' + '[' + str(report.id) + ']' + ' - '  + report.team.__str__()
+    address = 'http://myreporting.grupopuma-dz.com/report/'
+    message = ''''''
+    if action == 'confirm':
+            if old_state:
+                taux_nbr = 0
+                if report.line.obj_ctd > 0 and report.used_time > 0:
+                    relative_time_spent = report.used_time / report.shift.passed_time
+                    real_obj = report.line.obj_ctd * relative_time_spent
+                    taux_nbr = report.qte_tn / real_obj
+                    taux_nbr = taux_nbr * 100
+                    taux_nbr = round(taux_nbr, 2)
+                taux = str(taux_nbr) + '%'
+                message = '''
+                <p>Bonjour l'équipe,</p>
+                <p>Un rapport a été créé par <b style="color: #002060">''' + report.creator.fullname + '''</b> <b>(''' + report.line.designation + ''')</b>''' + ''' le <b>''' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + '''</b>:</p>
+                <ul>
+                    <li><b>N° Lot :</b> <b style="color: #002060">''' + report.line.prefix_line + '''''' + str(report.n_lot) + '''/''' + report.prod_day.strftime("%y") + '''</b></li>
+                    <li><b>Produit :</b> <b style="color: #002060">''' + report.prod_product.designation + '''</b></li>
+                    <li><b>Date de production :</b> <b style="color: #002060">''' + str(report.prod_day) + '''</b></li>
+                    <li><b>Équipe :</b> <b style="color: #002060">''' + report.team.designation + '''</b></li>
+                    <li><b>Horaire :</b> <b style="color: #002060">''' + report.shift.__str__() + '''</b></li>
+                    <li><b>Temps Utilisé :</b> <b style="color: #002060">''' + str(report.used_time) + '''h</b></li>
+                    <li><b>Nombre Mélange :</b> <b style="color: #002060">''' + str(report.nbt_melange) + '''</b></li>
+                    <li><b>Nombre ''' + report.prod_product.unite.conditionnement + '''   Produit :</b> <b style="color: #002060">''' + str(report.qte_sac_prod) + '''</b></li>
+                    <li><b>Quantité :</b> <b style="color: #002060">''' + str(report.qte_tn) + ''' ''' + report.prod_product.unite.designation + '''</b></li>
+                    <li><b>Objectif par shift :</b> <b style="color: #002060">''' + taux + '''</b></li>
+                    <li><b>Nombre de sacs rébutés :</b> <b style="color: #002060">''' + str(report.qte_sac_reb) + '''</b></li>
+                    <li><b>Nombre de sacs recyclés :</b> <b style="color: #002060">''' + str(report.qte_sac_rec) + '''</b></li>'''
+                if report.site.designation == 'Constantine':
+                    message += '''    <li><b>Citerne GPL 1 :</b> <b style="color: #002060">''' + str(report.gpl_1) + '''%</b></li>
+                    <li><b>Citerne GPL 2 :</b> <b style="color: #002060">''' + str(report.gpl_2) + '''%</b></li>'''
+                message += '''</ul>'''
+
+                if report.arrets():
+                    message += '''</br><p><b>Avec un total d'heures d'arrêt : </b><b style="color: #002060">''' + str(report.total_arrets) + '''</b></p>'''
+                    arrets = report.arrets() 
+                    message += '''</br></br><h4> L'équipe de production a eu ''' + str(len(arrets)) + ''' arrêts:</h4>
+                    <ul>'''
+                    for arret in arrets:
+                        message += '''<li><b style="color: #002060">''' + arret.__str__() + '''</b></li>'''
+                    message += '''</ul>'''
+                
+                message += '''</br><h4>Produits consommés: </h4>
+                <ul>'''
+                for mpconsumed in report.mpconsumeds() :
+                    message += '''<li><b style="color: #002060">''' + mpconsumed.__str__() + '''</b></li>'''
+                message += '''</ul>'''
+                
+                message += '''</br><h4>États de silos: </h4>
+                <ul>'''
+                for etatsilo in report.etatsilos() :
+                    message += '''<li><b style="color: #002060">''' + etatsilo.__str__() + '''</b></li>'''
+                message += '''</ul>'''
+                
+                message += '''<p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
+            else:
+                message += '''<p><b style="color: #002060">''' + fullname + '''</b><b>(''' + report.line.designation + ''')</b> a mis à jour son rapport, vous pouvez le vérifier ici: ''' + address + str(report.id) + '''/</p>'''
+
+    elif action == 'cancel':
+        message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été  <b>annulé</b> par <b>''' + fullname + '''</b><b>(''' + report.line.designation + ''')</b></p>
+        </br>
+
+        <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
+
+    elif action == 'refuse':
+        message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été  <b>refusé</b> par <b>''' + fullname + '''</b><b>(''' + report.line.designation + ''')</b></p>
+        </br>
+        <p><b>Motif: ''' + refusal_reason + '''</b></p></br>
+
+        <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
+
+    elif action == 'validate':
+        message = '''<p><b>Le rapport [''' + str(report.id) + ''']</b> a été <b>validé</b> par <b>''' + fullname + '''</b><b>(''' + report.line.designation + ''')</b>
+    
+    <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
+
+    return subject, format_html(message)

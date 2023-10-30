@@ -80,6 +80,13 @@ class Silo(models.Model):
 
     def __str__(self):
         return self.designation
+    
+class Setting(models.Model):
+    name = models.CharField(max_length=50)
+    value = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.name + ' : ' + self.value
 
 class User(AbstractUser):
 

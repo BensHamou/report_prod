@@ -35,7 +35,7 @@ urlpatterns = [
     path('report/<int:pk>/confirm/', views.confirmReport, name='confirm_report'),
     path('report/<int:pk>/refuse/', views.refuseReport, name='refuse_report'),
     path('report/<int:pk>/cancel/', views.cancelReport, name='cancel_report'),
-    path('report/<int:pk>/validate/', views.validateReport, name='validate_report'),
+    path('report/<int:pk>/validate/<str:actor>/', views.validateReport, name='validate_report'),
 
     path('report/get-data-by-line/', views.get_data_by_line, name='get_data_by_line'),
     path('report/get-arretData-by-line/', views.get_arretData_by_line, name='get_arretData_by_line'),
