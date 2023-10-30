@@ -129,8 +129,8 @@ class ReportFilter(FilterSet):
             elif user.role == 'Directeur Industriel':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] in 
                                         ['Validé par GS', 'Validé par DI',  'Refusé par DI']]
-            elif user.role == 'Admin':
+            elif user.role == 'Nouveau':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] not in 
-                                        ['Brouillon']]
+                                        ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']]
             self.filters['line'].queryset = user.lines.all()
 
