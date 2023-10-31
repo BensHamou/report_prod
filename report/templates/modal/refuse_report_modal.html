@@ -1,7 +1,17 @@
 <div class="modal" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        <form class="container" method="POST" action="{% url 'refuse_report' report.id %}">
-            <div class="modal-content contentStyle">
+        {% if user.role == 'Gestionnaire de Stock' %}
+            <form class="container" method="POST" action="{% url 'refuse_report' report.id 'GS'  %}">
+        {% elif user.role == 'Directeur Industriel' %}
+            <form class="container" method="POST" action="{% url 'refuse_report' report.id 'DI' %}">
+        {% elif user.role == 'Admin' %}
+                {% if report.state == 'Confirmé' %}
+                    <form class="container" method="POST" action="{% url 'refuse_report' report.id 'GS'  %}">
+                {% else %}
+                    <form class="container" method="POST" action="{% url 'refuse_report' report.id 'DI' %}">
+                {% endif %}
+        {% endif %}
+                <div class="modal-content contentStyle">
                 <div class="modal-header text-white" style="border-color: rgba(171, 175, 181, 0.4);">
                     <h4 class="headerStyle mb-0">Motif de refus</h4>
                     <button type="button" class="btn-close" data-dismiss="modal" id="buttonRefuseX" aria-label="Close"></button>

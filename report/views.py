@@ -3,7 +3,7 @@ from account.models import *
 from .models import *
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from account.views import admin_required, DI_required, GS_required
+from account.views import admin_required, DI_GS_required
 import uuid
 from .forms import *
 from .filters import *
@@ -713,14 +713,11 @@ def confirmReport(request, pk):
     else:
         recipient_list = ['benshamou@gmail.com'] 
      
-    #address = 'http://127.0.0.1:8000/report/'
     #recipient_list = ['benshamou@gmail.com']
-    #recipient_list = ['senoucisan@gmail.com']
 
     messages.success(request, 'Report Confirmé successfully')
-
     subject, formatHtml = getMail('confirm', report, request.user.fullname, old_state == 'Brouillon')
-    #send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
 
     url_path = reverse('report_detail', args=[report.id])
@@ -753,18 +750,13 @@ def cancelReport(request, pk):
     validation.save()
 
     if old_state != 'Brouillon':    
-
         if report.site.address:
             recipient_list = report.site.address.split('&')
         else:
             recipient_list = ['benshamou@gmail.com']
-        
-        #address = 'http://127.0.0.1:8000/report/'
         #recipient_list = ['benshamou@gmail.com']
-        #recipient_list = ['senoucisan@gmail.com']
-
         subject, formatHtml = getMail('cancel', report, request.user.fullname)
-        #send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+        send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
         
     messages.success(request, 'Report Annulé successfully' )
     url_path = reverse('report_detail', args=[report.id])
@@ -773,8 +765,8 @@ def cancelReport(request, pk):
     return redirect(redirect_url)
 
 @login_required(login_url='login')
-@GS_required
-def validateGSReport(request, pk):
+@DI_GS_required
+def validateReport(request, pk, actor):
     try:
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
@@ -784,68 +776,16 @@ def validateGSReport(request, pk):
         redirect_url = f'{url_path}?cache={cache_param}'
         return redirect(redirect_url)
     
-    if report.state == 'Validé par GS':
+    if (report.state == 'Validé par GS' and actor == 'GS') or (report.state == 'Validé par DI' and actor == 'DI'):
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
         redirect_url = f'{url_path}?cache={cache_param}'
         return redirect(redirect_url)
     
     old_state = report.state
-    
-    if report.state == 'Confirmé':
+    if report.state == 'Confirmé' and actor == 'GS':
         report.state = 'Validé par GS'
-
-    new_state = report.state
-    actor = request.user
-
-    validation = Validation(old_state=old_state, new_state=new_state, actor=actor, refusal_reason='/', report=report)
-    report.save()
-    validation.save()
-
-    if report.site.address:
-        recipient_list = report.site.address.split('&')
-    else:
-        recipient_list = ['benshamou@gmail.com']
-    #recipient_list = ['benshamou@gmail.com']
-
-    subject, formatHtml = getMail('validate', report, request.user.fullname)
-    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
-
-    messages.success(request, 'Report validated successfully' )
-    url_path = reverse('report_detail', args=[report.id])
-    cache_param = str(uuid.uuid4())
-    redirect_url = f'{url_path}?cache={cache_param}'
-    return redirect(redirect_url)
-
-@login_required(login_url='login')
-@DI_required
-def validateDIReport(request, pk):
-    try:
-        report = Report.objects.get(id=pk)
-    except Report.DoesNotExist:
-        messages.success(
-            request, 'Report Does not exit'
-            )
-        url_path = reverse('report_detail', args=[report.id])
-        cache_param = str(uuid.uuid4())
-        redirect_url = f'{url_path}?cache={cache_param}'
-        return redirect(redirect_url)
-    
-    
-    isValidated1 = request.user.role in ['Gestionnaire de stock'] and report.state == 'Validé par GS'
-    isValidated2 = request.user.role in ['Directeur Industriel', 'Admin'] and report.state == 'Validé par DI'
-    isValidated = isValidated1 or isValidated2
-    if isValidated:
-        url_path = reverse('report_detail', args=[report.id])
-        cache_param = str(uuid.uuid4())
-        redirect_url = f'{url_path}?cache={cache_param}'
-        return redirect(redirect_url)
-    
-    old_state = report.state
-    
-    if request.user.role in ['Gestionnaire de stock', 'Admin'] and report.state == 'Confirmé':
-        report.state = 'Validé par GS'
-    elif request.user.role in ['Directeur Industriel', 'Admin'] and report.state == 'Validé par GS':
+    elif report.state == 'Validé par GS' and actor == 'DI':
         report.state = 'Validé par DI'
 
     new_state = report.state
@@ -871,8 +811,8 @@ def validateDIReport(request, pk):
     return redirect(redirect_url)
 
 @login_required(login_url='login')
-@GS_required
-def refuseReport(request, pk):
+@DI_GS_required
+def refuseReport(request, pk, actor):
     try:
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
@@ -884,10 +824,7 @@ def refuseReport(request, pk):
         redirect_url = f'{url_path}?cache={cache_param}'
         return redirect(redirect_url)
     
-    isRefused1 = request.user.role in ['Gestionnaire de stock'] and report.state == 'Refusé par GS'
-    isRefused2 = request.user.role in ['Directeur Industriel', 'Admin'] and report.state == 'Refusé par DI'
-    isRefused = isRefused1 or isRefused2
-    if isRefused:
+    if (report.state == 'Refusé par GS' and actor == 'GS') or (report.state == 'Refusé par DI' and actor == 'DI'):
         messages.success(request, 'Report refused successfully' )
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
@@ -896,9 +833,9 @@ def refuseReport(request, pk):
     
     old_state = report.state
     
-    if request.user.role in ['Gestionnaire de stock', 'Admin'] and report.state == 'Confirmé':
+    if report.state == 'Confirmé' and actor == 'GS':
         report.state = 'Refusé par GS'
-    elif request.user.role in ['Directeur Industriel', 'Admin'] and report.state == 'Validé par GS':
+    elif report.state == 'Validé par GS' and actor == 'DI':
         report.state = 'Refusé par DI'
     
     new_state = report.state
@@ -914,12 +851,10 @@ def refuseReport(request, pk):
     else:
         recipient_list = ['benshamou@gmail.com']
      
-    #address = 'http://127.0.0.1:8000/report/'
     #recipient_list = ['benshamou@gmail.com']
-    #recipient_list = ['senoucisan@gmail.com']
 
     subject, formatHtml = getMail('refuse', report, request.user.fullname, refusal_reason=refusal_reason)
-    #send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
     messages.success(request, 'Report refused successfully' )
     url_path = reverse('report_detail', args=[report.id])
