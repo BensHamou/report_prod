@@ -31,7 +31,7 @@ class Horaire(models.Model):
 class Site(models.Model):
     designation = models.CharField(max_length=100)
     horaires = models.ManyToManyField(Horaire, blank=True)
-    address = models.CharField(max_length=50, null=True)
+    address = models.CharField(max_length=250, null=True)
 
     def __str__(self):
         return self.designation
