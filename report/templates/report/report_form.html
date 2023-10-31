@@ -104,6 +104,7 @@ Rapport
             <div class="col-md-3 col-sm-6">
                 <div class="form-outline">
                     <label class="form-label mt-2 labelCustom" for="shift">Slot Horaire</label>
+                    <input type="hidden" value="1" id="max_shift"/> 
                     {{ form.shift|attr:"id:shift-select" }}
                     {% if form.shift.errors %}
                     <div style="color: red;">
@@ -533,6 +534,23 @@ Rapport
                 }
             });
     }
+
+    const set_max_shift = () => {
+        if($('#shift-select').val()){
+            $.ajax({url: '{% url "get_shift_max" %}', type: 'GET', data: { idShift: $('#shift-select').val() },
+            success: function(response) {
+                $('#max_shift').val(response.max_by_shift);
+                // set max possible value of input 'passed_time' as max_shift
+                $('#id_used_time').attr('max', response.max_by_shift);
+                console.log(response.max_by_shift);
+            },
+            error: function(xhr, textStatus, error) {
+            console.log(error);
+            }
+        });
+        }
+    }
+
     $(document).ready(function() {
         $('form').submit(function () {
             let totalHours = 0;
@@ -550,9 +568,10 @@ Rapport
             }
             totalHours += Math.floor(totalMinutes / 60);
             totalMinutes %= 60;
-            if (totalHours > 12 || (totalHours === 12 && totalMinutes > 0)) {
-                swal({title: `Oops, le total dépasse 12 heures!`,   
-                        text: `Veuillez modifier votre saisie pour qu'elle dure moins de 12 heures au total.`, confirmButtonColor: "#DD6B55",   
+            max_shift = $('#max_shift').val();
+            if (totalHours > max_shift || (totalHours == max_shift && totalMinutes > 0)) {
+                swal({title: `Oops, le total dépasse ${max_shift} heures!`,   
+                        text: `Veuillez modifier votre saisie pour qu'elle dure moins de ${max_shift} heures au total.`, confirmButtonColor: "#DD6B55",   
                         confirmButtonText: "Ok", type: "warning", closeOnCancel: true });
                 return false;
             }
@@ -663,6 +682,7 @@ Rapport
     });
 
     $(document).ready(function() {
+        set_max_shift();
         $('.add-arrets').click(function(ev) {
             ev.preventDefault();
             var count = $('#item-arrets').children().length;
@@ -748,6 +768,10 @@ Rapport
                 qte = qte.toFixed(3);
                 $('#id_qte_tn').val(qte);
             }
+        });
+
+        $('#shift-select').on('change', function() {
+            set_max_shift();
         });
         
         $('#prod_product-select').on('change', function() {

@@ -42,5 +42,6 @@ urlpatterns = [
     path('report/get-reasons-by-type/', views.get_reasons_by_type, name='get_reasons_by_type'),
     path('report/get-numo-by-product/', views.get_numo_by_product, name='get_numo_by_product'),
     path('report/get-qte-by-product/', views.get_qte_per_container, name='get_qte_per_container'),
+    path('report/get-max-by-shift/', views.get_shift_max, name='get_shift_max'),
 ]
 

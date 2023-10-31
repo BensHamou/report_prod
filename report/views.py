@@ -22,6 +22,7 @@ from functools import wraps
 from django.core.mail import send_mail
 from django.utils.html import format_html
 from datetime import datetime
+from account.models import Horaire
 from .cron import send_alert
 
 
@@ -647,7 +648,6 @@ def get_reasons_by_type(request):
 
 @login_required(login_url='login')
 def get_numo_by_product(request):
-    send_alert()
     numo_products = NumoProduct.objects.filter(product=request.GET.get('product'))
     try:
         product = Product.objects.get(id=request.GET.get('product'))
@@ -660,6 +660,15 @@ def get_numo_by_product(request):
     mp_list = [numo_product.id for numo_product in numo_products]
 
     return JsonResponse({'mp_list': mp_list, 'qte_per_container': qte_per_container, 'code_unite': code_unite, 'poids_melange': poids_melange})
+
+@login_required(login_url='login')
+def get_shift_max(request):
+    try:
+        max_by_shift = Horaire.objects.get(id=request.GET.get('idShift')).passed_time
+    except Product.DoesNotExist:
+        max_by_shift = 0
+
+    return JsonResponse({'max_by_shift': max_by_shift })
 
 @login_required(login_url='login')
 def get_qte_per_container(request):
