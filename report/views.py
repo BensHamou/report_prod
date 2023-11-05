@@ -683,6 +683,18 @@ def get_qte_per_container(request):
 @login_required(login_url='login')
 @check_creator
 def confirmReport(request, pk):
+
+    params = {
+        'page': request.GET.get('page', 1),
+        'page_size': request.GET.get('page_size', ''),
+        'search': request.GET.get('search', ''),
+        'state': request.GET.get('state', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'line': request.GET.get('line', '')
+    }
+    query_string = '&'.join([f'{key}={value}' for key, value in params.items() if value])
+
     try:
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
@@ -691,13 +703,13 @@ def confirmReport(request, pk):
             )
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
-        redirect_url = f'{url_path}?cache={cache_param}'
+        redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
         return redirect(redirect_url)
     
     if report.state == 'Confirmé':
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
-        redirect_url = f'{url_path}?cache={cache_param}'
+        redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
         return redirect(redirect_url)
     
     old_state = report.state
@@ -731,11 +743,22 @@ def confirmReport(request, pk):
 
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())
-    redirect_url = f'{url_path}?cache={cache_param}'
+    redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
     return redirect(redirect_url)
 
 @login_required(login_url='login')
 def cancelReport(request, pk):
+
+    params = {
+        'page': request.GET.get('page', 1),
+        'page_size': request.GET.get('page_size', ''),
+        'search': request.GET.get('search', ''),
+        'state': request.GET.get('state', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'line': request.GET.get('line', '')
+    }
+    query_string = '&'.join([f'{key}={value}' for key, value in params.items() if value])
     try:
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
@@ -744,7 +767,7 @@ def cancelReport(request, pk):
             )
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
-        redirect_url = f'{url_path}?cache={cache_param}'
+        redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
         return redirect(redirect_url)
     
     old_state = report.state
@@ -758,6 +781,8 @@ def cancelReport(request, pk):
     report.save()
     validation.save()
 
+    print(request.GET)
+
     if old_state != 'Brouillon':    
         if report.site.address:
             recipient_list = report.site.address.split('&')
@@ -770,12 +795,24 @@ def cancelReport(request, pk):
     messages.success(request, 'Report Annulé successfully' )
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())
-    redirect_url = f'{url_path}?cache={cache_param}'
+    redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
     return redirect(redirect_url)
 
 @login_required(login_url='login')
 @DI_GS_required
 def validateReport(request, pk, actor):
+    
+    params = {
+        'page': request.GET.get('page', 1),
+        'page_size': request.GET.get('page_size', ''),
+        'search': request.GET.get('search', ''),
+        'state': request.GET.get('state', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'line': request.GET.get('line', '')
+    }
+    query_string = '&'.join([f'{key}={value}' for key, value in params.items() if value])
+
     try:
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
@@ -788,7 +825,7 @@ def validateReport(request, pk, actor):
     if (report.state == 'Validé par GS' and actor == 'GS') or (report.state == 'Validé par DI' and actor == 'DI'):
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
-        redirect_url = f'{url_path}?cache={cache_param}'
+        redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
         return redirect(redirect_url)
     
     old_state = report.state
@@ -816,12 +853,24 @@ def validateReport(request, pk, actor):
     messages.success(request, 'Report validated successfully' )
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())
-    redirect_url = f'{url_path}?cache={cache_param}'
+    redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
     return redirect(redirect_url)
 
 @login_required(login_url='login')
 @DI_GS_required
 def refuseReport(request, pk, actor):
+    
+    params = {
+        'page': request.GET.get('page', 1),
+        'page_size': request.GET.get('page_size', ''),
+        'search': request.GET.get('search', ''),
+        'state': request.GET.get('state', ''),
+        'start_date': request.GET.get('start_date', ''),
+        'end_date': request.GET.get('end_date', ''),
+        'line': request.GET.get('line', '')
+    }
+    query_string = '&'.join([f'{key}={value}' for key, value in params.items() if value])
+
     try:
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
@@ -837,7 +886,7 @@ def refuseReport(request, pk, actor):
         messages.success(request, 'Report refused successfully' )
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
-        redirect_url = f'{url_path}?cache={cache_param}'
+        redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
         return redirect(redirect_url)
     
     old_state = report.state
@@ -868,7 +917,7 @@ def refuseReport(request, pk, actor):
     messages.success(request, 'Report refused successfully' )
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())
-    redirect_url = f'{url_path}?cache={cache_param}'
+    redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
     return redirect(redirect_url)
     
 def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):

@@ -47,7 +47,7 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot }}/{{ report.prod_day|dat
                     {% if report.state == 'Brouillon' or report.state == 'Refusé par GS' or report.state == 'Refusé par DI' %}
                         {% if user.role == 'Admin' or user.role == 'Gestionnaire de production' %}
                             {% if user.role == 'Admin' or user == report.creator  %}
-                                <a href="{% url 'confirm_report' report.id %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
+                                <a href="{% url 'confirm_report' report.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; margin-right: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);">
                                     <p class="lead m-0 p-0">Confirmer</p>
                                 </a>
                                 <a onclick="confirmRepCan('{{report.id|escapejs}}')"
@@ -62,7 +62,7 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot }}/{{ report.prod_day|dat
                         {% endif %}
                     {% elif report.state == 'Confirmé' %}
                         {% if user.role == 'Admin' or user.role == 'Gestionnaire de stock' %}                            
-                            <a href="{% url 'validate_report' report.id 'GS' %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
+                            <a href="{% url 'validate_report' report.id 'GS' %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
                                 <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
                             </a>
                             <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); padding: 10px;">
@@ -74,7 +74,7 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot }}/{{ report.prod_day|dat
                         
                         {% elif report.state == 'Validé par GS' %}
                             {% if user.role == 'Admin' or user.role == 'Directeur Industriel' %}                            
-                                <a href="{% url 'validate_report' report.id 'DI' %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
+                                <a href="{% url 'validate_report' report.id 'DI' %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}" class="btn btn-success text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); margin-right: 10px; padding: 10px;">
                                     <p class="lead m-0 p-0">Valider <i class="fas fa-check"></i></p>
                                 </a>
                                 <a id="refuse-report" class="btn btn-danger text-white p-0" style="width: 30%; box-shadow: 0 0 3px rgba(0, 0, 0, 0.3); padding: 10px;">
@@ -321,10 +321,40 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot }}/{{ report.prod_day|dat
         cancelButtonText: "Non",   
         closeOnConfirm: true,   
         closeOnCancel: true }, 
-        function(isConfirm){   
+        function(isConfirm){
+            var url = "{% url 'cancel_report' 123456789 %}".replace(/123456789/, repID);
+            var params = {
+                'page': getParameterByName('page'),
+                'page_size': getParameterByName('page_size'),
+                'search': getParameterByName('search'),
+                'state': getParameterByName('state'),
+                'start_date': getParameterByName('start_date'),
+                'end_date': getParameterByName('end_date'),
+                'line': getParameterByName('line'),
+            }
+            var queryString = Object.keys(params).map(function(key) {
+                if(params[key] !== null && params[key] !== undefined && params[key] !== '') {
+                    return key + '=' + params[key];
+                }
+                return null;
+            }).filter(Boolean).join('&');
+
+            if (queryString) {
+                url += '?' + queryString;
+            }
             if (isConfirm){
-              window.location.href = "{% url 'cancel_report' 123456789 %}".replace(/123456789/, repID);
-            }});
-      }
+                window.location.href = url;
+            }
+        });
+    }
+    function getParameterByName(name) {
+        var url = window.location.href;
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
 </script>
 {% endblock content %}

@@ -52,20 +52,20 @@ Produit
             </div>
       </div>
     </div>
-      <div class="col-md-12 col-sm-12">
-        <div class="form-outline">
-          <label class="form-label labelCustom" for="numo_products">Nomenclatures</label>
-          <div id="numo_product" class="form-control select" style="background-color: #cacfd7;">
-            <input id="numo_product_input" type="text" data-bs-toggle="dropdown" style="background-color: #cacfd7;" />
-            <div class="dropdown-menu"></div>
-            <select name="numo_products" multiple hidden id="hidden_numo_products_select">
-              {% for numo_product in form.fields.numo_products.queryset %}
-                <option value="{{ numo_product.id }}" {% if numo_product.id in selectedNumos %} selected {% endif %}>{{ numo_product.designation }}</option>
-              {% endfor %}                      
-            </select>
-          </div>
+    <div class="col-md-12 col-sm-12">
+      <div class="form-outline">
+        <label class="form-label labelCustom" for="numo_products">Nomenclatures</label>
+        <div id="numo_product" class="form-control select" style="background-color: #cacfd7;">
+          <input id="numo_product_input" type="text" data-bs-toggle="dropdown" style="background-color: #cacfd7;" />
+          <div class="dropdown-menu"></div>
+          <select name="numo_products" multiple hidden id="hidden_numo_products_select">
+            {% for numo_product in form.fields.numo_products.queryset %}
+              <option value="{{ numo_product.id }}" {% if numo_product.id in selectedNumos %} selected {% endif %}>{{ numo_product.designation }}</option>
+            {% endfor %}                      
+          </select>
         </div>
       </div>
+    </div>
   </div>
   <div class="float-end mt-4">
     <input type='submit' class="btn btn-secondary customSaveButton" name='save' value="Sauvgardez"/>
