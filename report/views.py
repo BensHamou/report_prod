@@ -781,8 +781,6 @@ def cancelReport(request, pk):
     report.save()
     validation.save()
 
-    print(request.GET)
-
     if old_state != 'Brouillon':    
         if report.site.address:
             recipient_list = report.site.address.split('&')
