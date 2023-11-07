@@ -83,6 +83,14 @@ WSGI_APPLICATION = "report_prod.wsgi.application"
 
 
 DATABASES = {
+    #'default': {
+    #    'ENGINE': 'django.db.backends.postgresql',
+    #    'NAME': 'ProdDB',
+    #    'USER': 'puma_prod',
+    #    'PASSWORD': 'puma_prod',
+    #    'HOST': '10.10.10.101',
+    #    'PORT': '5434',
+    #}
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_NAME'),

@@ -1,6 +1,6 @@
 <div class="modal" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        {% if user.role == 'Gestionnaire de Stock' %}
+        {% if user.role == 'Gestionnaire de stock' %}
             <form class="container" method="POST" action="{% url 'refuse_report' report.id 'GS'  %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}">
         {% elif user.role == 'Directeur Industriel' %}
             <form class="container" method="POST" action="{% url 'refuse_report' report.id 'DI' %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}">
@@ -11,18 +11,18 @@
                     <form class="container" method="POST" action="{% url 'refuse_report' report.id 'DI' %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.state %}&state={{ request.GET.state }}{% endif %}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.line %}&line={{ request.GET.line }}{% endif %}">
                 {% endif %}
         {% endif %}
-                <div class="modal-content contentStyle">
+            <div class="modal-content contentStyle">
                 <div class="modal-header text-white" style="border-color: rgba(171, 175, 181, 0.4);">
-                    <h4 class="headerStyle mb-0">Motif de refus</h4>
-                    <button type="button" class="btn-close" data-dismiss="modal" id="buttonRefuseX" aria-label="Close"></button>
+                            <h4 class="headerStyle mb-0">Motif de refus</h4>
+                            <button type="button" class="btn-close" data-dismiss="modal" id="buttonRefuseX" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {% csrf_token %}
-                    <textarea class="form-control" placeholder="Veuillez indiquer la raison de votre refus." id="refusal_reason" name="refusal_reason" style="background-color: #cacfd7;" rows="4"></textarea>
+                            {% csrf_token %}
+                            <textarea class="form-control" placeholder="Veuillez indiquer la raison de votre refus." id="refusal_reason" name="refusal_reason" style="background-color: #cacfd7;" rows="4"></textarea>
                 </div>
                 <div class="modal-footer" style="border-color: transparent;">
-                    <button type="submit" class="btn btn-block subButton">Soumettre</button>
-                    <button type="button" class="btn btn-secondary cancelButton" id="buttonRefuseCancel" data-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-block subButton">Soumettre</button>
+                            <button type="button" class="btn btn-secondary cancelButton" id="buttonRefuseCancel" data-dismiss="modal">Annuler</button>
                 </div>
             </div>
         </form>
