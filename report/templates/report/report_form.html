@@ -15,7 +15,7 @@ Rapport
     <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
         <!-- PRODUCT -->
         <div class="row mb-12">
-            <div class="col">
+            <div class="col-md-12 col-sm-12">
                 <div class="form-outline">
                     <label class="form-label labelCustom" for="prod_product">Produit</label>
                     {{ form.prod_product|attr:"id:prod_product-select" }}
@@ -425,7 +425,7 @@ Rapport
                 {% endfor %}
             
                 {% for field in formset.empty_form.visible_fields %}
-                <td>
+                <td style="width: {% if field.label == 'Type stop' or field.label == 'Reason stop' %}15vw;{% endif %}">
                     {% if field.label == 'Supprimer' %}
                     <div class="d-flex justify-content-center">
                         <button type="button" onclick="deleteRow(this.parentNode.parentNode.parentNode)" class="btn" style="color: white;">
@@ -457,7 +457,7 @@ Rapport
                             {{ formss.id }}
                             {% for field in formss.visible_fields %}
                                 {% if not field.label == 'Supprimer' %}
-                                    <td>
+                                    <td style="width: {% if field.label == 'Type stop' or field.label == 'Reason stop' %}15vw;{% endif %}">
                                         {{ field }}
                                         {% for error in field.errors %}
                                             <span style="color: red">*{{ error }}</span>
@@ -499,6 +499,32 @@ Rapport
 </form>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    @media only screen and (max-width: 767px) {
+        td {
+            display: block;
+            width: 100%;
+            text-align: left;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+    }
+    .select2-search {
+        background-color: #cacfd7 !important;
+    }
+    .select2-search input {
+        background-color: #edf3fd !important;
+    }
+    
+    .select2-results {
+        background-color: #cacfd7 !important;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection {
+        border-color: #cacfd7 !important;
+        background-color: #cacfd7 !important;
+    }
+</style>
 
 <script>
     const deleteRow = (row) => {
@@ -683,6 +709,8 @@ Rapport
 
     $(document).ready(function() {
         set_max_shift();
+        $('.custom-select').select2({theme: 'bootstrap-5', allowClear: true, });
+
         $('.add-arrets').click(function(ev) {
             ev.preventDefault();
             var count = $('#item-arrets').children().length;
@@ -694,6 +722,7 @@ Rapport
             
             var newElement = $('#item-arrets').children().last()[0];
             newElement.scrollIntoView({ behavior: 'smooth' });
+            $('.custom-select').select2({theme: 'bootstrap-5', });
 
             var lineId = $('#line-select').val();
 
@@ -732,6 +761,7 @@ Rapport
                                             reasonStopOptions += '<option value="' + reason_stop.id + '">' + reason_stop.designation + '</option>';
                                         });
                                         reasonStopElement.html(reasonStopOptions);
+                                        $('.custom-select').select2({theme: 'bootstrap-5',});
                                     });
                                 },
                                 error: function(xhr, errmsg, err) {
@@ -800,6 +830,7 @@ Rapport
                     const select = document.getElementById(`id_consumed_products-${count}-numo_product`);
                     select.value = response.mp_list[i];
                     count += 1;
+                    $('.custom-select').select2({theme: 'bootstrap-5', allowClear: true, });
                 }
                 // set the element with the id 'id_qte_tn' = response.qte_per_container * the element with the id 'id_qte_sac_prod' * 1000
                 
@@ -824,15 +855,4 @@ Rapport
         });
     });
 </script>
-<style>
-    @media only screen and (max-width: 767px) {
-        td {
-            display: block;
-            width: 100%;
-            text-align: left;
-            box-sizing: border-box;
-            margin-bottom: 5px;
-        }
-    }
-</style>
 {% endblock content %}

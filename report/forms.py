@@ -9,6 +9,7 @@ def getAttrs(type, placeholder='', other={}):
         'control': {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'placeholder': ''},
         'search': {'class': 'form-control form-input', 'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; text-indent: 33px; border-radius: 5px;', 'type': 'search', 'placeholder': '', 'id': 'search'},
         'select': {'class': 'form-select', 'style': 'background-color: #cacfd7;'},
+        'select2': {'class': 'form-select custom-select', 'style': 'background-color: #ebecee; width: 100%;'},
         'date': {'type': 'date', 'class': 'form-control dateinput','style': 'background-color: #cacfd7;'},
         'textarea': {"rows": "3", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #cacfd7;'}
     }
@@ -100,8 +101,8 @@ class ReportForm(ModelForm):
     prod_day = forms.DateField(initial=timezone.now().date(), widget=forms.widgets.DateInput(attrs= getAttrs('date'), format='%Y-%m-%d'))
     shift = forms.ModelChoiceField(queryset=Horaire.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Horaire")
     used_time = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Temps utilisé', {'max': '12'})))    
-    team = forms.ModelChoiceField(queryset=Team.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Équipe")
-    prod_product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Produit")
+    team = forms.ModelChoiceField(queryset=Team.objects.all(), widget=forms.Select(attrs= getAttrs('select2')), empty_label="Équipe")
+    prod_product = forms.ModelChoiceField(queryset=Product.objects.all(), widget=forms.Select(attrs= getAttrs('select2')), empty_label="Produit")
     qte_sac_prod = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Sacs/Bidons Produit')))
     nbt_melange = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Nombre Mélange')))    
     qte_tn = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Quantité Tn/L', {'max': '300', 'step': '0.001'})))
@@ -168,7 +169,7 @@ class MPConsumedForm(ModelForm):
         model = MPConsumed
         fields = '__all__'
 
-    numo_product = forms.ModelChoiceField(queryset=NumoProduct.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Numo Product")
+    numo_product = forms.ModelChoiceField(queryset=NumoProduct.objects.all(), widget=forms.Select(attrs=getAttrs('select2')), empty_label="Numo Product")
     qte_consumed = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','Qte Consomée')))
     observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Observation')), required=False)
 
@@ -188,7 +189,7 @@ class EtatSiloForm(ModelForm):
         model = EtatSilo
         fields = '__all__'
 
-    silo = forms.ModelChoiceField(queryset=Silo.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Silo")
+    silo = forms.ModelChoiceField(queryset=Silo.objects.all(), widget=forms.Select(attrs=getAttrs('select2')), empty_label="Silo")
     etat = forms.FloatField(widget=forms.NumberInput(attrs= getAttrs('control','État')))
     observation = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Observation')), required=False)
 
@@ -208,8 +209,8 @@ class ArretForm(ModelForm):
         model = Arret
         fields = ['type_stop', 'reason_stop', 'hour', 'minutes', 'actions', 'observation']
     
-    type_stop = forms.ModelChoiceField(queryset=TypeStop.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Type")
-    reason_stop = forms.ModelChoiceField(queryset=ReasonStop.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Raison")
+    type_stop = forms.ModelChoiceField(queryset=TypeStop.objects.all(), widget=forms.Select(attrs=getAttrs('select2')), empty_label="Type")
+    reason_stop = forms.ModelChoiceField(queryset=ReasonStop.objects.all(), widget=forms.Select(attrs=getAttrs('select2')), empty_label="Raison")
     hour = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','H')))
     minutes = forms.IntegerField(widget=forms.NumberInput(attrs= getAttrs('control','M')))
     actions = forms.CharField(widget=forms.Textarea(attrs=getAttrs('textarea','Actions')), required=False)

@@ -8,7 +8,7 @@ Raison d'arrêt
 
 {% block content %}
 <div class="d-flex justify-content-left mb-3">
-  <a href="{% url 'reasons' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+  <a href="{% url 'reasons' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
     <i class="fas fa-caret-left me-2"></i>
     <p class="lead m-0 p-0">retour</p>
 </a>

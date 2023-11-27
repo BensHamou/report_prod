@@ -63,7 +63,9 @@ def listProductList(request):
     products = Product.objects.filter(line__in=request.user.lines.all()).order_by('id')
     filteredData = ProductFilter(request.GET, queryset=products, user = request.user)
     products = filteredData.qs
-    paginator = Paginator(products, 7)
+    page_size_param = request.GET.get('page_size')
+    page_size = int(page_size_param) if page_size_param else 12   
+    paginator = Paginator(products, page_size)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
@@ -116,7 +118,9 @@ def editProductView(request, id):
             cache_param = str(uuid.uuid4())
             url_path = reverse('products')
             page = request.GET.get('page', '1')
-            redirect_url = f'{url_path}?cache={cache_param}&page={page}'
+            page_size = request.GET.get('page_size', '12')
+            search = request.GET.get('search', '')
+            redirect_url = f'{url_path}?cache={cache_param}&page={page}&page_size={page_size}&search={search}'
             return redirect(redirect_url)
     context = {'form': form, 'product': product, 'selectedNumos': selectedNumos}
 
@@ -129,7 +133,9 @@ def listNumoProductView(request):
     products = NumoProduct.objects.all().order_by('id')
     filteredData = NumoProductFilter(request.GET, queryset=products)
     products = filteredData.qs
-    paginator = Paginator(products, 7)
+    page_size_param = request.GET.get('page_size')
+    page_size = int(page_size_param) if page_size_param else 12   
+    paginator = Paginator(products, page_size)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
@@ -176,7 +182,9 @@ def editNumoProductView(request, id):
             cache_param = str(uuid.uuid4())
             url_path = reverse('numo_products')
             page = request.GET.get('page', '1')
-            redirect_url = f'{url_path}?cache={cache_param}&page={page}'
+            page_size = request.GET.get('page_size', '12')
+            search = request.GET.get('search', '')
+            redirect_url = f'{url_path}?cache={cache_param}&page={page}&page_size={page_size}&search={search}'
             return redirect(redirect_url)
     context = {'form': form, 'numoProduct': numoProduct}
 
@@ -190,7 +198,9 @@ def listTypeStopList(request):
     filteredData = TypeStopFilter(request.GET, queryset=types, user = request.user)
     
     types = filteredData.qs
-    paginator = Paginator(types, 8)
+    page_size_param = request.GET.get('page_size')
+    page_size = int(page_size_param) if page_size_param else 12   
+    paginator = Paginator(types, page_size)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
@@ -240,7 +250,9 @@ def editTypeStopView(request, id):
             cache_param = str(uuid.uuid4())
             url_path = reverse('types')
             page = request.GET.get('page', '1')
-            redirect_url = f'{url_path}?cache={cache_param}&page={page}'
+            page_size = request.GET.get('page_size', '12')
+            search = request.GET.get('search', '')
+            redirect_url = f'{url_path}?cache={cache_param}&page={page}&page_size={page_size}&search={search}'
             return redirect(redirect_url)
 
     context = {'form': form, 'type': type}
@@ -254,7 +266,9 @@ def listReasonStopList(request):
     reasons = ReasonStop.objects.filter(type__in=TypeStop.objects.filter(line__in=request.user.lines.all())).order_by('id')
     filteredData = ReasonStopFilter(request.GET, queryset=reasons, user = request.user)
     reasons = filteredData.qs
-    paginator = Paginator(reasons, 8)
+    page_size_param = request.GET.get('page_size')
+    page_size = int(page_size_param) if page_size_param else 12   
+    paginator = Paginator(reasons, page_size)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
@@ -304,7 +318,9 @@ def editReasonStopView(request, id):
             cache_param = str(uuid.uuid4())
             url_path = reverse('reasons')
             page = request.GET.get('page', '1')
-            redirect_url = f'{url_path}?cache={cache_param}&page={page}'
+            page_size = request.GET.get('page_size', '12')
+            search = request.GET.get('search', '')
+            redirect_url = f'{url_path}?cache={cache_param}&page={page}&page_size={page_size}&search={search}'
 
             return redirect(redirect_url)
 
@@ -569,7 +585,7 @@ def delete_report(request, pk):
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
         messages.success(
-            request, 'Report Does not exit'
+            request, 'Le rapport n\'existe pas'
             )
         url_path = reverse('list_report')
         cache_param = str(uuid.uuid4())
@@ -578,7 +594,7 @@ def delete_report(request, pk):
 
     report.delete()
     messages.success(
-            request, 'Report deleted successfully'
+            request, 'Rapport supprimé avec succès'
             )
     url_path = reverse('list_report')
     cache_param = str(uuid.uuid4())
@@ -592,7 +608,7 @@ def delete_arret(request, pk):
         arret = Arret.objects.get(id=pk)
     except Arret.DoesNotExist:
         messages.success(
-            request, 'Arret Does not exit'
+            request, 'L\'arrêt n\'existe pas'
             )
         url_path = reverse('update_report', args=[arret.report.id])
         cache_param = str(uuid.uuid4())
@@ -601,7 +617,7 @@ def delete_arret(request, pk):
 
     arret.delete()
     messages.success(
-            request, 'Arret deleted successfully'
+            request, 'Arrêt supprimé avec succès'
             )
     url_path = reverse('update_report', args=[arret.report.id])
     cache_param = str(uuid.uuid4())
@@ -699,7 +715,7 @@ def confirmReport(request, pk):
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
         messages.success(
-            request, 'Report Does not exit'
+            request, 'Le rapport n\'existe pas'
             )
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
@@ -736,7 +752,7 @@ def confirmReport(request, pk):
      
     #recipient_list = ['benshamou@gmail.com']
 
-    messages.success(request, 'Report Confirmé successfully')
+    messages.success(request, 'Rapport validé avec succès')
     subject, formatHtml = getMail('confirm', report, request.user.fullname, old_state == 'Brouillon')
     send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
@@ -763,7 +779,7 @@ def cancelReport(request, pk):
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
         messages.success(
-            request, 'Report Does not exit'
+            request, 'Le rapport n\'existe pas'
             )
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
@@ -814,7 +830,7 @@ def validateReport(request, pk, actor):
     try:
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
-        messages.success(request, 'Report Does not exit')
+        messages.success(request, 'Le rapport n\'existe pas')
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
         redirect_url = f'{url_path}?cache={cache_param}'
@@ -848,7 +864,7 @@ def validateReport(request, pk, actor):
     subject, formatHtml = getMail('validate', report, request.user.fullname)
     send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
-    messages.success(request, 'Report validated successfully' )
+    messages.success(request, 'Rapport validé avec succès' )
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())
     redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
@@ -873,7 +889,7 @@ def refuseReport(request, pk, actor):
         report = Report.objects.get(id=pk)
     except Report.DoesNotExist:
         messages.success(
-            request, 'Report Does not exit'
+            request, 'Le rapport n\'existe pas'
             )
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
@@ -881,7 +897,7 @@ def refuseReport(request, pk, actor):
         return redirect(redirect_url)
     
     if (report.state == 'Refusé par GS' and actor == 'GS') or (report.state == 'Refusé par DI' and actor == 'DI'):
-        messages.success(request, 'Report refused successfully' )
+        messages.success(request, 'Rapport refusé avec succès' )
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
         redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
@@ -912,7 +928,7 @@ def refuseReport(request, pk, actor):
     subject, formatHtml = getMail('refuse', report, request.user.fullname, refusal_reason=refusal_reason)
     send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
-    messages.success(request, 'Report refused successfully' )
+    messages.success(request, 'Rapport refusé avec succès' )
     url_path = reverse('report_detail', args=[report.id])
     cache_param = str(uuid.uuid4())
     redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
