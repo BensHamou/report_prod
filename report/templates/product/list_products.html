@@ -53,7 +53,7 @@
                     <td class="d-none d-md-table-cell">{{ product.qte_per_container }}</td>
                     <td class="d-none d-md-table-cell">{{ product.line }}</td>
                     <td style="vertical-align: middle;">
-                        <button type="button" onclick="window.location='{% url 'edit_product' product.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
+                        <button type="button" onclick="window.location='{% url 'edit_product' product.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
                         <button type="button" onclick="confirmProductDel('{{product.id|escapejs}}', '{{product.designation|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
                     </td>
                 </tr>
