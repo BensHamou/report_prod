@@ -151,12 +151,13 @@ class ReportForm(ModelForm):
         cleaned_data = super().clean()
         n_lot = cleaned_data.get('n_lot')
         line = cleaned_data.get('line')
+        prod_day = cleaned_data.get('prod_day')
 
         if n_lot and n_lot != 0 and line:
             if self.instance.pk:
-                existing_report = Report.objects.filter(n_lot=n_lot, line=line).exclude( Q(id=self.instance.pk) | Q(state='Annulé')).exists()
+                existing_report = Report.objects.filter(n_lot=n_lot, line=line, prod_day__year=prod_day.year).exclude( Q(id=self.instance.pk) | Q(state='Annulé')).exists()
             else:
-                existing_report = Report.objects.filter(n_lot=n_lot, line=line).exclude(state='Annulé').exists()
+                existing_report = Report.objects.filter(n_lot=n_lot, line=line, prod_day__year=prod_day.year).exclude(state='Annulé').exists()
             if n_lot and n_lot != 0 and line:
                 if existing_report:
                     self.add_error('n_lot', 'Un rapport avec ce numéro de lot existe déjà pour cette ligne.')
