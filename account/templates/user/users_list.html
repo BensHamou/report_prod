@@ -60,7 +60,7 @@ Utilisateurs
                     <td onclick="window.location='{% url 'details' usr.id %}'" style="cursor: pointer;">{% if usr.team %}{{ usr.team }}{% else %}/{% endif %}</td>
                     <td style="vertical-align: middle;">
                         <button type="button" onclick="window.location='{% url 'edit_user' usr.id %}'" class="btn"  style="padding: 2px;"><i class="fas fa-edit" style="color: white;"></i></button>
-                        <button type="button" onclick="confirmUserDel('{{usr.id|escapejs}}', '{{usr.fullname|escapejs}}')" class="btn"  style="padding: 2px;"><i class="far fa-trash-alt" style="color: white;"></i></button>
+                        <button type="button" disabled onclick="confirmUserDel('{{usr.id|escapejs}}', '{{usr.fullname|escapejs}}')" class="btn"  style="padding: 2px;"><i class="far fa-trash-alt" style="color: white;"></i></button>
                     </td>
                 </tr>
                  {% endfor %}

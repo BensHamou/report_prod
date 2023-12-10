@@ -53,10 +53,10 @@
               <button onclick="window.location='{% url 'edit_line' line.id %}?redirect_url=site_{{site.id}}'"  
               type="button" class="badge position-relative formBadge mb-1" style="border: none;">
               <p class="lead p-0 m-0 formBadgeText">{{ line.designation }}</p>
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
+                  {% comment %} <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
                       <a onclick="confirmLineDel('{{line.id|escapejs}}', '{{line.designation|escapejs}}', '{{site.id|escapejs}}');" 
                       style="color: white; text-decoration: none; font-size: 10px;">x</a>   
-                  </span>
+                  </span> {% endcomment %}
               </button>
               {% empty %}
                   <span class="badge bg-secondary">Pas de lignes associées.</span>

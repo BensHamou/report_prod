@@ -60,11 +60,11 @@ Emplacements & Équipes
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </span>
-                                    <span class="badge" style="padding: 2px;">
+                                    {% comment %} <span class="badge" style="padding: 2px;">
                                         <a onclick="confirmSiteDel('{{line.site.id|escapejs}}', '{{line.site.designation|escapejs}}')" style="color: white; cursor: pointer; text-decoration: none;">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
-                                    </span>
+                                    </span> {% endcomment %}
                                 </td>
                                 <td>
                                     {{ line.designation }} 
@@ -73,21 +73,21 @@ Emplacements & Équipes
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     </span>
-                                    <span class="badge" style="padding: 2px;">
+                                    {% comment %} <span class="badge" style="padding: 2px;">
                                         <a onclick="confirmLineDel('{{line.id|escapejs}}', '{{line.designation|escapejs}}')" style="color: white; cursor: pointer; text-decoration: none;">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
-                                    </span>
+                                    </span> {% endcomment %}
                                 </td>
                                 <td class="d-none d-md-table-cell">
                                     {% for team in line.teams.all %}
                                         <button onclick="window.location='{% url 'edit_team' team.id %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}'"  
                                         type="button" class="badge position-relative listBadge" style="margin: 0 0.8vw 0.5vw 0; border: none;">
                                             <p class="lead p-0 m-0 listBadgeText">{{ team.designation }}</p>
-                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
+                                            {% comment %} <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
                                                 <a onclick="confirmTeamDel('{{team.id|escapejs}}', '{{team.designation|escapejs}}', '{{line.designation|escapejs}}');" 
                                                 style="color: white; text-decoration: none; font-size: 10px;">x</a>  
-                                            </span>
+                                            </span> {% endcomment %}
                                         </button>
                                     {% empty %}
                                         <span class="badge bg-secondary">Pas d'équipes associées.</span>
@@ -99,10 +99,10 @@ Emplacements & Équipes
                                         <button onclick="window.location='{% url 'edit_silo' silo.id %}?redirect_url=location_teams{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}'"  
                                         type="button" class="badge position-relative listBadge" style="margin: 0 0.8vw 0.5vw 0; border: none;">
                                         <p class="lead p-0 m-0 listBadgeText">{{ silo.designation }}</p>
-                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
+                                            {% comment %} <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
                                                 <a onclick="confirmSiloDel('{{silo.id|escapejs}}', '{{silo.designation|escapejs}}', '{{line.designation|escapejs}}');" 
                                                 style="color: white; text-decoration: none; font-size: 10px;">x</a>  
-                                            </span>
+                                            </span> {% endcomment %}
                                         </button>
                                     {% empty %}
                                         <span class="badge bg-secondary">Pas de silo associés.</span>

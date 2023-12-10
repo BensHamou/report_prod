@@ -72,10 +72,10 @@ Ligne
               <button onclick="window.location='{% url 'edit_silo' silo.id %}?redirect_url=line_{{line.id}}'"  
               type="button" class="badge position-relative formBadge mb-1" style="border: none;">
               <p class="lead p-0 m-0 formBadgeText">{{ silo.designation }}</p>
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
+                  {% comment %} <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
                       <a onclick="confirmSiloDel('{{silo.id|escapejs}}', '{{silo.designation|escapejs}}', '{{line.designation|escapejs}}', '{{line.id|escapejs}}');" 
                       style="color: white; text-decoration: none; font-size: 10px;">x</a>  
-                  </span>
+                  </span> {% endcomment %}
               </button>                                  
               {% empty %}
               <span class="badge bg-secondary">Pas de silos associés.</span>
@@ -92,10 +92,10 @@ Ligne
               <button onclick="window.location='{% url 'edit_team' team.id %}?redirect_url=line_{{line.id}}'"  
               type="button" class="badge position-relative formBadge mb-1" style="border: none;">
               <p class="lead p-0 m-0 formBadgeText">{{ team.designation }}</p>
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
+                  {% comment %} <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background-color: #b5b5b5;">
                       <a onclick="confirmTeamDel('{{team.id|escapejs}}', '{{team.designation|escapejs}}', '{{line.designation|escapejs}}', '{{line.id|escapejs}}');" 
                       style="color: white; text-decoration: none; font-size: 10px;">x</a>  
-                  </span>
+                  </span> {% endcomment %}
               </button>                                  
               {% empty %}
               <span class="badge bg-secondary">Pas d'équipes associées.</span>
