@@ -91,6 +91,14 @@ DATABASES = {
     #    'HOST': '10.10.10.101',
     #    'PORT': '5434',
     #}
+    #'default': {
+    #    'ENGINE': 'django.db.backends.postgresql',
+    #    'NAME': 'mydb-dev',
+    #    'USER': 'prod_report',
+    #    'PASSWORD': 'prod_report',
+    #    'HOST': '10.10.10.20',
+    #    'PORT': '5400',
+    #}
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_NAME'),
