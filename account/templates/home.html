@@ -6,5 +6,11 @@
 {% block activeHome %} {% include 'active_bar.html' %} {% endblock %}
 
 {% block dashboard %}
+  <style>
+    .menu_item{
+      color: #ffffff; 
+      font-size: 22px;
+    }
+  </style>
   <iframe style="height: 100%; width: 100%;" src="https://mybi.groupe-hasnaoui.com/reports/powerbi/BI/production?rs:embed=true" title="PowerBI" />
 {% endblock %}
