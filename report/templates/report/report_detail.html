@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 
 {% block title %}
-Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"04d" }}/{{ report.prod_day|date:"y" }}
+Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ report.prod_day|date:"y" }}
 {% endblock %}
 {% load static %} 
 {% block activeListReport %} {% include 'active_bar.html' %} {% endblock %}
