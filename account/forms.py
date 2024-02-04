@@ -98,21 +98,5 @@ class SiloForm(ModelForm):
 
 class CustomLoginForm(AuthenticationForm):
     
-    username = forms.EmailField( label="Email", widget=forms.EmailInput(attrs={'autofocus': True, 'class': 'form-control', 'placeholder':'Email'}))
+    username = forms.CharField( label="Email / AD 2000", widget=forms.TextInput(attrs={'autofocus': True, 'class': 'form-control', 'placeholder':'Email'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'Mot de passe'}))
-
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
-        if '@' not in username:
-            raise forms.ValidationError(
-                self.error_messages['invalid_email'],
-                code='invalid_email',
-            )
-        return username
-
-    error_messages = {
-        'invalid_login': "Email/Mot de passe incorrect.",
-        'inactive': "Ce compte est inactif.",
-        'invalid_email': "S'il vous plaît, mettez une adresse email valide.",
-    }
-    
