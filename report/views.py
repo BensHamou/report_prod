@@ -25,7 +25,6 @@ from datetime import datetime
 from account.models import Horaire
 from .cron import send_alert
 
-
 def check_creator(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
@@ -54,6 +53,21 @@ def check_creatorArret(view_func):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key,0)
+
+@register.filter
+def startwith(value, word):
+    return str(value).startswith(word)
+
+@register.filter
+def is_login(messages):
+    for message in messages:
+        if str(message).startswith('LOGIN : '):
+            return True
+    return False
+
+@register.filter
+def loginerror(value, word):
+    return str(value)[len(word):]
 
 
 # PRODUCTS
@@ -1014,3 +1028,4 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
     <p>Pour plus de détails, veuillez visiter <a href="''' + address + str(report.id) +'''/">''' + address + str(report.id) +'''/</a>.</p>'''
 
     return subject, format_html(message)
+    
