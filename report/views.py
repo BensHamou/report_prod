@@ -811,14 +811,14 @@ def cancelReport(request, pk):
     report.save()
     validation.save()
 
-    if old_state != 'Brouillon':    
-        if report.site.address:
-            recipient_list = report.site.address.split('&')
-        else:
-            recipient_list = ['benshamou@gmail.com']
-        #recipient_list = ['benshamou@gmail.com']
-        subject, formatHtml = getMail('cancel', report, request.user.fullname)
-        send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+    # if old_state != 'Brouillon':    
+    #     if report.site.address:
+    #         recipient_list = report.site.address.split('&')
+    #     else:
+    #         recipient_list = ['benshamou@gmail.com']
+    #     #recipient_list = ['benshamou@gmail.com']
+    #     subject, formatHtml = getMail('cancel', report, request.user.fullname)
+    #     send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
         
     messages.success(request, 'Report Annulé successfully' )
     url_path = reverse('report_detail', args=[report.id])
@@ -869,14 +869,14 @@ def validateReport(request, pk, actor):
     report.save()
     validation.save()
 
-    if report.site.address:
-        recipient_list = report.site.address.split('&')
-    else:
-        recipient_list = ['benshamou@gmail.com']
-    #recipient_list = ['benshamou@gmail.com']
+    # if report.site.address:
+    #     recipient_list = report.site.address.split('&')
+    # else:
+    #     recipient_list = ['benshamou@gmail.com']
+    # #recipient_list = ['benshamou@gmail.com']
 
-    subject, formatHtml = getMail('validate', report, request.user.fullname)
-    send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
+    # subject, formatHtml = getMail('validate', report, request.user.fullname)
+    # send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
 
     messages.success(request, 'Rapport validé avec succès' )
     url_path = reverse('report_detail', args=[report.id])
