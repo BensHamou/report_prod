@@ -125,7 +125,7 @@ class ReportFilter(FilterSet):
         if user:
             if user.role == 'Gestionnaire de stock':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] in 
-                                        ['Confirmé', 'Validé par GS', 'Refusé par DI', 'Refusé par GS']]
+                                        ['Confirmé', 'Validé par GS', 'Refusé par DI', 'Refusé par GS', 'Validé par DI']]
             elif user.role == 'Directeur Industriel':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] in 
                                         ['Validé par GS', 'Validé par DI',  'Refusé par DI']]

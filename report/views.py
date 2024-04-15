@@ -527,7 +527,7 @@ class ReportList(LoginRequiredMixin, FilterView):
         
     all_GP = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
     all_A = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
-    all_GS = ['Confirmé', 'Validé par GS', 'Refusé par GS', 'Refusé par DI']
+    all_GS = ['Confirmé', 'Validé par GS', 'Refusé par GS', 'Refusé par DI', 'Validé par DI']
     all_DI = ['Validé par GS', 'Validé par DI', 'Refusé par DI']
     all_NV = ['']
 
