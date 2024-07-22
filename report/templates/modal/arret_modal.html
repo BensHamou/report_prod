@@ -39,13 +39,13 @@
                                 <td>
                                     <div>
                                         <p class="tdLabel">Actions</p>
-                                        <p class="valueLead mb-0">{% if arret.actions  %}{{ arret.actions }}{% else %}/{% endif %}</p>
+                                        <p class="valueLead mb-0">{% if arret.actions  %}{{ arret.actions|linebreaks }}{% else %}/{% endif %}</p>
                                     </div>
                                 </td>
                                 <td class="tdLast">
                                     <div>
                                         <p class="tdLabel">Observation</p>
-                                        <p class="valueLead mb-0">{% if arret.observation  %}{{ arret.observation }}{% else %}/{% endif %}</p>
+                                        <p class="valueLead mb-0">{% if arret.observation  %}{{ arret.observation|linebreaks }}{% else %}/{% endif %}</p>
                                     </div>
                                 </td>
                             </tr>

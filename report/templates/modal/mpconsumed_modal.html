@@ -31,7 +31,7 @@
                             <td class="tdLast">
                                 <div>
                                     <p class="tdLabel">Observation</p>
-                                    <p class="valueLead mb-0">{% if mpconsumed.observation  %}{{ mpconsumed.observation }}{% else %}/{% endif %}</p>
+                                    <p class="valueLead mb-0">{% if mpconsumed.observation  %}{{ mpconsumed.observation|linebreaks }}{% else %}/{% endif %}</p>
                                 </div>
                             </td>
                             </tr>
