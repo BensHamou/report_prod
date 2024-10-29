@@ -1,5 +1,6 @@
 {% extends "main.html" %}
 {% load widget_tweaks %}
+{% load humanize %}
 
 {% block title %}
 Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ report.prod_day|date:"y" }}
@@ -138,7 +139,7 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                     <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Temps utilisé</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.used_time }}
+                            {{ report.used_time }} heures
                         </div>
                     </div>
                 </div>
@@ -170,7 +171,7 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                     <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Nombre de mélange</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.nbt_melange }}
+                            {{ report.nbt_melange|intcomma }} mélanges
                         </div>
                     </div>
                 </div>
@@ -179,7 +180,7 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                     
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.qte_sac_prod }}
+                            {{ report.qte_sac_prod|intcomma }} {{ report.prod_product.unite.conditionnement }}
                         </div>
                     </div>
                 </div>
@@ -187,15 +188,15 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                     <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Poids de mélange</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.poids_melange }}
+                            {{ report.poids_melange|intcomma }}
                         </div>
                     </div>
                 </div>
                 <div class="form-group row mb-1">
-                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Quantité ({{ report.prod_product.unite.designation }})</label>
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Quantité</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.qte_tn }}
+                            {{ report.qte_tn }} {{ report.prod_product.unite.designation }}
                         </div>
                     </div>
                 </div>
@@ -203,7 +204,7 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                     <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Objective quotidienne</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.line.obj_ctd }}
+                            {{ report.line.obj_ctd|intcomma }}
                         </div>
                     </div>
                 </div>
@@ -211,7 +212,7 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                     <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Nombre de sacs rebuté</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.qte_sac_reb }}
+                            {{ report.qte_sac_reb|intcomma }} sacs
                         </div>
                     </div>
                 </div>
@@ -219,7 +220,15 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                     <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Nombre de sacs recyclés</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.qte_sac_rec }}
+                            {{ report.qte_sac_rec|intcomma }} sacs
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mb-1">
+                    <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Quantité consommée</label>
+                    <div class="col-sm-9">
+                        <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
+                            {{ report.total_consumed|intcomma }}
                         </div>
                     </div>
                 </div>
@@ -227,7 +236,7 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                     <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Quantité recyclée</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.qte_rec }}
+                            {{ report.qte_rec|intcomma }}
                         </div>
                     </div>
                 </div>
@@ -235,7 +244,7 @@ Rapport - {{ report.line.prefix_line }}{{ report.n_lot|stringformat:"03d" }}/{{ 
                     <label class="col-sm-3 col-form-label" style="color: #f2f3f2;">Nombre de palletes</label>
                     <div class="col-sm-9">
                         <div class="form-control-plaintext text-white" style="border-bottom: 1px solid rgba(171, 175, 181, 0.4); letter-spacing: 1.2px;">
-                            {{ report.nbt_pallete }}
+                            {{ report.nbt_pallete|intcomma }} palletes
                         </div>
                     </div>
                 </div>

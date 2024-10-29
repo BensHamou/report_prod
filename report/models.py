@@ -109,6 +109,10 @@ class Report(models.Model):
     def total_arrets(self):
         return round(sum(arret.duration for arret in self.arrets()), 2)
     
+    @property
+    def total_consumed(self):
+        return round(sum(c.qte_consumed for c in self.mpconsumeds()), 2)
+    
     def __str__(self):
         return str(self.n_lot) + " - " + self.prod_product.designation + " (" + str(self.date_created) +")"
 
