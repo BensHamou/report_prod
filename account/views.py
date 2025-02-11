@@ -39,6 +39,14 @@ def admin_only_required(view_func):
             return render(request, '403.html', status=403)
     return wrapper
 
+def admin_or_di_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if request.user.role in ['Admin', 'Directeur Industriel']:
+            return view_func(request, *args, **kwargs)
+        else:
+            return render(request, '403.html', status=403)
+    return wrapper
+
 def DI_GS_required(view_func):
     def wrapper(request, *args, **kwargs):
         if request.user.is_authenticated and request.user.role in ['Admin', 'Gestionnaire de stock', 'Directeur Industriel']:
@@ -54,12 +62,9 @@ def page_not_found(request, exception):
 
 
 @login_required(login_url='login')
-@admin_only_required
+@admin_or_di_required
 def homeView(request):
-
-    context = {
-        'content': 'content', 
-    }
+    context = {'content': 'content'}
     return render(request, 'home.html', context)
 
 
@@ -68,9 +73,7 @@ def homeView(request):
 @login_required(login_url='login')
 @admin_only_required
 def refreshUsersList(request):
-    
     usernames = User.objects.values_list('username', flat=True)
-    
     API_Users = 'https://api.ldap.groupe-hasnaoui.com/get/users?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJUb2tlbiI6IkZvciBEU0kiLCJVc2VybmFtZSI6ImFjaG91cl9hciJ9.aMy1LUzKa6StDvQUX54pIvmjRwu85Fd88o-ldQhyWnE'
     GROUP_Users = 'https://api.ldap.groupe-hasnaoui.com/get/users/group/PUMA-PRD?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJUb2tlbiI6IkZvciBEU0kiLCJVc2VybmFtZSI6ImFjaG91cl9hciJ9.aMy1LUzKa6StDvQUX54pIvmjRwu85Fd88o-ldQhyWnE'
 
