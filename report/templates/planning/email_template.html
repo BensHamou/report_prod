@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <p>Bonjour,</p>
+    <p>Veuillez trouver ci-dessous le planning de production de la semaine du {{ min_date }} au {{ max_date }}:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="background-color: #0e2a5b; color: white;">Date</th>
+                <th style="background-color: #0e2a5b; color: white;">Jour</th>
+                {% for shift in shift_names %}
+                    <th style="background-color: #0e2a5b; color: white;">{{ shift }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for date, details in data.items %}
+                <tr>
+                    <td>{{ date }}</td>
+                    <td>{{ details.day }}</td>
+                    {% for shift in shift_names %}
+                        <td>{{ details.shifts|get_item:shift }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><strong>Remarque :</strong> Ce planning peut être changé en cas d'imprévus ou commande urgente.</p>
+    <p>Cordialement.</p>
+</body>
+</html>

@@ -1,0 +1,65 @@
+{% extends "main.html" %}
+{% block title %}
+Planning
+{% endblock %}
+{% load static %} 
+{% block activePlanning %} {% include 'active_bar.html' %} {% endblock %}
+{% block content %}
+<style>
+    .select2-search {
+        background-color: #cacfd7 !important;
+    }
+    .select2-search input {
+        background-color: #cacfd7 !important;
+    }
+    
+    .select2-results {
+        background-color: #cacfd7 !important;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection {
+        border-color: #ced4da !important;
+        background-color: #cacfd7 !important;
+    }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+
+<div class="d-flex justify-content-left mb-3">
+  <a href="{% url 'list_report' %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="text-decoration-none text-white d-flex align-items-center" style="color: rgba(222, 226, 230, 0.8); letter-spacing: 1.2px;">
+    <i class="fas fa-caret-left me-2"></i>
+    <p class="lead m-0 p-0">retour</p>
+  </a>
+</div>
+<h4 class="text-white mb-4">Création d'un planning</h4>
+<form method="POST">
+  {% csrf_token %}
+  <div class="card card-body" style="background: rgba(255, 255, 255, 0.2); border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);">
+    <div class="row mb-4">
+      <div class="col-md-6 col-sm-12">
+        <div class="form-outline">
+            <label class="form-label labelCustom" for="line">Ligne</label>
+            {{ form.line }}
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <div class="form-outline">
+            <label class="form-label labelCustom" for="shifts">Shifts</label>
+            {{ form.shifts }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="float-end mt-4">
+    <input type='submit' class="btn btn-secondary customSaveButton" name='next' value="Suivant"/>
+  </div>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    document.querySelectorAll(".select").forEach((el) => new bootstrap5.Select(el));
+    $(document).ready(function() {
+        $('.select2').select2({theme: 'bootstrap-5', allowClear: true});
+    });
+  </script>
+{% endblock %}

@@ -9,7 +9,7 @@ def getAttrs(type, placeholder='', other={}):
         'control': {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'placeholder': ''},
         'search': {'class': 'form-control form-input', 'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; text-indent: 33px; border-radius: 5px;', 'type': 'search', 'placeholder': '', 'id': 'search'},
         'select': {'class': 'form-select', 'style': 'background-color: #cacfd7;'},
-        'select2': {'class': 'form-select custom-select', 'style': 'background-color: #ebecee; width: 100%;'},
+        'select2': {'class': 'form-select select2', 'style': 'background-color: #ebecee; width: 100%;'},
         'date': {'type': 'date', 'class': 'form-control dateinput','style': 'background-color: #cacfd7;'},
         'textarea': {"rows": "3", 'style': 'width: 100%', 'class': 'form-control', 'placeholder': '', 'style': 'background-color: #cacfd7;'}
     }
@@ -236,3 +236,23 @@ EtatSiloFormSet = inlineformset_factory(Report, EtatSilo, form=EtatSiloForm, fie
 
 ArretsFormSet = inlineformset_factory(Report, Arret, form=ArretForm,fields=['type_stop', 'reason_stop', 'hour', 'minutes', 'actions', 'observation'], 
     can_delete=True, can_delete_extra=True, extra=0)
+
+class PlanningInitialForm(forms.Form):
+
+    line = forms.ModelChoiceField(queryset=Line.objects.all(), widget=forms.Select(attrs= getAttrs('select')), empty_label="Ligne")
+    shifts = forms.ModelMultipleChoiceField(queryset=Horaire.objects.all(), widget=forms.SelectMultiple(attrs= getAttrs('select2')), required=False)
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user:
+            self.fields['line'].queryset = user.lines.all()
+
+class PlanLineForm(forms.Form):
+    
+    date = forms.DateField(widget=forms.widgets.DateInput(attrs= getAttrs('date'), format='%Y-%m-%d'))
+    products = forms.ModelMultipleChoiceField(queryset=Product.objects.all(), widget=forms.SelectMultiple(attrs= getAttrs('select2')), required=False)
+
+    def __init__(self, *args, line=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if line:
+            self.fields['products'].queryset = Product.objects.filter(line=line)

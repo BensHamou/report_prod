@@ -4,6 +4,7 @@ from django import forms
 from .forms import getAttrs
 from .models import *
 from django.db.models import Q
+from django_filters import DateRangeFilter
 
 class ProductFilter(FilterSet):
 
@@ -133,4 +134,9 @@ class ReportFilter(FilterSet):
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] not in 
                                         ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']]
             self.filters['line'].queryset = user.lines.all()
+
+class PlanningFilter(FilterSet):
+
+    other = {'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; border-radius: 5px;'}
+    line = ModelChoiceFilter(queryset=Line.objects.all(), widget=forms.Select(attrs= getAttrs('select', other=other)), empty_label="Ligne")
 

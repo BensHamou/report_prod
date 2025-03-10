@@ -43,5 +43,13 @@ urlpatterns = [
     path('report/get-numo-by-product/', views.get_numo_by_product, name='get_numo_by_product'),
     path('report/get-qte-by-product/', views.get_qte_per_container, name='get_qte_per_container'),
     path('report/get-max-by-shift/', views.get_shift_max, name='get_shift_max'),
+
+    path('plannings/', views.plannings_list_view, name='plannings'),
+    path('planning/line/', views.planning_initial_view, name='planning_initial'),
+    path('planning/products/', views.planning_details_view, name='planning_details'),
+    path('planning/<int:pk>/', views.view_planning, name='view_planning'),
+    path('delete-planning/<int:pk>/', delete_planning, name='delete_planning'),
+    path('notify-planning/', views.notify_planning, name='notify_planning'),
+
 ]
 

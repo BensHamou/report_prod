@@ -19,7 +19,8 @@ class Horaire(models.Model):
             total += + 24
         return round(total, 2)
 
-    def __str__(self):
+    @property
+    def name(self):
         name = str(self.hour_start) + 'H'
         if self.minutes_start > 0:
             name += str(self.minutes_start) + 'M' 
@@ -27,6 +28,9 @@ class Horaire(models.Model):
         if self.minutes_end > 0:
             name += str(self.minutes_end) + 'M'
         return name
+
+    def __str__(self):
+        return self.name
     
 class Site(models.Model):
     designation = models.CharField(max_length=100)

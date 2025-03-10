@@ -67,7 +67,8 @@ TEMPLATES = [
                  os.path.join(BASE_DIR, 'account', 'templates', 'horaire'), os.path.join(BASE_DIR, 'account', 'templates', 'fragment'),
                  os.path.join(BASE_DIR, 'report', 'templates', 'report'), os.path.join(BASE_DIR, 'report', 'templates', 'product'),
                  os.path.join(BASE_DIR, 'report', 'templates', 'numo_product'), os.path.join(BASE_DIR, 'report', 'templates', 'type_stop'),
-                 os.path.join(BASE_DIR, 'report', 'templates', 'reason_stop'), os.path.join(BASE_DIR, 'report', 'templates', 'modal')],
+                 os.path.join(BASE_DIR, 'report', 'templates', 'reason_stop'), os.path.join(BASE_DIR, 'report', 'templates', 'modal'), 
+                 os.path.join(BASE_DIR, 'report', 'templates', 'planning')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -84,22 +85,22 @@ WSGI_APPLICATION = "report_prod.wsgi.application"
 
 
 DATABASES = {
-    #'default': {
+    # 'default': {
     #    'ENGINE': 'django.db.backends.postgresql',
     #    'NAME': 'mydb-dev',
     #    'USER': 'puma_prod',
     #    'PASSWORD': 'puma_prod',
     #    'HOST': '10.10.10.101',
     #    'PORT': '5434',
-    #}
-    #'default': {
+    # }
+    # 'default': {
     #    'ENGINE': 'django.db.backends.postgresql',
     #    'NAME': 'mydb-dev',
     #    'USER': 'prod_report',
     #    'PASSWORD': 'prod_report',
     #    'HOST': '10.10.10.20',
     #    'PORT': '5400',
-    #}
+    # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_NAME'),

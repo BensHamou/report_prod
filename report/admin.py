@@ -12,4 +12,7 @@ admin.site.register(EtatSilo)
 admin.site.register(MPConsumed)
 admin.site.register(Arret)
 admin.site.register(Validation)
+admin.site.register(Planning)
+admin.site.register(Plan)
+admin.site.register(PlanLine)
 

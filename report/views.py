@@ -1,7 +1,6 @@
-from django.shortcuts import render
-from account.models import *
 from .models import *
-from django.shortcuts import render, redirect
+from account.models import *
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from account.views import admin_required, DI_GS_required
 import uuid
@@ -23,7 +22,12 @@ from django.core.mail import send_mail
 from django.utils.html import format_html
 from datetime import datetime
 from account.models import Horaire
-from .cron import send_alert
+from django import forms
+from django.forms import formset_factory
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+import locale
+from account.views import admin_or_di_required
 
 def check_creator(view_func):
     @wraps(view_func)
@@ -69,6 +73,11 @@ def is_login(messages):
 def loginerror(value, word):
     return str(value)[len(word):]
 
+@register.filter
+def get_item(dictionary, key):
+    if isinstance(dictionary, dict):
+        return dictionary.get(key, "")
+    return ""
 
 # PRODUCTS
 @login_required(login_url='login')
@@ -1029,3 +1038,202 @@ def getMail(action, report, fullname, old_state = False, refusal_reason = '/'):
 
     return subject, format_html(message)
     
+
+#PLANNINGS
+
+@login_required(login_url='login')
+@admin_or_di_required
+def planning_initial_view(request):
+    if request.method == 'POST':
+        form = PlanningInitialForm(request.POST)
+        if form.is_valid():
+            request.session['line_id'] = form.cleaned_data['line'].id
+            request.session['shift_ids'] = [shift.id for shift in form.cleaned_data['shifts']]
+            return redirect('planning_details')
+    else:
+        form = PlanningInitialForm(user=request.user)
+    
+    return render(request, 'planning_initial.html', {'form': form})
+
+@login_required(login_url='login')
+@admin_or_di_required
+def planning_details_view(request):
+    line_id = request.session.get('line_id')
+    shift_ids = request.session.get('shift_ids', [])
+    
+    if not line_id or not shift_ids:
+        return redirect('planning_initial')
+    
+    line = get_object_or_404(Line, id=line_id)
+    shifts = Horaire.objects.filter(id__in=shift_ids)
+    products = Product.objects.all()  
+    class PlanLineForm(forms.Form):
+        date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control bg-light'}))
+        products = forms.ModelMultipleChoiceField(queryset=Product.objects.all(), widget=forms.SelectMultiple(attrs={'class': 'form-select select2'}))
+        DELETE = forms.BooleanField(required=False, widget=forms.HiddenInput())
+    
+    if request.method == 'POST':
+        shift_forms = []
+        forms_valid = True
+        
+        for shift in shifts:
+            prefix = f'shift_{shift.id}_line'
+            PlanLineFormSet = formset_factory(PlanLineForm, extra=0, can_delete=True)
+            formset = PlanLineFormSet(request.POST, prefix=prefix)
+            
+            if formset.is_valid():
+                shift_forms.append({'shift': shift, 'formset': formset})
+            else:
+                forms_valid = False
+                break
+        
+        if forms_valid:
+            planning = Planning.objects.create(creator=request.user, line=line)
+            for shift_form in shift_forms:
+                shift = shift_form['shift']
+                formset = shift_form['formset']
+                plan = Plan.objects.create(planning=planning, shift=shift)
+                for form_data in formset.cleaned_data:
+                    if not form_data.get('DELETE', False):
+                        plan_line = PlanLine.objects.create(plan=plan, date=form_data['date'])
+                        plan_line.products.set(form_data['products'])
+            
+            return redirect('view_planning', pk=planning.id)
+    
+    shifts_data = []
+    for shift in shifts:
+        PlanLineFormSet = formset_factory(PlanLineForm, extra=1, can_delete=True)
+        formset = PlanLineFormSet(prefix=f'shift_{shift.id}_line')
+        shifts_data.append({'shift': shift, 'lines': [{'form': form} for form in formset], 'management_form': formset.management_form })
+    
+    context = {'line': line, 'shifts': shifts_data, 'products': products}
+    return render(request, 'planning_details.html', context)
+
+@login_required(login_url='login')
+@admin_or_di_required
+def plannings_list_view(request):
+
+    plannings = Planning.objects.all()
+    filteredData = PlanningFilter(request.GET, queryset=plannings)
+    plannings = filteredData.qs
+    
+    page_size = request.GET.get('page_size', 12)
+    paginator = Paginator(plannings, page_size)
+    page_number = request.GET.get('page', 1)
+    page = paginator.get_page(page_number)
+    
+    context = {'page': page, 'filteredData': filteredData }
+    
+    return render(request, 'plannings_list.html', context)
+
+@login_required(login_url='login')
+@admin_or_di_required
+def view_planning(request, pk):
+    try:
+        planning = Planning.objects.get(id=pk)
+    except Planning.DoesNotExist:
+        messages.error(request, 'Le planning n\'existe pas')
+        return redirect('plannings')
+    
+    plans = Plan.objects.filter(planning=planning)
+    
+    plan_data = []
+    for plan in plans:
+        plan_lines = PlanLine.objects.filter(plan=plan)
+        plan_detail = {'shift': plan.shift, 'lines': []}
+        
+        for line in plan_lines:
+            products = line.products.all()
+            line_detail = {'date': line.date, 'products': products}
+            plan_detail['lines'].append(line_detail)
+        
+        plan_data.append(plan_detail)
+    
+    context = {'planning': planning,'plan_data': plan_data}
+    
+    query_params = {}
+    if 'page' in request.GET:
+        query_params['page'] = request.GET['page']
+    if 'page_size' in request.GET:
+        query_params['page_size'] = request.GET['page_size']
+    if 'search' in request.GET:
+        query_params['search'] = request.GET['search']
+    
+    context['query_params'] = query_params
+    
+    return render(request, 'view_planning.html', context)
+
+@login_required(login_url='login')
+@admin_or_di_required
+def delete_planning(request, pk):
+    try:
+        planning = Planning.objects.get(id=pk)
+    except Planning.DoesNotExist:
+        messages.error(request, 'Le planning n\'existe pas')
+        url_path = reverse('plannings')
+        cache_param = str(uuid.uuid4())
+        redirect_url = f'{url_path}?cache={cache_param}'
+        return redirect(redirect_url)
+    
+    planning.delete()
+    messages.success(request, 'Planning supprimé avec succès')
+    
+    url_path = reverse('plannings')
+    cache_param = str(uuid.uuid4())
+    redirect_url = f'{url_path}?cache={cache_param}'
+    return redirect(redirect_url)
+
+locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+
+@login_required
+@admin_or_di_required
+def notify_planning(request):
+    planning_id = request.POST.get('planning_id')
+
+    if not planning_id:
+        return JsonResponse({'success': False, 'message': 'Identifiant de planning manquant.'})
+    
+    try:
+        planning = get_object_or_404(Planning, id=planning_id)
+
+        if planning.line.site.address:
+            addresses = planning.line.site.address.split('&')
+        else:
+            addresses = ['mohammed.benslimane@groupe-hasnaoui.com']
+
+        plan_lines = planning.plans.prefetch_related('plan_lines__products')
+        data = {}
+        shift_names = sorted(set(plan.shift.name for plan in plan_lines))
+
+        all_dates = [plan_line.date for plan in plan_lines for plan_line in plan.plan_lines.all()]
+
+        min_date = min(all_dates).strftime("%d/%m/%Y") if all_dates else None
+        max_date = max(all_dates).strftime("%d/%m/%Y") if all_dates else None
+
+        for plan in plan_lines:
+            for plan_line in plan.plan_lines.all():
+                date_str = plan_line.date.strftime("%d/%m/%Y")
+                day_name = plan_line.date.strftime("%A").upper()
+                products = ", ".join([p.designation for p in plan_line.products.all()])
+
+                if date_str not in data:
+                    data[date_str] = {"day": day_name, "shifts": {s: "" for s in shift_names}}
+                
+                data[date_str]["shifts"][plan.shift.name] = products or ""
+
+        context = {"planning": planning, "data": data, "shift_names": shift_names, "min_date": min_date, "max_date": max_date}
+        subject = f'Planning de Production - {planning.line}'
+        html_message = render_to_string('email_template.html', context)
+        email = EmailMultiAlternatives(subject, None, 'Puma Trans', addresses)
+        email.attach_alternative(html_message, "text/html") 
+        email.send()    
+
+        return JsonResponse({'success': True, 'message': f'Le planning a été notifié avec succès à {len(addresses)} destinataire(s).'})
+        
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error sending planning notification: {str(e)}")
+        return JsonResponse({'success': False, 'message': f'Une erreur est survenue lors de l\'envoi: {str(e)}'})
+
+

@@ -180,3 +180,60 @@ class Validation(models.Model):
 
     def __str__(self):
         return "Validation - " + str(self.report.id) + " - " + str(self.date)
+    
+class Planning(models.Model):
+
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': ['Directeur Industriel', 'Admin']})
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    line = models.ForeignKey(Line, on_delete=models.CASCADE, related_name='plannings')
+
+    @property
+    def shifts_str(self):
+        shifts = [str(plan.shift) for plan in self.plans.all()]
+        return " & ".join(shifts)
+
+    @property
+    def shifts(self):
+        return [plan.shift for plan in self.plans.all()]
+
+    class Meta:
+        verbose_name = "Planning"
+        verbose_name_plural = "Plannings"
+        ordering = ['-date_created']
+    
+    def __str__(self):
+        return f"Planning de {self.line} - {self.date_created}"
+
+class Plan(models.Model):
+
+    planning = models.ForeignKey(Planning, on_delete=models.CASCADE, related_name='plans')
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    shift = models.ForeignKey(Horaire, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Plan"
+        verbose_name_plural = "Plans"
+        unique_together = ('planning', 'shift')
+
+    def __str__(self):
+        return f"{self.planning} - {self.shift}"
+
+class PlanLine(models.Model):
+
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='plan_lines')
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    date = models.DateField()
+    products = models.ManyToManyField(Product)
+
+    class Meta:
+        verbose_name = "Plan Line"
+        verbose_name_plural = "Plan Lines"
+        unique_together = ('plan', 'date')
+        ordering = ['date']
+
+    def __str__(self):
+        return f"{self.plan} - {self.date}"
+    
