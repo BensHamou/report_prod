@@ -9,3 +9,4 @@ report/migrations/*
 !report/migrations/__init__.py
 
 puma_prod
+.qodo
