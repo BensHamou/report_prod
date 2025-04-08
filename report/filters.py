@@ -135,8 +135,10 @@ class ReportFilter(FilterSet):
                                         ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']]
             self.filters['line'].queryset = user.lines.all()
 
-class PlanningFilter(FilterSet):
+class ProductionPlanFilter(FilterSet):
 
     other = {'style': 'background-color: rgba(202, 207, 215, 0.5); border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px; border-radius: 5px;'}
-    line = ModelChoiceFilter(queryset=Line.objects.all(), widget=forms.Select(attrs= getAttrs('select', other=other)), empty_label="Ligne")
+
+    start_date = DateFilter(field_name='from_date', lookup_expr='gte', widget=forms.widgets.DateInput(attrs= getAttrs('date', other=other), format='%d-%m-%Y'))
+    end_date = DateFilter(field_name='from_date', lookup_expr='lte', widget=forms.widgets.DateInput(attrs= getAttrs('date', other=other), format='%d-%m-%Y'))
 

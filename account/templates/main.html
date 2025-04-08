@@ -42,12 +42,12 @@
               {% block activeListReport %}{% endblock %}
               <h4 class="mx-auto"><a href="{% url 'list_report' %}" class="text-reset"><i class="fas fa-rectangle-list menu_item"></i></a></h4>
             </div>
-            {% comment %} {% if user.role in 'Directeur Industriel,Admin' %}
+            {% if user.role in 'Directeur Industriel,Admin' %}
               <div class="d-flex" style="width: 100%; margin: 5px 10px;">
                 {% block activePlanning %}{% endblock %}
-                <h4 class="mx-auto"><a href="{% url 'plannings' %}" class="text-reset"><i class="fas fa-calendar-day menu_item"></i></a></h4>
+                <h4 class="mx-auto"><a href="{% url 'plans' %}" class="text-reset"><i class="fas fa-calendar-day menu_item"></i></a></h4>
               </div>
-            {% endif %} {% endcomment %}
+            {% endif %}
             <div class="d-flex" style="width: 100%; margin: 5px 10px;">
               {% if user.role == 'Admin' %}
               {% block activeUsers %}{% endblock %}

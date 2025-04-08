@@ -11,18 +11,17 @@
     <form method="GET" style="{% if page %}margin: 20px 0px 0px 0px;{% else %}margin-top: 13%;{% endif %}">
         {% csrf_token %}
         <div class="row height d-flex justify-content-center align-items-center">
-            <div class="col-md-5 mb-2">
-                {{ filteredData.form.line }}
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filteredData.form.start_date }}
             </div>
-            <div class="col-md-1 col-sm-6 mb-2">
-                <input type="number" class="form-control" value="{% if request.GET.page_size %}{{ request.GET.page_size }}{% else %}12{% endif %}" style="background-color: rgba(202, 207, 215, 0.5); 
-                border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); color: #f2f2f2; height: 40px;" name="page_size">
+            <div class="col-md-2 col-sm-6 mb-2">
+                {{ filteredData.form.end_date }}
             </div>
             <div class="col-md-1 col-sm-6 mb-2">
                 <button type="submit" class="btn btn-secondary btn-block customSaveButton" style="height: 40px;">Appliquer</button>
             </div>
             <div class="col-md-1 mb-2">
-                <a href="{% url 'planning_initial' %}" class="btn btn-secondary" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); height: 40px;">Nouveau</a>
+                <a href="{% url 'create_plan' %}" class="btn btn-secondary" style="background-color: #0e2a5b; border-color: transparent; box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); height: 40px;">Nouveau</a>
             </div>
         </div>
     </form> 
@@ -31,10 +30,10 @@
         <table class="table table-borderless">
             <thead style="border-bottom: 2px solid white;">
                 <tr class="text-white">
-                <th class="d-none d-md-table-cell"></th>
-                <th>Ligne</th>
+                <th class="d-none d-md-table-cell">#</th>
                 <th class="d-none d-md-table-cell">Créateur</th>
                 <th class="d-none d-md-table-cell">Date de création</th>
+                <th>Lignes</th>
                 <th class="d-none d-md-table-cell">Shifts</th>
                 <th style="width: 6vh;">Actions</th>
                 </tr>
@@ -42,14 +41,22 @@
             <tbody>
                 {% for planning in page %}
                 <tr style="color: #dde3f0;">
-                    <td class="d-none d-md-table-cell"></td>
-                    <td>{{ planning.line }}</td>
+                    <td class="d-none d-md-table-cell">{{ planning.id }}</td>
                     <td class="d-none d-md-table-cell">{{ planning.creator }}</td>
                     <td class="d-none d-md-table-cell">{{ planning.date_created|date:"d/m/Y H:i" }}</td>
-                    <td class="d-none d-md-table-cell">{{ planning.shifts_str }}</td>
+                    <td>
+                        {% for line in planning.lines.all %}
+                            {{ line.designation }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td class="d-none d-md-table-cell">
+                        {% for shift in planning.shifts.all %}
+                            {{ shift.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
                     <td style="vertical-align: middle;">
-                        <button type="button" onclick="window.location='{% url 'view_planning' planning.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-eye" style="color: white;"></i></button>
-                        <button type="button" onclick="confirmPlanningDel('{{planning.id|escapejs}}', '{{planning.line|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
+                        <button type="button" onclick="window.location='{% url 'plan_detail' planning.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% else %}?page=1{% endif %}{% if request.GET.page_size %}&page_size={{ request.GET.page_size }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}'" class="btn" style="padding: 2px;"><i class="fas fa-eye" style="color: white;"></i></button>
+                        <button type="button" onclick="confirmPlanningDel('{{planning.id|escapejs}}')" class="btn" style="color: white; padding: 2px;"><i class="far fa-trash-alt"></i></button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -72,10 +79,10 @@
     }
 </style>
 <script>
-    const confirmPlanningDel = (planningId, planningLine) => {
+    const confirmPlanningDel = (planningId) => {
         swal({ 
         title: `Confirmation de la suppression.`,   
-        text: `Etes-vous sûr que vous voulez supprimer le planning de ${planningLine}?`,   
+        text: `Etes-vous sûr que vous voulez supprimer le planning #${planningId}?`,   
         type: "warning",
         showCancelButton: true,   
         confirmButtonColor: "#DD6B55",   
@@ -85,7 +92,7 @@
         closeOnCancel: true }, 
         function(isConfirm){   
             if (isConfirm){
-              window.location.href = "{% url 'delete_planning' 123456789 %}".replace(/123456789/, planningId);
+              window.location.href = "{% url 'delete_plan' 123456789 %}".replace(/123456789/, planningId);
             }});
     }
 </script>

@@ -8,33 +8,44 @@
     </style>
 </head>
 <body>
+    
     <p>Bonjour,</p>
-    <p>Veuillez trouver ci-dessous le planning de production de la semaine du {{ min_date }} au {{ max_date }}:</p>
-
+    <p>Veuillez trouver ci-dessous le planning de production de la semaine du {{ from_date }} au {{ to_date }}:</p>
+    
     <table>
         <thead>
             <tr>
                 <th style="background-color: #0e2a5b; color: white;">Date</th>
                 <th style="background-color: #0e2a5b; color: white;">Jour</th>
-                {% for shift in shift_names %}
+                {% for shift in shifts %}
                     <th style="background-color: #0e2a5b; color: white;">{{ shift }}</th>
                 {% endfor %}
             </tr>
         </thead>
-        <tbody>
-            {% for date, details in data.items %}
+
+            <tbody>
+                {% for date in dates %}
                 <tr>
-                    <td>{{ date }}</td>
-                    <td>{{ details.day }}</td>
-                    {% for shift in shift_names %}
-                        <td>{{ details.shifts|get_item:shift }}</td>
+                    <td>{{ date.date_display }}</td>
+                    <td>{{ date.day_name }}</td>
+                    {% for shift in date.shifts %}
+                        <td>
+                            {% if shift.has_products %}
+                                {% for product in shift.products %}
+                                    {{ product.designation }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                Aucun produit attribué
+                            {% endif %}
+                        </td>
                     {% endfor %}
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                {% endfor %}
+            </tbody>
+        </table>
 
     <p><strong>Remarque :</strong> Ce planning peut être changé en cas d'imprévus ou commande urgente.</p>
     <p>Cordialement.</p>
 </body>
 </html>
+

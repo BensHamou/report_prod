@@ -44,12 +44,12 @@ urlpatterns = [
     path('report/get-qte-by-product/', views.get_qte_per_container, name='get_qte_per_container'),
     path('report/get-max-by-shift/', views.get_shift_max, name='get_shift_max'),
 
-    path('plannings/', views.plannings_list_view, name='plannings'),
-    path('planning/line/', views.planning_initial_view, name='planning_initial'),
-    path('planning/products/', views.planning_details_view, name='planning_details'),
-    path('planning/<int:pk>/', views.view_planning, name='view_planning'),
-    path('delete-planning/<int:pk>/', delete_planning, name='delete_planning'),
-    path('notify-planning/', views.notify_planning, name='notify_planning'),
+    path('plans/', list_production_plans, name='plans'),
+    path('plan/create/', CreateProductionPlanView.as_view(), name='create_plan'),
+    path('plan/<int:plan_id>/assign/<int:line_id>/', assign_products, name='assign_products'),
+    path('plan/<int:pk>/', plan_detail, name='plan_detail'),
+    path('plan/delete/<int:pk>/', delete_plan, name='delete_plan'),
+    path('plan/notify/', notify_plan, name='notify_plan'),
 
 ]
 

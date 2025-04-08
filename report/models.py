@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from account.models import *
-
+from datetime import timedelta
 
 class TypeStop(models.Model):
 
@@ -181,59 +181,46 @@ class Validation(models.Model):
     def __str__(self):
         return "Validation - " + str(self.report.id) + " - " + str(self.date)
     
-class Planning(models.Model):
 
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': ['Directeur Industriel', 'Admin']})
+class ProductionPlan(models.Model):
+
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
-    line = models.ForeignKey(Line, on_delete=models.CASCADE, related_name='plannings')
+
+    from_date = models.DateField()
+    to_date = models.DateField()
+    lines = models.ManyToManyField(Line)
+    shifts = models.ManyToManyField(Horaire)
 
     @property
-    def shifts_str(self):
-        shifts = [str(plan.shift) for plan in self.plans.all()]
-        return " & ".join(shifts)
+    def date_range(self):
+        delta = self.to_date - self.from_date
+        return [self.from_date + timedelta(days=i) for i in range(delta.days + 1)]
 
-    @property
-    def shifts(self):
-        return [plan.shift for plan in self.plans.all()]
-
-    class Meta:
-        verbose_name = "Planning"
-        verbose_name_plural = "Plannings"
-        ordering = ['-date_created']
+    def get_assignment(self, line, date, shift):
+        try:
+            return self.assignments.get(line=line, date=date, shift=shift)
+        except DailyAssignment.DoesNotExist:
+            return None
     
     def __str__(self):
-        return f"Planning de {self.line} - {self.date_created}"
+        return f"Plan {self.id} ({self.from_date} to {self.to_date})"
 
-class Plan(models.Model):
-
-    planning = models.ForeignKey(Planning, on_delete=models.CASCADE, related_name='plans')
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_modified = models.DateTimeField(auto_now=True)
-    shift = models.ForeignKey(Horaire, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = "Plan"
-        verbose_name_plural = "Plans"
-        unique_together = ('planning', 'shift')
-
-    def __str__(self):
-        return f"{self.planning} - {self.shift}"
-
-class PlanLine(models.Model):
-
-    plan = models.ForeignKey(Plan, on_delete=models.CASCADE, related_name='plan_lines')
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_modified = models.DateTimeField(auto_now=True)
+class DailyAssignment(models.Model):
+    plan = models.ForeignKey(ProductionPlan, on_delete=models.CASCADE, related_name='assignments')
+    line = models.ForeignKey(Line, on_delete=models.CASCADE)
     date = models.DateField()
-    products = models.ManyToManyField(Product)
-
-    class Meta:
-        verbose_name = "Plan Line"
-        verbose_name_plural = "Plan Lines"
-        unique_together = ('plan', 'date')
-        ordering = ['date']
-
-    def __str__(self):
-        return f"{self.plan} - {self.date}"
+    shift = models.ForeignKey(Horaire, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product, blank=True)
     
+    class Meta:
+        unique_together = ('plan', 'line', 'date', 'shift')
+        ordering = ['date', 'line', 'shift']
+    
+    def __str__(self):
+        return f"{self.line} - {self.date} - {self.shift}"
+    
+    @property
+    def day_name(self):
+        return self.date.strftime('%A')
