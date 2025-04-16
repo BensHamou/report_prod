@@ -1208,10 +1208,12 @@ def notify_plan(request):
                 'from_date': plan.from_date.strftime("%d/%m/%Y"), 'to_date': plan.to_date.strftime("%d/%m/%Y")}
             
             html_message = render_to_string('planning/email_template.html', context)
+
+            addresses = line.site.address.split('&')
             
             subject = f"Planning production - Ligne {line.designation} ({plan.from_date.strftime('%d/%m/%Y')} au {plan.to_date.strftime('%d/%m/%Y')})"
             email = EmailMultiAlternatives(subject=subject, body='', from_email='Puma Trans', 
-                                           to=[line.site.address], reply_to=["noreply@grupopuma-dz.com"])
+                                           to=addresses, reply_to=["noreply@grupopuma-dz.com"])
             email.attach_alternative(html_message, "text/html")
             email.send()
             
