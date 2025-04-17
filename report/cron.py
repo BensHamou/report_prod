@@ -30,7 +30,7 @@ def send_alert():
                 if line.site.address:
                     recipient_list = line.site.address.split('&')
                 else:
-                    recipient_list = ['benshamou@gmail.com']
+                    recipient_list = ['mohammed.benslimane@groupe-hasnaoui.com']
 
                 subject = 'Notification d\'alerte ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                 message = '''<p>Le rapport du shift [''' + shift.__str__() + '''] du ligne '''+line.__str__()+'''<b> n'est pas encore créé.</b>'''

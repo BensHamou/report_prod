@@ -769,9 +769,9 @@ def confirmReport(request, pk):
     if report.site.address:
         recipient_list = report.site.address.split('&')
     else:
-        recipient_list = ['benshamou@gmail.com'] 
+        recipient_list = ['mohammed.benslimane@groupe-hasnaoui.com'] 
      
-    #recipient_list = ['benshamou@gmail.com']
+    #recipient_list = ['mohammed.benslimane@groupe-hasnaoui.com']
 
     messages.success(request, 'Rapport validé avec succès')
     subject, formatHtml = getMail('confirm', report, request.user.fullname, old_state == 'Brouillon')
@@ -822,8 +822,8 @@ def cancelReport(request, pk):
     #     if report.site.address:
     #         recipient_list = report.site.address.split('&')
     #     else:
-    #         recipient_list = ['benshamou@gmail.com']
-    #     #recipient_list = ['benshamou@gmail.com']
+    #         recipient_list = ['mohammed.benslimane@groupe-hasnaoui.com']
+    #     #recipient_list = ['mohammed.benslimane@groupe-hasnaoui.com']
     #     subject, formatHtml = getMail('cancel', report, request.user.fullname)
     #     send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
         
@@ -879,8 +879,8 @@ def validateReport(request, pk, actor):
     # if report.site.address:
     #     recipient_list = report.site.address.split('&')
     # else:
-    #     recipient_list = ['benshamou@gmail.com']
-    # #recipient_list = ['benshamou@gmail.com']
+    #     recipient_list = ['mohammed.benslimane@groupe-hasnaoui.com']
+    # #recipient_list = ['mohammed.benslimane@groupe-hasnaoui.com']
 
     # subject, formatHtml = getMail('validate', report, request.user.fullname)
     # send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
@@ -942,9 +942,9 @@ def refuseReport(request, pk, actor):
     if report.site.address:
         recipient_list = report.site.address.split('&')
     else:
-        recipient_list = ['benshamou@gmail.com']
+        recipient_list = ['mohammed.benslimane@groupe-hasnaoui.com']
      
-    #recipient_list = ['benshamou@gmail.com']
+    #recipient_list = ['mohammed.benslimane@groupe-hasnaoui.com']
 
     subject, formatHtml = getMail('refuse', report, request.user.fullname, refusal_reason=refusal_reason)
     send_mail(subject, "", 'Puma Production', recipient_list, html_message=formatHtml)
@@ -1212,7 +1212,7 @@ def notify_plan(request):
             addresses = line.site.address.split('&')
             
             subject = f"Planning production - Ligne {line.designation} ({plan.from_date.strftime('%d/%m/%Y')} au {plan.to_date.strftime('%d/%m/%Y')})"
-            email = EmailMultiAlternatives(subject=subject, body='', from_email='Puma Trans', 
+            email = EmailMultiAlternatives(subject=subject, body='', from_email='Puma Production', 
                                            to=addresses, reply_to=["noreply@grupopuma-dz.com"])
             email.attach_alternative(html_message, "text/html")
             email.send()
