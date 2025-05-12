@@ -107,11 +107,13 @@ class User(AbstractUser):
     password = models.CharField(max_length=255)
     fullname = models.CharField(max_length=255)
     role = models.CharField(choices=ROLE_CHOICES, max_length=30)
-    lines = models.ManyToManyField(Line, blank=True)
+    lines = models.ManyToManyField(Line, blank=True, related_name='users')
     team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
     is_admin = models.BooleanField(default=False)
+    do_notify = models.BooleanField(default=False)
+    lines_to_notify = models.ManyToManyField(Line, blank=True, related_name='users_to_notify')
 
-    fields = ('username', 'fullname', 'email', 'role', 'lines', 'is_admin', 'first_name', 'last_name')
+    fields = ('username', 'fullname', 'email', 'role', 'lines', 'is_admin', 'do_notify', 'lines_to_notify', 'first_name', 'last_name')
 
     
     def __str__(self):
