@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 
 CRONJOBS = [
     ('*/30 * * * *', 'report.cron.send_alert'),
-    ('0 6 * * *', 'report.cron.check_ending_plannings'),
+    ('0 8 * * *', 'report.cron.check_ending_plannings'),
 ]
 
 
