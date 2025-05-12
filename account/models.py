@@ -98,7 +98,7 @@ class User(AbstractUser):
         ('Nouveau', 'Nouveau'),
         ('Gestionnaire de production', 'Gestionnaire de production'),
         ('Gestionnaire de stock', 'Gestionnaire de stock'),
-        ('Directeur Industriel', 'Directeur Industriel'),
+        ('Maintenancier', 'Maintenancier'),
         ('Observateur', 'Observateur'),
         ('Admin', 'Admin'),
     ]

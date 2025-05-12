@@ -63,9 +63,9 @@ class Report(models.Model):
         ('Brouillon', 'Brouillon'),
         ('Confirmé', 'Confirmé'),
         ('Validé par GS', 'Validé par GS'),
-        ('Validé par DI', 'Validé par DI'),
+        ('Validé par Maintenancier', 'Validé par Maintenancier'),
         ('Refusé par GS', 'Refusé par GS'),
-        ('Refusé par DI', 'Refusé par DI'),
+        ('Refusé par Maintenancier', 'Refusé par Maintenancier'),
         ('Annulé', 'Annulé'),
     ]
 
@@ -165,9 +165,9 @@ class Validation(models.Model):
         ('Brouillon', 'Brouillon'),
         ('Confirmé', 'Confirmé'),
         ('Validé par GS', 'Validé par GS'),
-        ('Validé par DI', 'Validé par DI'),
+        ('Validé par Maintenancier', 'Validé par Maintenancier'),
         ('Refusé par GS', 'Refusé par GS'),
-        ('Refusé par DI', 'Refusé par DI'),
+        ('Refusé par Maintenancier', 'Refusé par Maintenancier'),
         ('Annulé', 'Annulé'),
     ]
 

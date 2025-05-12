@@ -46,11 +46,11 @@ def check_creatorArret(view_func):
     def wrapper(request, *args, **kwargs):
         arret_id = kwargs.get('pk')
         arret = Arret.objects.get(id=arret_id)
-        if arret.report.state == 'Validé par GS' and request.user.role == 'Directeur Industriel':
+        if arret.report.state == 'Validé par GS' and request.user.role == 'Maintenancier':
             return view_func(request, *args, **kwargs)
         if request.user.role == 'Admin':
             return view_func(request, *args, **kwargs)
-        if not (arret.report.state in ['Brouillon','Refusé par GS', 'Refusé par DI'] and 
+        if not (arret.report.state in ['Brouillon','Refusé par GS', 'Refusé par Maintenancier'] and 
                 (request.user.role == "Gestionnaire de production" and request.user == arret.report.creator)):
             return render(request, '403.html', status=403)
         return view_func(request, *args, **kwargs)
@@ -353,10 +353,10 @@ def editReasonStopView(request, id):
 
 class CheckEditorMixin:
     def check_editor(self, report):
-        if self.request.user.role == 'Directeur Industriel' and report.state == 'Validé par GS':
+        if self.request.user.role == 'Maintenancier' and report.state == 'Validé par GS':
             return True
         if (report.creator != self.request.user or self.request.user.role != "Gestionnaire de production" or 
-            report.state not in ['Brouillon','Refusé par GS','Refusé par DI']) and self.request.user.role != 'Admin':
+            report.state not in ['Brouillon','Refusé par GS','Refusé par Maintenancier']) and self.request.user.role != 'Admin':
             return False
         return True
 
@@ -380,7 +380,7 @@ class CheckCreatorMixin:
 class CheckNoRefusedMixin:
     def check_has_refused(self):
         lines = self.request.user.lines.all()
-        reports = Report.objects.filter(Q(creator=self.request.user), Q(line__in=lines) & Q(state='Refusé par GS') | Q(state='Refusé par DI'))
+        reports = Report.objects.filter(Q(creator=self.request.user), Q(line__in=lines) & Q(state='Refusé par GS') | Q(state='Refusé par Maintenancier'))
         return len(reports) == 0
 
     def dispatch(self, request, *args, **kwargs):
@@ -410,7 +410,7 @@ class ReportInline():
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['admin'] = self.request.user.role == 'Admin'
-        kwargs['DI'] = self.request.user.role == 'Directeur Industriel'
+        kwargs['Maintenancier'] = self.request.user.role == 'Maintenancier'
         kwargs['lines'] = self.request.user.lines.all()
         kwargs['team'] = self.request.user.team
         kwargs['site'] = self.request.user.lines.all().first().site
@@ -532,10 +532,10 @@ class ReportList(LoginRequiredMixin, FilterView):
     filterset_class = ReportFilter
     ordering = ['-prod_day']
         
-    all_GP = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
-    all_A = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']
-    all_GS = ['Confirmé', 'Validé par GS', 'Refusé par GS', 'Refusé par DI', 'Validé par DI']
-    all_DI = ['Validé par GS', 'Validé par DI', 'Refusé par DI']
+    all_GP = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par Maintenancier', 'Refusé par GS', 'Refusé par Maintenancier', 'Annulé']
+    all_A = ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par Maintenancier', 'Refusé par GS', 'Refusé par Maintenancier', 'Annulé']
+    all_GS = ['Confirmé', 'Validé par GS', 'Refusé par GS', 'Refusé par Maintenancier', 'Validé par Maintenancier']
+    all_DI = ['Validé par GS', 'Validé par Maintenancier', 'Refusé par Maintenancier']
     all_NV = ['']
 
     def get_filterset_kwargs(self, filterset_class):
@@ -554,7 +554,7 @@ class ReportList(LoginRequiredMixin, FilterView):
         elif role == 'Gestionnaire de stock':
             queryset = queryset.filter(Q(line__in=lines) & Q(state__in=self.all_GS))
                 
-        elif role == 'Directeur Industriel':
+        elif role == 'Maintenancier':
             queryset = queryset.filter(Q(line__in=lines) & Q(state__in=self.all_DI))
                 
         elif role == 'Nouveau':
@@ -576,7 +576,7 @@ class ReportList(LoginRequiredMixin, FilterView):
         context['page'] = page_obj
         context['state_totals'] = self.get_state_totals()
         context['all_total'] = len(context['reports'])
-        role_state = {'Gestionnaire de production': self.all_GP, 'Gestionnaire de stock': self.all_GS, 'Directeur Industriel': self.all_DI, 'Admin': self.all_A, 'Observateur': self.all_A, 'Nouveau': self.all_NV}
+        role_state = {'Gestionnaire de production': self.all_GP, 'Gestionnaire de stock': self.all_GS, 'Maintenancier': self.all_DI, 'Admin': self.all_A, 'Observateur': self.all_A, 'Nouveau': self.all_NV}
         context['role_state'] = role_state
         count_plannings = 0
         if self.request.user.do_notify and self.request.user.lines_to_notify.count() > 0:
@@ -866,7 +866,7 @@ def validateReport(request, pk, actor):
         redirect_url = f'{url_path}?cache={cache_param}'
         return redirect(redirect_url)
     
-    if (report.state == 'Validé par GS' and actor == 'GS') or (report.state == 'Validé par DI' and actor == 'DI'):
+    if (report.state == 'Validé par GS' and actor == 'GS') or (report.state == 'Validé par Maintenancier' and actor == 'Maintenancier'):
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
         redirect_url = f'{url_path}?cache={cache_param}&{query_string}'
@@ -875,8 +875,8 @@ def validateReport(request, pk, actor):
     old_state = report.state
     if report.state == 'Confirmé' and actor == 'GS':
         report.state = 'Validé par GS'
-    elif report.state == 'Validé par GS' and actor == 'DI':
-        report.state = 'Validé par DI'
+    elif report.state == 'Validé par GS' and actor == 'Maintenancier':
+        report.state = 'Validé par Maintenancier'
 
     new_state = report.state
     actor = request.user
@@ -926,7 +926,7 @@ def refuseReport(request, pk, actor):
         redirect_url = f'{url_path}?cache={cache_param}'
         return redirect(redirect_url)
     
-    if (report.state == 'Refusé par GS' and actor == 'GS') or (report.state == 'Refusé par DI' and actor == 'DI'):
+    if (report.state == 'Refusé par GS' and actor == 'GS') or (report.state == 'Refusé par Maintenancier' and actor == 'Maintenancier'):
         messages.success(request, 'Rapport refusé avec succès' )
         url_path = reverse('report_detail', args=[report.id])
         cache_param = str(uuid.uuid4())
@@ -937,8 +937,8 @@ def refuseReport(request, pk, actor):
     
     if report.state == 'Confirmé' and actor == 'GS':
         report.state = 'Refusé par GS'
-    elif report.state == 'Validé par GS' and actor == 'DI':
-        report.state = 'Refusé par DI'
+    elif report.state == 'Validé par GS' and actor == 'Maintenancier':
+        report.state = 'Refusé par Maintenancier'
     
     new_state = report.state
     actor = request.user

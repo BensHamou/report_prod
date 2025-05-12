@@ -41,7 +41,7 @@ def admin_only_required(view_func):
 
 def admin_or_di_required(view_func):
     def wrapper(request, *args, **kwargs):
-        if request.user.role in ['Admin', 'Directeur Industriel']:
+        if request.user.role in ['Admin', 'Maintenancier']:
             return view_func(request, *args, **kwargs)
         else:
             return render(request, '403.html', status=403)
@@ -49,7 +49,7 @@ def admin_or_di_required(view_func):
 
 def DI_GS_required(view_func):
     def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.role in ['Admin', 'Gestionnaire de stock', 'Directeur Industriel']:
+        if request.user.is_authenticated and request.user.role in ['Admin', 'Gestionnaire de stock', 'Maintenancier']:
             return view_func(request, *args, **kwargs)
         else:
             return render(request, '403.html', status=403)

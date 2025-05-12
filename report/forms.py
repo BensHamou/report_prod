@@ -122,7 +122,7 @@ class ReportForm(ModelForm):
         teams = kwargs.pop('teams', None)
         team = kwargs.pop('team', None)
         site = kwargs.pop('site', None)
-        DI = kwargs.pop('DI', None)
+        Maintenancier = kwargs.pop('Maintenancier', None)
         state = kwargs.pop('state', None)
         products = kwargs.pop('products', None)
         super(ReportForm, self).__init__(*args, **kwargs)
@@ -142,7 +142,7 @@ class ReportForm(ModelForm):
                 self.fields['site'].widget.attrs['disabled'] = True
                 self.fields['qte_tn'].widget.attrs['disabled'] = True
             
-            if DI and state == 'Validé par GS':
+            if Maintenancier and state == 'Validé par GS':
                 fields_to_disable = ['line', 'n_lot', 'prod_day', 'shift', 'used_time', 'team', 'prod_product', 'qte_sac_prod', 'nbt_melange',
                                      'qte_sac_reb', 'poids_melange', 'qte_sac_rec', 'qte_rec', 'nbt_pallete', 'gpl_1', 'gpl_2', 'observation_rec']
                 for field_name in fields_to_disable:
@@ -182,7 +182,7 @@ class MPConsumedForm(ModelForm):
         if user:
             if not user.role == 'Admin':
                 self.fields['numo_product'].widget.attrs['disabled'] = True
-            if user.role == 'Directeur Industriel' and state == 'Validé par GS':
+            if user.role == 'Maintenancier' and state == 'Validé par GS':
                 self.fields['qte_consumed'].widget.attrs['disabled'] = True
                 self.fields['observation'].widget.attrs['disabled'] = True
 
@@ -200,7 +200,7 @@ class EtatSiloForm(ModelForm):
         state = kwargs.pop('state', None)
         super(EtatSiloForm, self).__init__(*args, **kwargs)
         self.fields['silo'].widget.attrs['disabled'] = True
-        if role == 'Directeur Industriel' and state == 'Validé par GS':
+        if role == 'Maintenancier' and state == 'Validé par GS':
             self.fields['etat'].widget.attrs['disabled'] = True
             self.fields['observation'].widget.attrs['disabled'] = True
 

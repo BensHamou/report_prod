@@ -126,13 +126,13 @@ class ReportFilter(FilterSet):
         if user:
             if user.role == 'Gestionnaire de stock':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] in 
-                                        ['Confirmé', 'Validé par GS', 'Refusé par DI', 'Refusé par GS', 'Validé par DI']]
-            elif user.role == 'Directeur Industriel':
+                                        ['Confirmé', 'Validé par GS', 'Refusé par Maintenancier', 'Refusé par GS', 'Validé par Maintenancier']]
+            elif user.role == 'Maintenancier':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] in 
-                                        ['Validé par GS', 'Validé par DI',  'Refusé par DI']]
+                                        ['Validé par GS', 'Validé par Maintenancier',  'Refusé par Maintenancier']]
             elif user.role == 'Nouveau':
                 self.filters['state'].field.choices = [choice for choice in self.filters['state'].field.choices if choice[0] not in 
-                                        ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par DI', 'Refusé par GS', 'Refusé par DI', 'Annulé']]
+                                        ['Brouillon', 'Confirmé', 'Validé par GS', 'Validé par Maintenancier', 'Refusé par GS', 'Refusé par Maintenancier', 'Annulé']]
             self.filters['line'].queryset = user.lines.all()
 
 class ProductionPlanFilter(FilterSet):
