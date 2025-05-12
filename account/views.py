@@ -103,6 +103,7 @@ def refreshUsersList(request):
 def editUserView(request, id):
     user = User.objects.get(id=id)
     selectedLines = [line.id for line in user.lines.all()]
+    selectedLines_to_notify = [line.id for line in user.lines_to_notify.all()]
     form = UserForm(instance=user)
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user)
@@ -113,7 +114,7 @@ def editUserView(request, id):
             redirect_url = f'{url_path}?cache={cache_param}'
             return redirect(redirect_url)
 
-    context = {'form': form, 'user_to_edit': user, 'selectedLines': selectedLines}
+    context = {'form': form, 'user_to_edit': user, 'selectedLines': selectedLines, 'selectedLines_to_notify': selectedLines_to_notify}
 
     return render(request, 'edit_user.html', context)
 

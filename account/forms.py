@@ -7,7 +7,7 @@ from report.forms import getAttrs
 class UserForm(ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'fullname', 'email', 'role', 'lines', 'team', 'is_admin', 'first_name', 'last_name']
+        fields = ['username', 'fullname', 'email', 'role', 'lines', 'team', 'is_admin', 'lines_to_notify', 'do_notify', 'first_name', 'last_name']
 
     attr = {'class': 'form-control', 'style': 'background-color: #cacfd7;', 'readonly':'readonly'}
 
@@ -21,6 +21,14 @@ class UserForm(ModelForm):
     lines = forms.SelectMultiple(attrs={'class': 'form-select'})
     team = forms.ModelChoiceField(queryset=Team.objects.all(), widget=forms.Select(attrs=getAttrs('select')), empty_label="Équipe", required=False)
     is_admin = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox', 'data-onstyle':'secondary', 'data-toggle':'switchbutton'}))
+    do_notify = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={
+        'type': 'checkbox',
+        'data-onstyle': 'primary',
+        'data-toggle': 'switchbutton',
+        'data-onlabel': "Oui",
+        'data-offlabel': "Non" 
+    }))
+    lines_to_notify = forms.SelectMultiple(attrs={'class': 'form-select'})
 
 
 class HoraireForm(ModelForm):

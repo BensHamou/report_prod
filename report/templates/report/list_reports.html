@@ -8,6 +8,11 @@ Liste des rapports
 {% block activeListReport %}{% include 'active_bar.html' %}{% endblock %}
 {% block content %}
 <div class="row mb-3">
+    {% if count_plannings > 0 %}
+        <div class="alert alert-warning" role="alert">
+            <strong>Attention !</strong> Vous avez {{ count_plannings }} planifications se terminant demain, assurez-vous de créer de nouvelles planifications.
+        </div>
+    {% endif %}
     {% if page %}
     <form method="GET" style="{% if page %}margin: 20px 0px 0px 0px;{% else %}margin-top: 13%;{% endif %}">
         {% csrf_token %}

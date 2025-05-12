@@ -89,6 +89,29 @@ Utilisateur - {{ user_to_edit.username }}
           </div>
         </div>
       </div>
+      <div class="row mb-4">
+        <div class="col-md-2 col-sm-6 mb-sm-2">
+          <div class="form-outline">
+            <label class="form-label labelCustom" for="do_notify">Notifier?</label>
+          </br>
+            {{ form.do_notify }}
+          </div>
+        </div>
+        <div class="col-md-10 col-sm-6 mb-sm-2">
+          <div class="form-outline">
+            <label class="form-label labelCustom" for="lines_to_notify">Lignes à notifier</label>
+            <div id="line_to_notify" class="form-control select" style="background-color: #cacfd7;">
+              <input id="lines_to_notify_input" type="text" data-bs-toggle="dropdown" style="background-color: #cacfd7;" />
+              <div class="dropdown-menu"></div>
+              <select name="lines_to_notify" multiple hidden id="hidden_lines_to_notify_select">
+                {% for line in form.fields.lines_to_notify.queryset %}
+                  <option value="{{ line.id }}" {% if line.id in selectedLines_to_notify %} selected {% endif %}>{{ line.designation }}</option>
+                {% endfor %}                      
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
   <div class="float-end mt-4">
     <input type='submit' class="btn btn-secondary customSaveButton" name='save' value="Sauvgardez"/>

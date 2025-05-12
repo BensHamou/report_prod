@@ -578,6 +578,15 @@ class ReportList(LoginRequiredMixin, FilterView):
         context['all_total'] = len(context['reports'])
         role_state = {'Gestionnaire de production': self.all_GP, 'Gestionnaire de stock': self.all_GS, 'Directeur Industriel': self.all_DI, 'Admin': self.all_A, 'Observateur': self.all_A, 'Nouveau': self.all_NV}
         context['role_state'] = role_state
+        count_plannings = 0
+        if self.request.user.do_notify and self.request.user.lines_to_notify.count() > 0:
+            for planning in ProductionPlan.objects.filter(creator=self.request.user, to_date=datetime.today().date() + timedelta(days=1)):
+                for line in planning.lines.all():
+                    if ProductionPlan.objects.filter(lines__in=[line], from_date=planning.to_date + timedelta(days=1)).exists():
+                        continue
+                    if line in self.request.user.lines_to_notify.all():
+                        count_plannings += 1
+        context['count_plannings'] = count_plannings
         return context
     
     def get_state_totals(self):
