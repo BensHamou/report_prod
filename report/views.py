@@ -29,7 +29,6 @@ from account.views import admin_or_di_required
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-import locale
 
 def check_creator(view_func):
     @wraps(view_func)
@@ -1177,12 +1176,20 @@ def get_assignment(plan, arg_string):
         return None
     
 
-locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
-
 @login_required
 @admin_or_di_required
 def notify_plan(request):
     plan_id = request.POST.get('planning_id')
+
+    FRENCH_DAYS = {
+        'Monday': 'Lundi',
+        'Tuesday': 'Mardi',
+        'Wednesday': 'Mercredi',
+        'Thursday': 'Jeudi',
+        'Friday': 'Vendredi',
+        'Saturday': 'Samedi',
+        'Sunday': 'Dimanche'
+    }
 
     if not plan_id:
         return JsonResponse({'success': False, 'message': 'Identifiant de planning manquant.'})
@@ -1207,8 +1214,9 @@ def notify_plan(request):
                     shifts_data.append({'shift': shift, 'products': products, 'has_products': bool(products)})
                 
                 if has_any_products:
-                    dates_data.append({'date': date, 'date_display': date.strftime("%d/%m/%Y"), 
-                                       'day_name': date.strftime("%A").capitalize(), 'shifts': shifts_data})
+                    english_day = date.strftime("%A").capitalize()
+                    day_name = FRENCH_DAYS.get(english_day, english_day)
+                    dates_data.append({'date': date, 'date_display': date.strftime("%d/%m/%Y"), 'day_name': day_name, 'shifts': shifts_data})
 
             if not dates_data:
                 continue
@@ -1219,7 +1227,7 @@ def notify_plan(request):
             html_message = render_to_string('planning/email_template.html', context)
 
             addresses = line.site.address.split('&')
-            
+
             subject = f"Planning production - Ligne {line.designation} ({plan.from_date.strftime('%d/%m/%Y')} au {plan.to_date.strftime('%d/%m/%Y')})"
             email = EmailMultiAlternatives(subject=subject, body='', from_email='Puma Production', 
                                            to=addresses, reply_to=["noreply@grupopuma-dz.com"])
