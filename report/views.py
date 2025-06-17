@@ -1117,18 +1117,22 @@ def assign_products(request, plan_id, line_id):
 
     dates = {}
     for assignment in assignments:
-        if assignment.date not in dates:
-            dates[assignment.date] = []
-        dates[assignment.date].append(assignment)
+        dates.setdefault(assignment.date, []).append(assignment)
 
-    context = { 'plan': plan, 'line': line, 'dates': sorted(dates.items()), 'forms': form_dict, 'is_last_line': is_last_line }
+    for date_key, day_assignments in dates.items():
+
+        day_assignments.sort(key=lambda a: a.shift.hour_start)
+
+
+    context = { 'plan': plan, 'line': line, 'dates': sorted(dates.items()), 'forms': form_dict, 'is_last_line': is_last_line, 'ordered_shifts': plan.shifts.all().order_by('hour_start')}
     return render(request, 'assign_products.html', context)
 
 @login_required(login_url='login')
 @admin_or_di_required
 def plan_detail(request, pk):
     plan = get_object_or_404(ProductionPlan, pk=pk)
-    return render(request, 'plan_detail.html', {'plan': plan})
+    ordered_shifts = plan.shifts.all().order_by('hour_start')
+    return render(request, 'plan_detail.html', {'plan': plan, 'ordered_shifts': ordered_shifts})
 
 @login_required(login_url='login')
 @admin_or_di_required

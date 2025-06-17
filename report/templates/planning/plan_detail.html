@@ -36,33 +36,31 @@ Détails du planning
                 <tr style="text-align: center;">
                     <th style="min-width: 8vw; width: 8vw; border-radius: 5px 0px 0px 0px;">Date</th>
                     <th style="min-width: 8vw; width: 8vw;">Jours</th>
-                    {% for shift in plan.shifts.all %}
+                    {% for shift in ordered_shifts %}
                         <th style="min-width: 30vw; {% if forloop.last %} border-radius: 0px 5px 0px 0px;{% endif %}">Shift de {{ shift.name }}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody style="background-color: white; color: #475d78;">
                 {% for date in plan.date_range %}
-                <tr style="text-align: center;">
-                    <td style="font-size: 14px;">{{ date }}</td>
-                    <td style="font-size: 14px;">{{ date|date:"l"|capfirst }}</td>
-                    {% for shift in plan.shifts.all %}
-                    <td style="font-size: 12px;">
-                      {% get_assignment plan line date shift as assignment %}
-                        {% if assignment %}
-                            {% for product in assignment.products.all %}
-                                {{ product.designation }}{% if not forloop.last %}, {% endif %}
-                            {% empty %}
-                                Aucun produit attribué
+                    <tr style="text-align: center;">
+                        <td style="font-size: 14px;">{{ date }}</td>
+                        <td style="font-size: 14px;">{{ date|date:"l"|capfirst }}</td>
+                        {% for shift in ordered_shifts %}
+                        <td style="font-size: 12px;">
+                            {% get_assignment plan line date shift as assignment %}
+                                {% if assignment %}
+                                    {% for product in assignment.products.all %}
+                                        {{ product.designation }}{% if not forloop.last %}, {% endif %}
+                                    {% empty %}
+                                        Aucun produit attribué
+                                    {% endfor %}
+                                {% else %}
+                                    Aucun plan
+                                {% endif %}
+                            </td>
                             {% endfor %}
-                        {% else %}
-                            Aucun plan
-                        {% endif %}
-                    </td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-                {% for date, assignments in dates %}
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
