@@ -50,7 +50,7 @@
                         {% endfor %}
                     </td>
                     <td class="d-none d-md-table-cell">
-                        {% for shift in planning.shifts.all %}
+                        {% for shift in planning.shifts.all|order_by_hour_start %}
                             {{ shift.name }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>

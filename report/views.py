@@ -30,6 +30,8 @@ from account.views import admin_or_di_required
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
+
+
 def check_creator(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
@@ -75,6 +77,10 @@ def get_item(dictionary, key):
     if isinstance(dictionary, dict):
         return dictionary.get(key, "")
     return ""
+
+@register.filter
+def order_by_hour_start(queryset):
+    return queryset.order_by('hour_start')
 
 # PRODUCTS
 @login_required(login_url='login')
